@@ -1,0 +1,7 @@
+name: "general"
+windows:
+  - name: asd
+    root: ~/src/asd/platform
+    layout: even-vertical
+    panes:
+      - focus: true
