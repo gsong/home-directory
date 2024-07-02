@@ -1,0 +1,31 @@
+{
+  "segments": {
+    "left": [
+      {
+        "function": "powerline.segments.common.net.hostname",
+        "priority": 10
+      },
+      {
+        "before": "\u24d4 ",
+        "function": "powerline.segments.common.env.virtualenv",
+        "priority": 50
+      },
+      {
+        "args": {
+          "ellipsis": "\u2026",
+          "use_path_separator": "True"
+        },
+        "function": "powerline.segments.shell.cwd",
+        "priority": 10
+      },
+      {
+        "function": "powerline.segments.shell.jobnum",
+        "priority": 20
+      },
+      {
+        "function": "powerline.segments.shell.last_status",
+        "priority": 10
+      }
+    ]
+  }
+}

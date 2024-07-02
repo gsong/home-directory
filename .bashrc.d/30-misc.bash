@@ -1,7 +1,7 @@
 export EDITOR=edit
 export LANG=en_US.UTF-8
 
-[[ -d ~/.bin ]] && export PATH=~/.bin:$PATH
+[[ -d ~/bin ]] && export PATH=${HOME}/bin:$PATH
 
 # Keep bash history across terminals and write immediately
 # http://linuxcommando.blogspot.com/2007/11/keeping-command-history-across-multiple.html

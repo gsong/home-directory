@@ -1,5 +1,5 @@
-alias brave='open -a "brave browser.app"'
-alias chrome='open -a "google chrome.app"'
+alias dots="git --git-dir=${HOME}/.home-directory --work-tree=${HOME}"
+
 alias ios-simulator="open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/"
 
 alias diff=delta
@@ -24,8 +24,8 @@ alias restart-docker='stop-docker && start-docker'
 alias speedtest='speedtest --secure'
 alias turbo='turbo --no-daemon'
 
-if hash mvim 2> /dev/null; then
-  if [[ "$TERM_PROGRAM" == "Apple_Terminal" ]] || [[ "$TERM_PROGRAM" == "tmux" ]]; then
-    alias vi='mvim'
-  fi
+if hash vimr 2>/dev/null; then
+	if [[ "$TERM_PROGRAM" == "Apple_Terminal" ]] || [[ "$TERM_PROGRAM" == "tmux" ]]; then
+		alias vi='vimr'
+	fi
 fi
