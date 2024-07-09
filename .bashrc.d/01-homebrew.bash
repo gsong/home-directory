@@ -1,9 +1,9 @@
 CPU=$(uname -p)
 
 if [[ "$CPU" == "arm" ]]; then
-  export HOMEBREW_PREFIX="/opt/homebrew"
-elif hash brew 2> /dev/null; then
-  export HOMEBREW_PREFIX=$(brew --prefix)
+	export HOMEBREW_PREFIX="/opt/homebrew"
+elif hash brew 2>/dev/null; then
+	export HOMEBREW_PREFIX=$(brew --prefix)
 fi
 
 export HOMEBREW_CELLAR="${HOMEBREW_PREFIX}/Cellar"
@@ -15,3 +15,6 @@ export INFOPATH="${HOMEBREW_PREFIX}/share/info:${INFOPATH:-}"
 export HOMEBREW_INSTALL_BADGE=☕
 export HOMEBREW_BUNDLE_FILE=${HOME}/.Brewfile
 export HOMEBREW_BUNDLE_NO_LOCK=1
+
+# For czkawka_gui
+export XDG_DATA_DIRS="${HOMEBREW_PREFIX}/share:${XDG_DATA_DIRS:-}"
