@@ -5,3 +5,4 @@ windows:
     layout: even-vertical
     panes:
       - focus: true
+      - git fetch

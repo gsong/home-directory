@@ -72,6 +72,9 @@ brew "tree"
 brew "wdiff"
 brew "wget"
 
+# aptos
+brew "aptos"
+
 # tmux copy and paste
 brew "reattach-to-user-namespace"
 
