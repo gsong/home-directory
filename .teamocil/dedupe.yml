@@ -1,0 +1,9 @@
+name: "general"
+windows:
+  - name: dedupe
+    root: /Volumes/Extra
+    layout: even-vertical
+    panes:
+      - focus: true
+      - commands:
+          - czkawka_gui &
