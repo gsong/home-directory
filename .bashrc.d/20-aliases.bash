@@ -1,5 +1,3 @@
-alias dots="git --git-dir=${HOME}/.home-directory --work-tree=${HOME}"
-
 alias ios-simulator="open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/"
 
 alias diff=delta
