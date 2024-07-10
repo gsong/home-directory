@@ -1,0 +1,10 @@
+name: "general"
+windows:
+  - name: hiai-home
+    root: ~/src/hiai/website
+    layout: even-vertical
+    panes:
+      - npm run start
+      - commands:
+          - git fetch -p -P
+        focus: true
