@@ -1,8 +1,5 @@
 # MacOS
 .DS_Store
 
-# ctags
-tags
-
 # vim
 .lvimrc

@@ -1,6 +1,15 @@
-[user]
-  name = George Song
-  email = george@gsong.dev
+[apply]
+  whitespace = fix
+
+[color]
+  branch = auto
+  diff = auto
+  interactive = auto
+  status = auto
+  ui = true
+
+[commit]
+  template = /Users/george/.stCommitMsg
 
 [core]
   autocrlf = input
@@ -14,22 +23,29 @@
 [delta]
   syntax-theme = Monokai Extended Light
 
-[color]
-  branch = auto
-  diff = auto
-  interactive = auto
-  status = auto
-  ui = true
-
-[pull]
-  ff = only
-
-[push]
-  default = current
-
 [diff]
   tool = p4merge
   algorithm = histogram
+
+[difftool "sourcetree"]
+	cmd = /Applications/p4merge.app/Contents/MacOS/p4merge \"$LOCAL\" \"$REMOTE\"
+	path = 
+
+[fetch]
+  prune = true
+  pruneTags = true
+
+[filter "lfs"]
+  required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+
+[github]
+  username = gsong
+
+[init]
+  defaultBranch = main
 
 [merge]
   tool = p4merge
@@ -37,32 +53,22 @@
 [mergetool]
   keepBackup = false
 
-[difftool "sourcetree"]
-	cmd = /Applications/p4merge.app/Contents/MacOS/p4merge \"$LOCAL\" \"$REMOTE\"
-	path = 
+[mergetool "p4merge"]
+  path = /Applications/p4merge.app/Contents/Resources/launchp4merge
 
 [mergetool "sourcetree"]
 	cmd = /Applications/p4merge.app/Contents/MacOS/p4merge \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
 	trustExitCode = true
 
-[commit]
-  template = /Users/george/.stCommitMsg
+[pull]
+  ff = only
 
-[apply]
-  whitespace = fix
-[github]
-  username = gsong
-[filter "lfs"]
-  required = true
-  clean = git-lfs clean -- %f
-  smudge = git-lfs smudge -- %f
-  process = git-lfs filter-process
-[init]
-  defaultBranch = main
-[mergetool "p4merge"]
-  path = /Applications/p4merge.app/Contents/Resources/launchp4merge
-[fetch]
-  prune = true
-  pruneTags = true
+[push]
+  default = current
+
 [rebase]
   updateRefs = true
+
+[user]
+  name = George Song
+  email = george@gsong.dev
