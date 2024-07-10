@@ -1,0 +1,16 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    teamocil (1.4.2)
+    vendorer (0.2.0)
+
+PLATFORMS
+  arm64-darwin-23
+  ruby
+
+DEPENDENCIES
+  teamocil
+  vendorer
+
+BUNDLED WITH
+   2.5.13
