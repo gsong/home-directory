@@ -1,9 +1,8 @@
 name: "general"
 windows:
-  - name: dedupe
-    root: /Volumes/Extra
+  - name: localnet
     layout: even-vertical
     panes:
       - focus: true
       - commands:
-          - sudo czkawka_gui &
+          - aptos node run-localnet --with-indexer-api

@@ -1,0 +1,8 @@
+name: "general"
+windows:
+  - name: verifai
+    root: ~/src/hiai/platform/apps/verifai
+    layout: even-vertical
+    panes:
+      - focus: true
+      - pnpm dev
