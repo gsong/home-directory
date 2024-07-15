@@ -142,6 +142,7 @@ cask "pester"
 cask "rapidapi"
 cask "screenflow"
 cask "shottr"
+cask "signal"
 cask "slack", greedy: true
 cask "sloth"
 cask "soundsource", greedy: true
