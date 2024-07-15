@@ -1,0 +1,13 @@
+name: "general"
+windows:
+  - name: backup-photos
+    root: /Volumes/Extra/photos-george
+    layout: even-vertical
+    panes:
+      - commands:
+          - docker compose up -d --wait --pull always
+          - caffeinate docker compose exec photos-sync icloud-photos-sync sync
+      - commands:
+          - cd ../photos-india
+          - docker compose up -d --wait --pull always
+          - caffeinate docker compose exec photos-sync icloud-photos-sync sync
