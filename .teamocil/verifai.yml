@@ -1,8 +1,10 @@
 name: "general"
 windows:
   - name: verifai
-    root: ~/src/hiai/platform/apps/verifai
+    root: ~/src/hiai/platform
     layout: even-vertical
     panes:
-      - focus: true
-      - pnpm dev
+      - commands:
+          - git fetch
+        focus: true
+      - turbo dev
