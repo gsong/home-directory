@@ -5,4 +5,6 @@ windows:
     layout: even-vertical
     panes:
       - focus: true
-      - git fetch
+      - commands:
+          - git fetch
+          - turbo dev:docker

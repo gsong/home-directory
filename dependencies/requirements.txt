@@ -108,7 +108,7 @@ pluggy==1.5.0
     # via python-language-server
 powerline-status==2.7
     # via -r requirements.in
-pre-commit==3.7.1
+pre-commit==3.8.0
     # via -r requirements.in
 prompt-toolkit==3.0.47
     # via ipython
@@ -116,7 +116,7 @@ proselint==0.14.0
     # via -r requirements.in
 ptyprocess==0.7.0
     # via pexpect
-pure-eval==0.2.2
+pure-eval==0.2.3
     # via stack-data
 pycodestyle==2.12.0
     # via flake8
