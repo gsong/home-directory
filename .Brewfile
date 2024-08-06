@@ -63,6 +63,7 @@ brew "pwgen"
 brew "qpdf"
 brew "shellcheck"
 brew "speedtest-cli"
+brew "sqlfluff"
 brew "ssh-copy-id"
 brew "starship"
 brew "stow"
@@ -128,12 +129,12 @@ cask "evernote"
 cask "firefox"
 cask "focusatwill"
 cask "fsnotes", greedy: true
-cask "google-chrome"
 cask "istat-menus", greedy: true
 cask "keepingyouawake"
 cask "keyboardcleantool"
 cask "mactracker"
 cask "marked", greedy: true
+cask "meetingbar"
 cask "menuwhere"
 cask "micro-snitch"
 cask "ngrok"
@@ -152,6 +153,9 @@ cask "the-unarchiver"
 cask "vlc"
 cask "whatsapp"
 cask "zoom", greedy: true
+
+# https://github.com/keonik/prisma-erd-generator#-arm64-users-
+cask "chromium", args: { no_quarantine: true }
 
 # Fonts
 tap "homebrew/cask-fonts"
