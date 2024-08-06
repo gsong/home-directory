@@ -66,9 +66,6 @@
 [push]
   default = current
 
-[rebase]
-  updateRefs = true
-
 [user]
   name = George Song
   email = george@gsong.dev
