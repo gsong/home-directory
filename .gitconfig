@@ -9,11 +9,11 @@
   ui = true
 
 [commit]
-  template = /Users/george/.stCommitMsg
+	template = /Users/george/.stCommitMsg
 
 [core]
   autocrlf = input
-  excludesfile = /Users/george/.gitignore_global
+	excludesfile = /Users/george/.gitignore_global
   ignorecase = false
   pager = delta
   safecrlf = warn
@@ -67,5 +67,5 @@
   default = current
 
 [user]
-  name = George Song
-  email = george@gsong.dev
+	name = George Song
+	email = george@gsong.dev

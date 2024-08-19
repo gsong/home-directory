@@ -3,13 +3,6 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        eslint = {
-          settings = {
-            workingDirectories = { mode = "auto" },
-            useFlatConfig = true,
-          },
-        },
-
         prismals = {},
       },
     },
