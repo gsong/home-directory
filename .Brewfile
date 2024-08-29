@@ -138,6 +138,7 @@ cask "marked", greedy: true
 cask "meetingbar"
 cask "menuwhere"
 cask "micro-snitch"
+cask "moom"
 cask "ngrok"
 cask "p4v", greedy: true
 cask "pester"
