@@ -1,6 +1,6 @@
 name: "general"
 windows:
-  - name: verifai
+  - name: data-engine
     root: ~/src/hiai/platform
     layout: even-vertical
     panes:

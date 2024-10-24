@@ -18,14 +18,15 @@
   pager = delta
   safecrlf = warn
   whitespace = trailing-space,space-before-tab
-  editor = vimr -n --wait
+  editor = vimr -s --wait
 
 [delta]
-  syntax-theme = Monokai Extended Light
+  navigate = true
 
 [diff]
   tool = p4merge
   algorithm = histogram
+  colorMoved = default
 
 [difftool "sourcetree"]
 	cmd = /Applications/p4merge.app/Contents/MacOS/p4merge \"$LOCAL\" \"$REMOTE\"
@@ -47,7 +48,11 @@
 [init]
   defaultBranch = main
 
+[interactive]
+  diffFilter = delta --color-only
+
 [merge]
+  conflictstyle = diff3
   tool = p4merge
 
 [mergetool]
@@ -69,3 +74,5 @@
 [user]
 	name = George Song
 	email = george@gsong.dev
+[safe]
+	bareRepository = explicit

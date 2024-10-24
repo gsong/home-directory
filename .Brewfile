@@ -58,11 +58,13 @@ brew "httpie"
 brew "jq"
 brew "m-cli"
 brew "multimarkdown"
+brew "ollama"
 brew "openssl"
 brew "pandoc"
 brew "pwgen"
 brew "qpdf"
 brew "shellcheck"
+brew "sops"
 brew "speedtest-cli"
 brew "sqlfluff"
 brew "ssh-copy-id"
@@ -75,9 +77,6 @@ brew "trash"
 brew "tree"
 brew "wdiff"
 brew "wget"
-
-# aptos
-brew "aptos"
 
 # tmux copy and paste
 brew "reattach-to-user-namespace"
@@ -160,7 +159,6 @@ cask "zoom", greedy: true
 cask "chromium", args: { no_quarantine: true }
 
 # Fonts
-tap "homebrew/cask-fonts"
 cask "font-sauce-code-pro-nerd-font"
 
 ## Other potential font options

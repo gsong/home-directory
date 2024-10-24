@@ -20,7 +20,7 @@ black==24.8.0
     # via -r requirements.in
 build==1.2.1
     # via pip-tools
-certifi==2024.7.4
+certifi==2024.8.30
     # via
     #   httpcore
     #   httpx
@@ -40,7 +40,7 @@ distlib==0.3.8
     # via virtualenv
 exceptiongroup==1.2.2
     # via anyio
-executing==2.0.1
+executing==2.1.0
     # via stack-data
 filelock==3.15.4
     # via virtualenv

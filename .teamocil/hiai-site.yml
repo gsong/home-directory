@@ -1,6 +1,6 @@
 name: "general"
 windows:
-  - name: hiai-home
+  - name: hiai-site
     root: ~/src/hiai/website
     layout: even-vertical
     panes:
