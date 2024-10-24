@@ -6,8 +6,3 @@ if [[ -d $HOME/.bashrc.d ]]; then
 	done
 fi
 unset -v config
-
-# >>> b2 autocomplete >>>
-# This section is managed by b2 . Manual edit may break automated updates.
-source /Users/george/.bash_completion.d/b2
-# <<< b2 autocomplete <<<
