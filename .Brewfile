@@ -77,6 +77,7 @@ brew "trash"
 brew "tree"
 brew "wdiff"
 brew "wget"
+brew "zizmor"
 
 # tmux copy and paste
 brew "reattach-to-user-namespace"
@@ -106,6 +107,10 @@ cask "session-manager-plugin"
 
 ## terraform
 brew "tfenv"
+
+# Sahaj
+tap "azure/functions"
+brew "azure-functions-core-tools@4"
 
 # Apps
 cask "1password", greedy: true
