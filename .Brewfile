@@ -46,12 +46,12 @@ brew "libmagic"
 # More nice-to-haves and various development tools
 brew "autojump"
 brew "bat"
-brew "czkawka"
+brew "colima"
 brew "direnv"
 brew "dive"
+brew "docker"
 brew "eza"
 brew "fd"
-brew "flyctl"
 brew "fzf"
 brew "graphviz"
 brew "httpie"
@@ -85,9 +85,6 @@ brew "reattach-to-user-namespace"
 # tmux PAM reattch for Touch ID
 brew "pam-reattach"
 
-# Needed for node sharp (personal-site)
-brew "libvips"
-
 ## neovim
 brew "neovim"
 cask "vimr"
@@ -120,24 +117,17 @@ cask "appcleaner"
 cask "arc", greedy: true
 cask "bartender", greedy: true
 cask "betterdisplay", greedy: true
-cask "carbon-copy-cloner", greedy: true
 cask "chatgpt"
 cask "cheatsheet"
 cask "coconutbattery"
 cask "cyberduck"
 cask "daisydisk"
 cask "dbeaver-community", greedy: true
-cask "discord"
-cask "docker", greedy: true
-cask "dropbox", greedy: true
-cask "evernote"
+cask "dropbox"
 cask "firefox"
-cask "focusatwill"
 cask "fsnotes", greedy: true
-cask "istat-menus", greedy: true
 cask "keepingyouawake"
 cask "keyboardcleantool"
-cask "mactracker"
 cask "marked", greedy: true
 cask "meetingbar"
 cask "menuwhere"
@@ -147,9 +137,7 @@ cask "ngrok"
 cask "p4v", greedy: true
 cask "pester"
 cask "rapidapi"
-cask "screenflow"
 cask "shottr"
-cask "signal"
 cask "slack", greedy: true
 cask "sloth"
 cask "soundsource", greedy: true
@@ -157,7 +145,6 @@ cask "sourcetree", greedy: true
 cask "taskpaper"
 cask "the-unarchiver"
 cask "vlc"
-cask "whatsapp"
 cask "zoom", greedy: true
 
 # https://github.com/keonik/prisma-erd-generator#-arm64-users-
