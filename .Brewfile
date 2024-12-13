@@ -108,9 +108,11 @@ cask "session-manager-plugin"
 ## terraform
 brew "tfenv"
 
-# Sahaj
+# VA
 tap "azure/functions"
 brew "azure-functions-core-tools@4"
+cask "citrix-workspace"
+cask "windows-app"
 
 # Apps
 cask "1password", greedy: true
@@ -134,6 +136,7 @@ cask "evernote"
 cask "firefox"
 cask "focusatwill"
 cask "fsnotes", greedy: true
+cask "google-drive"
 cask "istat-menus", greedy: true
 cask "keepingyouawake"
 cask "keyboardcleantool"
@@ -143,7 +146,6 @@ cask "meetingbar"
 cask "menuwhere"
 cask "micro-snitch"
 cask "moom"
-cask "ngrok"
 cask "p4v", greedy: true
 cask "pester"
 cask "rapidapi"
