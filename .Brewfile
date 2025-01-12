@@ -109,9 +109,7 @@ cask "session-manager-plugin"
 brew "tfenv"
 
 # VA
-tap "azure/functions"
-brew "azure-functions-core-tools@4"
-cask "citrix-workspace"
+brew "azure-cli"
 cask "windows-app"
 
 # Apps
@@ -136,17 +134,18 @@ cask "evernote"
 cask "firefox"
 cask "focusatwill"
 cask "fsnotes", greedy: true
+cask "ghostty"
 cask "google-drive"
 cask "istat-menus", greedy: true
 cask "keepingyouawake"
 cask "keyboardcleantool"
 cask "mactracker"
 cask "marked", greedy: true
-cask "meetingbar"
 cask "menuwhere"
 cask "micro-snitch"
 cask "moom"
 cask "p4v", greedy: true
+cask "pearcleaner"
 cask "pester"
 cask "rapidapi"
 cask "screenflow"
@@ -173,7 +172,7 @@ cask "font-sauce-code-pro-nerd-font"
 # cask "font-blex-mono-nerd-font"
 # cask "font-caskaydia-cove-nerd-font"
 # cask "font-droid-sans-mono-nerd-font"
-# cask "font-fira-mono-nerd-font"
+# cask "font-fira-code-nerd-font"
 # cask "font-hasklug-nerd-font"
 # cask "font-inconsolata-lgc-nerd-font"
 # cask "font-jetbrains-mono-nerd-font"

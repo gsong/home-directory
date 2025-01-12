@@ -1,14 +1,25 @@
 return {
-  -- add theme
-  { "ellisonleao/gruvbox.nvim", priority = 1000, config = true },
-  -- { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+  -- { "ellisonleao/gruvbox.nvim", lazy = false, priority = 1000 },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     colorscheme = "gruvbox",
+  --   },
+  -- },
 
-  -- Configure LazyVim to load theme
+  { "folke/tokyonight.nvim", lazy = false, priority = 1000 },
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "gruvbox",
-      -- colorscheme = "catppuccin",
+      colorscheme = "tokyonight",
     },
   },
+
+  -- { "catppuccin/nvim", lazy = false, priority = 1000 },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     colorscheme = "catppuccin",
+  --   },
+  -- },
 }

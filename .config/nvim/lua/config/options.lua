@@ -2,6 +2,11 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
-vim.opt.background = "light"
 vim.opt.relativenumber = false
 vim.g.lazyvim_prettier_needs_config = false
+
+if vim.env.VIMRUNTIME:lower():match("vimr") ~= nil then
+  vim.o.background = "light"
+else
+  vim.o.background = "dark"
+end
