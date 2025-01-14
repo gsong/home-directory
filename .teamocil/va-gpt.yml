@@ -1,0 +1,18 @@
+name: "general"
+windows:
+  - name: va-gpt
+    root: ~/src/va/AI-Chat
+    layout: even-vertical
+    panes:
+      - commands:
+          - git fetch
+          - cd app/frontend
+          - npm i
+          - npm run build
+        focus: true
+      - commands:
+          - workon chat-backend
+          - uvicorn app:app --reload --port 8080 --env-file .env
+      - commands:
+          - workon chat-enrichment
+          - uvicorn app:app --reload --port 8081 --env-file .env
