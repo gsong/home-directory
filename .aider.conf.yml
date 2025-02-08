@@ -1,4 +1,4 @@
-model: gemini-pro
+model: r1-free
 editor-model: sonnet
 weak-model: r1-free
 edit-format: architect
