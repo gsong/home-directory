@@ -1,18 +1,30 @@
 name: "general"
 windows:
   - name: va-gpt
-    root: ~/src/va/AI-Chat
+    root: ~/src/va/va-gpt
     layout: even-vertical
     panes:
+      - focus: true
       - commands:
           - git fetch
           - cd app/frontend
           - npm i
-          - npm run build
-        focus: true
+          - npm run watch
       - commands:
-          - workon chat-backend
-          - uvicorn app:app --reload --port 8080 --env-file .env
+          - cd app/backend
+          - uv venv -p 3.12
+          - source .venv/bin/activate
+          - uv pip install -r requirements.txt
+          - uv run --env-file ../../.env uvicorn app:app --reload --port 8080
+      # - commands:
+      #     - cd app/enrichment
+      #     - uv venv -p 3.12
+      #     - source .venv/bin/activate
+      #     - uv pip install -r requirements.txt --index-strategy unsafe-best-match
+      #     - uv run --env-file ../../.env uvicorn app:app --reload --port 8081
+  - name: va-gpt-aider
+    root: ~/src/va/va-gpt
+    layout: even-vertical
+    panes:
       - commands:
-          - workon chat-enrichment
-          - uvicorn app:app --reload --port 8081 --env-file .env
+          - aider

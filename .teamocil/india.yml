@@ -1,12 +1,11 @@
 name: "general"
 windows:
-  - name: asd
-    root: ~/src/asd/platform
+  - name: india
+    root: ~/src/gsong/indianagy.com/
     layout: even-vertical
     panes:
       - focus: true
       - commands:
           - git fetch
-          - turbo dev:docker
-      - commands:
-          - aider
+          - pnpm install
+          - pnpm run dev
