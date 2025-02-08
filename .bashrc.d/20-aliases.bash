@@ -20,7 +20,6 @@ alias stop-docker='osascript -e '\''quit app "Docker"'\'
 alias restart-docker='stop-docker && start-docker'
 
 alias speedtest='speedtest --secure'
-alias turbo='turbo --no-daemon'
 
 if hash vimr 2>/dev/null; then
 	if [[ "$TERM_PROGRAM" == "Apple_Terminal" ]] || [[ "$TERM_PROGRAM" == "tmux" ]]; then

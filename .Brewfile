@@ -28,6 +28,7 @@ brew "nvm"
 brew "gdbm"
 brew "pyenv", args: ["HEAD"]
 brew "pyenv-virtualenvwrapper"
+brew "uv"
 
 # pyenv recommended
 brew "readline"
@@ -123,6 +124,7 @@ cask "betterdisplay", greedy: true
 cask "carbon-copy-cloner", greedy: true
 cask "chatgpt"
 cask "cheatsheet"
+cask "claude"
 cask "coconutbattery"
 cask "cyberduck"
 cask "daisydisk"
@@ -136,6 +138,7 @@ cask "focusatwill"
 cask "fsnotes", greedy: true
 cask "ghostty"
 cask "google-drive"
+cask "imageoptim"
 cask "istat-menus", greedy: true
 cask "keepingyouawake"
 cask "keyboardcleantool"
@@ -158,6 +161,7 @@ cask "sourcetree", greedy: true
 cask "taskpaper"
 cask "the-unarchiver"
 cask "vlc"
+cask "wechat"
 cask "whatsapp"
 cask "zoom", greedy: true
 

@@ -36,12 +36,6 @@
   prune = true
   pruneTags = true
 
-[filter "lfs"]
-  required = true
-  clean = git-lfs clean -- %f
-  smudge = git-lfs smudge -- %f
-  process = git-lfs filter-process
-
 [github]
   username = gsong
 
@@ -74,5 +68,3 @@
 [user]
 	name = George Song
 	email = george@gsong.dev
-[safe]
-	bareRepository = explicit

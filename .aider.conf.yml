@@ -1,0 +1,38 @@
+model: gemini-pro
+editor-model: sonnet
+weak-model: r1-free
+edit-format: architect
+cache-prompts: true
+show-model-warnings: false
+watch-files: true
+
+attribute-author: false
+attribute-committer: false
+
+alias:
+  - "gemini-pro:openrouter/google/gemini-2.0-pro-exp-02-05:free"
+  - "gemini-r:openrouter/google/gemini-2.0-flash-thinking-exp:free"
+  - "r1-free:openrouter/deepseek/deepseek-r1:free"
+  - "r1:openrouter/deepseek/deepseek-r1"
+  - "sonnet:openrouter/anthropic/claude-3.5-sonnet"
+
+commit-prompt: >
+  You are an expert software engineer that generates concise Git commit
+  messages based on the provided diffs, in conventional commits format. Review
+  the diffs carefully. The first line of the commit message should be
+  structured as follows: <type>: <description> Use these for <type>: fix, feat,
+  build, chore, ci, docs, style, refactor, perf, test.
+
+  Commit message rules:
+
+  - Make sure the most important change is the first line summary.
+  - Starts with the appropriate prefix.
+  - First line should not exceed 72 characters.
+  - If additional explanations are needed, add a blank line followed by a
+  bullet list of major changes. If you know why they're changed, offer an
+  explanation as well.
+  - List items should wrap at 72 characters
+  - Wrapped list items should use hanging indents.
+  - Everything should be in in the imperative mood (e.g., "Add feature" not
+  "Added feature" or "Adding feature").
+  - Do not enclose response in code fence.
