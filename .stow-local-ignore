@@ -22,4 +22,8 @@ _darcs
 ^/LICENSE.*
 ^/COPYING
 
+^.aider.chat.history.md
+^.aider.input.history
+^.aider.tags.cache.v3
+
 dependencies
