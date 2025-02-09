@@ -11,8 +11,6 @@ alias pdfcombine='"/System/Library/Automator/Combine PDF Pages.action/Contents/R
 alias pgrep='pgrep -f -l'
 alias pkill='pkill -f -l'
 alias rm='rm -i'
-alias syspip-compile='PIP_REQUIRE_VIRTUALENV=false pip-compile'
-alias syspip-sync='PIP_REQUIRE_VIRTUALENV=false pip-sync'
 alias top='top -s 5 -o cpu -stats pid,user,command,cpu,rsize,vsize,threads,state'
 
 alias start-docker='open -ga Docker'

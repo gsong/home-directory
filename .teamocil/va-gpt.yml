@@ -26,5 +26,4 @@ windows:
     root: ~/src/va/va-gpt
     layout: even-vertical
     panes:
-      - commands:
-          - aider
+      - aider
