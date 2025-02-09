@@ -9,3 +9,4 @@ windows:
           - git fetch
           - pnpm install
           - pnpm run dev
+      - aider

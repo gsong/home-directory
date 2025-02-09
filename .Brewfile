@@ -10,7 +10,6 @@ brew "the_silver_searcher"
 
 # Bash completions
 brew "bash-completion@2"
-brew "pip-completion"
 
 # General development
 brew "automake"
@@ -25,16 +24,7 @@ brew "hadolint"
 brew "nvm"
 
 # Python development
-brew "gdbm"
-brew "pyenv", args: ["HEAD"]
-brew "pyenv-virtualenvwrapper"
 brew "uv"
-
-# pyenv recommended
-brew "readline"
-brew "sqlite"
-brew "xz"
-brew "zlib"
 
 # Ruby development
 brew "chruby"
@@ -46,7 +36,6 @@ brew "libmagic"
 
 # More nice-to-haves and various development tools
 brew "autojump"
-brew "bat"
 brew "czkawka"
 brew "direnv"
 brew "dive"
@@ -66,7 +55,6 @@ brew "pwgen"
 brew "qpdf"
 brew "shellcheck"
 brew "sops"
-brew "speedtest-cli"
 brew "sqlfluff"
 brew "ssh-copy-id"
 brew "starship"

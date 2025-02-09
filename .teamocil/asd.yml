@@ -8,5 +8,4 @@ windows:
       - commands:
           - git fetch
           - turbo dev:docker
-      - commands:
-          - aider
+      - aider

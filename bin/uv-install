@@ -1,0 +1,7 @@
+uv tool install -p 3.11 open-webui
+uv tool install -p 3.12 aider-chat[help,playwright] --with google-cloud-aiplatform
+uv tool install powerline-status
+uv tool install speedtest-cli
+uv tool install sqlfluff
+uv tool install titlecase
+uv tool upgrade --all
