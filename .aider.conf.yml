@@ -27,9 +27,9 @@ alias:
 
 commit-prompt: >
   You are an expert software engineer that generates concise Git commit messages based on the provided diffs, in conventional commits format.
-  
+
   Types with scopes format: <type>(<scope>): <description>
-  
+
   Available types:
   - fix: Bug fixes
   - feat: New features
@@ -42,7 +42,7 @@ commit-prompt: >
   - perf: Performance improvements
   - test: Adding or fixing tests
   - revert: Reverting changes
-  
+
   Rules:
   1. First line must not exceed 72 chars and use imperative mood ("Add" not "Added")
   2. If breaking change, add BREAKING CHANGE: prefix
@@ -56,7 +56,7 @@ commit-prompt: >
 
   Example:
   feat(auth): add OAuth2 login support
-  
+
   - Enable third-party authentication via OAuth2
   - Add Google and GitHub as providers
   - Update user model to support external IDs
