@@ -5,12 +5,7 @@ npm --location=global install npm@latest
 
 npm --location=global install \
 	@mermaid-js/mermaid-cli@latest \
-	alex@latest \
-	latest-version-cli \
-	markdownlint-cli@latest \
 	pnpm@latest \
 	prettier \
 	prettier-plugin-sh@latest \
-	tldr@latest \
-	write-good@latest \
-	yarn@latest
+	tldr@latest
