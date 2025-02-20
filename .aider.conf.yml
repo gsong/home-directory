@@ -1,10 +1,11 @@
-model: r1-free
-editor-model: sonnet
+model: r1f
+editor-model: gp
 weak-model: sonnet
 edit-format: architect
 cache-prompts: true
 show-model-warnings: false
 watch-files: true
+auto-commits: false
 
 attribute-author: false
 attribute-committer: false
@@ -14,15 +15,16 @@ attribute-committer: false
 
 alias:
   - deepseek:openrouter/deepseek/deepseek-chat:free
-  - gemini-pro:openrouter/google/gemini-2.0-pro-exp-02-05:free
-  - gemini-r:openrouter/google/gemini-2.0-flash-thinking-exp:free
+  - gf:openrouter/google/gemini-2.0-flash-exp:free
+  - gft:openrouter/google/gemini-2.0-flash-thinking-exp:free
+  - gp:openrouter/google/gemini-2.0-pro-exp-02-05:free
+  - o3mh:openrouter/openai/o3-mini-high
   - qwen:ollama/qwen2.5-coder:32b
-  - r1-14b:ollama/deepseek-r1:14b
-  - r1-32b:ollama/deepseek-r1:32b
-  - r1-70b:openrouter/deepseek/deepseek-r1-distill-llama-70b:free
-  - r1-free:openrouter/deepseek/deepseek-r1:free
+  - r114b:ollama/deepseek-r1:14b
+  - r132b:ollama/deepseek-r1:32b
+  - r170b:openrouter/deepseek/deepseek-r1-distill-llama-70b:free
   - r1:openrouter/deepseek/deepseek-r1
-  - sonnet-o:openrouter/anthropic/claude-3.5-sonnet
+  - r1f:openrouter/deepseek/deepseek-r1:free
   - sonnet:vertex_ai/claude-3-5-sonnet-v2@20241022
 
 commit-prompt: >

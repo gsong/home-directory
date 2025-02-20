@@ -19,8 +19,10 @@ alias restart-docker='stop-docker && start-docker'
 
 alias speedtest='speedtest --secure'
 
+alias vimr='vimr --cur-env'
+
 if hash vimr 2>/dev/null; then
 	if [[ "$TERM_PROGRAM" == "Apple_Terminal" ]] || [[ "$TERM_PROGRAM" == "tmux" ]]; then
-		alias vi='vimr'
+		alias vi='vimr --cur-env'
 	fi
 fi

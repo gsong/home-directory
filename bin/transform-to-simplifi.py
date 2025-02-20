@@ -1,49 +1,88 @@
-#!/usr/bin/env python
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "click",
+# ]
+# ///
+
 import csv
-import os
-import sys
+from datetime import datetime
+import click
 
 
-def transform_csv(input_file: str) -> None:
-    base_name = os.path.splitext(input_file)[0]
-    output_file = f"{base_name}-simplifi.csv"
+def transform_csv(input_file: str, output_file: str, date: str) -> None:
+    """
+    Transform a CSV file by filtering dates and restructuring columns.
 
-    with open(input_file, mode="r") as infile:
-        reader = csv.DictReader(infile)
-        transactions = list(reader)
+    Args:
+        input_file (str): Path to input CSV file
+        output_file (str): Path to output CSV file
+        date (str): Date string in YYYY-MM-DD format to filter from
+    """
+    # Convert filter date to datetime object
+    filter_date = datetime.strptime(date, "%Y-%m-%d")
 
-    with open(output_file, mode="w", newline="") as outfile:
-        fieldnames = ["Date", "Payee", "Amount", "Tags"]
-        writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+    # Read input CSV
+    def read_input_csv():
+        with open(input_file, "r") as f:
+            reader = csv.DictReader(f)
+            return list(reader)
 
-        writer.writeheader()
+    # Filter rows by date
+    def filter_by_date(rows):
+        filtered_rows = []
+        for row in rows:
+            row_date = datetime.strptime(row["Date"], "%m/%d/%Y")
+            if row_date >= filter_date:
+                filtered_rows.append(row)
+        return filtered_rows
 
-        for transaction in transactions:
-            date = transaction["Date"]
-            description = transaction["Description"]
-            debits = transaction["Debits(-)"]
-            credits = transaction["Credits(+)"]
+    # Transform row data (combine amounts, rename columns)
+    def transform_row(row):
+        amount = row.get("Credits(+)") or row.get("Debits(-)")
+        # Remove any extra spaces, $ symbols, and ensure single $ is removed
+        amount = amount.replace(" ", "").replace("$", "")
 
-            if debits:
-                amount = debits.replace("$", "").replace(",", "")
-            else:
-                amount = credits.replace("$", "").replace(",", "")
+        return {"Date": row["Date"], "Payee": row["Description"], "Amount": amount}
 
-            writer.writerow(
-                {
-                    "Date": date,
-                    "Payee": description,
-                    "Amount": amount,
-                    "Tags": "",  # Leave Tags empty
-                }
-            )
+    # Write output CSV
+    def write_output_csv(transformed_data):
+        fieldnames = ["Date", "Payee", "Amount"]
+        with open(output_file, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(transformed_data)
+
+    # Main transformation logic
+    input_data = read_input_csv()
+    filtered_data = filter_by_date(input_data)
+    transformed_data = [transform_row(row) for row in filtered_data]
+    write_output_csv(transformed_data)
+
+
+@click.command()
+@click.argument("input_file", type=click.Path(exists=True))
+@click.argument("output_file", type=click.Path())
+@click.option(
+    "--date",
+    "-d",
+    required=True,
+    help="Filter transactions from this date (YYYY-MM-DD)",
+)
+def main(input_file: str, output_file: str, date: str):
+    """Transform EverBank CSV exports for import into Simplifi.
+
+    INPUT_FILE: Path to the EverBank CSV export file
+    OUTPUT_FILE: Path where the transformed CSV should be saved
+    """
+    try:
+        transform_csv(input_file, output_file, date)
+        click.echo(f"Successfully transformed {input_file} to {output_file}")
+    except Exception as e:
+        click.echo(f"Error: {str(e)}", err=True)
+        raise click.Abort()
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <input_csv_file>")
-        sys.exit(1)
-
-    input_file = sys.argv[1]
-    transform_csv(input_file)
-    print(f"Transformed CSV saved as '{os.path.splitext(input_file)[0]}-simplifi.csv'")
+    main()

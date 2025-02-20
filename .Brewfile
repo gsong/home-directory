@@ -124,13 +124,14 @@ cask "evernote"
 cask "firefox"
 cask "focusatwill"
 cask "fsnotes", greedy: true
-cask "ghostty"
+cask "ghostty", greedy: true
 cask "google-drive"
 cask "imageoptim"
 cask "istat-menus", greedy: true
 cask "keepingyouawake"
 cask "keyboardcleantool"
 cask "mactracker"
+cask "macwhisper", greedy: true
 cask "marked", greedy: true
 cask "menuwhere"
 cask "micro-snitch"
