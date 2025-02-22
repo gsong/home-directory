@@ -12,9 +12,9 @@ windows:
           - npm run watch
       - commands:
           - cd app/backend
-          - uv venv -p 3.12
-          - source .venv/bin/activate
-          - uv pip install -r requirements.txt
+          # - uv venv -p 3.12
+          # - source .venv/bin/activate
+          # - uv pip install -r requirements.txt
           - uv run --env-file ../../.env uvicorn app:app --reload --port 8080
       # - commands:
       #     - cd app/enrichment
