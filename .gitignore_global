@@ -1,5 +1,3 @@
-# MacOS
 .DS_Store
-
-# vim
+.aider*
 .lvimrc

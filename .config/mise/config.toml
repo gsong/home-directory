@@ -1,0 +1,15 @@
+[settings]
+experimental = true
+
+[tools]
+"gem:teamocil" = "latest"
+node = "lts"
+npm = "latest"
+"npm:@mermaid-js/mermaid-cli" = "latest"
+"npm:prettier" = "latest"
+"npm:prettier-plugin-sh" = "latest"
+"npm:tldr" = "latest"
+pnpm = "latest"
+python = "latest"
+ruby = "latest"
+uv = "latest"

@@ -20,17 +20,6 @@ brew "git-delta"
 brew "git-lfs"
 brew "hadolint"
 
-# Node
-brew "nvm"
-
-# Python development
-brew "uv"
-
-# Ruby development
-brew "chruby"
-brew "libyaml"
-brew "ruby-install"
-
 # Needed for magic
 brew "libmagic"
 
@@ -47,6 +36,7 @@ brew "graphviz"
 brew "httpie"
 brew "jq"
 brew "m-cli"
+brew "mise"
 brew "multimarkdown"
 brew "ollama"
 brew "openssl"
@@ -54,8 +44,6 @@ brew "pandoc"
 brew "pwgen"
 brew "qpdf"
 brew "shellcheck"
-brew "sops"
-brew "sqlfluff"
 brew "ssh-copy-id"
 brew "starship"
 brew "stow"
