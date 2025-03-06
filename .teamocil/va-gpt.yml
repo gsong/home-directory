@@ -9,15 +9,13 @@ windows:
           - git fetch
           - cd app/frontend
           - npm i
-          - npm run watch
+          - npm run dev
       - commands:
           - cd app/backend
-          - uv run --env-file ../../.env uvicorn app:app --reload --port 8080
-      # - commands:
-      #     - cd app/enrichment
-      #     - uv run --env-file ../../.env uvicorn app:app --reload --port 8081
+          - mise run dev
   - name: va-gpt-aider
     root: ~/src/va/va-gpt
     layout: even-vertical
     panes:
+      - focus: true
       - aider

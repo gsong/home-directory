@@ -1,7 +1,8 @@
 model: r1f
 editor-model: gp
-weak-model: sonnet
-edit-format: architect
+weak-model: haiku
+edit-format: ask
+editor-edit-format: diff
 cache-prompts: true
 show-model-warnings: false
 watch-files: true
@@ -10,22 +11,26 @@ auto-commits: false
 attribute-author: false
 attribute-committer: false
 
-# Uncoment for qwen
-# editor-edit-format: whole
-
 alias:
-  - deepseek:openrouter/deepseek/deepseek-chat:free
+  - ds:openrouter/deepseek/deepseek-chat
+  - dsf:openrouter/deepseek/deepseek-chat:free
   - gf:openrouter/google/gemini-2.0-flash-exp:free
   - gft:openrouter/google/gemini-2.0-flash-thinking-exp:free
   - gp:openrouter/google/gemini-2.0-pro-exp-02-05:free
+  # - haiku:openrouter/anthropic/claude-3.5-haiku-20241022
   - o3mh:openrouter/openai/o3-mini-high
-  - qwen:ollama/qwen2.5-coder:32b
-  - r114b:ollama/deepseek-r1:14b
-  - r132b:ollama/deepseek-r1:32b
   - r170b:openrouter/deepseek/deepseek-r1-distill-llama-70b:free
   - r1:openrouter/deepseek/deepseek-r1
   - r1f:openrouter/deepseek/deepseek-r1:free
-  - sonnet:vertex_ai/claude-3-5-sonnet-v2@20241022
+  - sonnet-t:openrouter/anthropic/claude-3.7-sonnet:thinking
+  # - sonnet:openrouter/anthropic/claude-3.7-sonnet
+
+  - vhaiku:vertex_ai/claude-3-5-haiku@20241022
+  - vsonnet:vertex_ai/claude-3-7-sonnet@20250219
+
+  - qwen:ollama/qwen2.5-coder:32b
+  - r114b:ollama/deepseek-r1:14b
+  - r132b:ollama/deepseek-r1:32b
 
 commit-prompt: >
   You are an expert software engineer that generates concise Git commit messages based on the provided diffs, in conventional commits format.
@@ -43,7 +48,6 @@ commit-prompt: >
   - refactor: Code changes that neither fix bugs nor add features
   - perf: Performance improvements
   - test: Adding or fixing tests
-  - revert: Reverting changes
 
   Rules:
   1. First line must not exceed 72 chars and use imperative mood ("Add" not "Added")
@@ -55,6 +59,7 @@ commit-prompt: >
   4. Keep explanations concise and specific
   5. Focus on business value when possible
   6. Remove any code fencing from response
+  7. Output only the commit message.
 
   Example:
   feat(auth): add OAuth2 login support

@@ -4,7 +4,8 @@ windows:
     root: ~/src/hiai/website
     layout: even-vertical
     panes:
-      - npm run start
+      - focus: true
       - commands:
           - git fetch -p -P
-        focus: true
+          - pnpm i
+          - npm run start

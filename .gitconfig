@@ -1,52 +1,80 @@
-[apply]
-  whitespace = fix
-
-[color]
-  branch = auto
-  diff = auto
-  interactive = auto
-  status = auto
-  ui = true
-
-[commit]
-	template = /Users/george/.stCommitMsg
-
+# Core Git settings
 [core]
   autocrlf = input
-	excludesfile = /Users/george/.gitignore_global
+  excludesfile = ~/.gitignore_global
   ignorecase = false
-  pager = delta
-  safecrlf = warn
   whitespace = trailing-space,space-before-tab
   editor = vimr -s --wait
+  pager = delta
 
+[user]
+  name = George Song
+  email = george@gsong.dev
+
+[init]
+  defaultBranch = main
+
+# Git behavior and workflow
+[fetch]
+  prune = true
+  pruneTags = true
+
+[pull]
+  rebase = true
+
+[push]
+	autoSetupRemote = true
+  followTags = true
+
+[diff]
+  algorithm = histogram
+  colorMoved = plain
+  mnemonicPrefix = true
+  renames = true
+
+[merge]
+  conflictstyle = zdiff3
+
+[rebase]
+  autoSquash = true
+  autoStash = true
+  updateRefs = true
+
+[rerere]
+  enabled = true
+  autoupdate = true
+
+[commit]
+  verbose = true
+
+[help]
+  autocorrect = prompt
+
+# UI and display settings
+[column]
+  ui = auto
+
+[branch]
+  sort = -committerdate
+
+[tag]
+  sort = version:refname
+
+[interactive]
+  diffFilter = delta --color-only
+
+# Tool-specific settings
 [delta]
   navigate = true
 
 [diff]
   tool = p4merge
-  algorithm = histogram
-  colorMoved = default
 
 [difftool "sourcetree"]
 	cmd = /Applications/p4merge.app/Contents/MacOS/p4merge \"$LOCAL\" \"$REMOTE\"
 	path = 
 
-[fetch]
-  prune = true
-  pruneTags = true
-
-[github]
-  username = gsong
-
-[init]
-  defaultBranch = main
-
-[interactive]
-  diffFilter = delta --color-only
-
 [merge]
-  conflictstyle = diff3
   tool = p4merge
 
 [mergetool]
@@ -59,12 +87,6 @@
 	cmd = /Applications/p4merge.app/Contents/MacOS/p4merge \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
 	trustExitCode = true
 
-[pull]
-  ff = only
-
-[push]
-  default = current
-
-[user]
-	name = George Song
-	email = george@gsong.dev
+# External service settings
+[github]
+  username = gsong
