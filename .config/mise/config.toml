@@ -4,12 +4,15 @@ experimental = true
 [tools]
 "gem:teamocil" = "latest"
 node = "lts"
-npm = "latest"
 "npm:@mermaid-js/mermaid-cli" = "latest"
 "npm:prettier" = "latest"
 "npm:prettier-plugin-sh" = "latest"
+"npm:repomix" = "latest"
 "npm:tldr" = "latest"
+"pipx:files-to-prompt" = "latest"
+"pipx:speedtest-cli" = "latest"
+"pipx:titlecase" = "latest"
 pnpm = "latest"
-python = "latest"
+python = ["latest", "3.12", "3.11"]
 ruby = "latest"
 uv = "latest"

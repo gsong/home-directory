@@ -4,7 +4,9 @@ windows:
     root: ~/src/hiai/platform
     layout: even-vertical
     panes:
+      - focus: true
       - commands:
           - git fetch
-        focus: true
-      - turbo dev
+          - pnpm i
+          - turbo dev
+      - aider --model vsonnet

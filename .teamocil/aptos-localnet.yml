@@ -1,8 +1,0 @@
-name: "general"
-windows:
-  - name: localnet
-    layout: even-vertical
-    panes:
-      - focus: true
-      - commands:
-          - aptos node run-localnet --with-indexer-api
