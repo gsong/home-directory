@@ -1,11 +1,12 @@
 name: "general"
 windows:
-  - name: asd
-    root: ~/src/asd/platform
+  - name: site
+    root: ~/src/gsong/personal-site/
     layout: even-vertical
     panes:
       - focus: true
       - commands:
           - git fetch
-          - turbo dev:docker
+          - pnpm install
+          - pnpm run dev
       - aider

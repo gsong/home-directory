@@ -3,6 +3,7 @@ experimental = true
 
 [tools]
 "gem:teamocil" = "latest"
+lua = "5.1"
 node = "lts"
 "npm:@mermaid-js/mermaid-cli" = "latest"
 "npm:prettier" = "latest"

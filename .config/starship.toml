@@ -32,6 +32,9 @@ disabled = true
 [docker_context]
 disabled = true
 
+[gcloud]
+disabled = true
+
 [line_break]
 disabled = false
 
