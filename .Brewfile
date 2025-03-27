@@ -60,13 +60,14 @@ brew "reattach-to-user-namespace"
 # tmux PAM reattch for Touch ID
 brew "pam-reattach"
 
-# Needed for node sharp (personal-site)
+# Needed for node sharp (astro)
 brew "libvips"
 
 ## neovim
+brew "luarocks"
 brew "neovim"
-cask "vimr"
 brew "ripgrep"
+cask "vimr"
 
 # Quick Look plugins
 cask "qlimagesize"
@@ -107,6 +108,7 @@ cask "discord"
 cask "docker", greedy: true
 cask "dropbox", greedy: true
 cask "evernote"
+cask "figma"
 cask "firefox"
 cask "focusatwill"
 cask "fsnotes", greedy: true
@@ -122,6 +124,7 @@ cask "marked", greedy: true
 cask "menuwhere"
 cask "micro-snitch"
 cask "moom"
+cask "ngrok"
 cask "p4v", greedy: true
 cask "pearcleaner"
 cask "pester"

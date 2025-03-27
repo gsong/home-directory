@@ -1,6 +1,6 @@
-uv tool install -p 3.11 open-webui
-uv tool install -p 3.12 aider-chat[help,playwright] --with google-cloud-aiplatform
-uv tool install -p 3.13 llm --with llm-ollama --with llm-openrouter
-uv tool install -p 3.13 powerline-status
+mise x -- uv tool install -p 3.11 open-webui
+mise x -- uv tool install -p 3.12 aider-chat[help,playwright] --with google-cloud-aiplatform
+mise x -- uv tool install -p 3.13 llm --with llm-ollama --with llm-openrouter
+mise x -- uv tool install -p 3.13 powerline-status
 
-uv tool upgrade --all
+mise x -- uv tool upgrade --all

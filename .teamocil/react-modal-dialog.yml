@@ -1,8 +1,0 @@
-name: "general"
-windows:
-  - name: rmd
-    root: ~/src/gsong/react-modal-dialog/
-    layout: even-vertical
-    panes:
-      - commands:
-          - git fetch
