@@ -2,6 +2,7 @@
 experimental = true
 
 [tools]
+direnv = "latest"
 dive = "latest"
 "gem:teamocil" = "latest"
 hadolint = "latest"
@@ -11,16 +12,17 @@ lua = "5.1"
 node = "lts"
 "npm:@mermaid-js/mermaid-cli" = "latest"
 "npm:prettier" = "latest"
-"npm:prettier-plugin-sh" = "latest"
 "npm:repomix" = "latest"
 "npm:tldr" = "latest"
 pandoc = "latest"
+"pipx:crawl4ai" = "latest"
 "pipx:files-to-prompt" = "latest"
+"pipx:huggingface_hub" = { version = "latest", cli = "" }
 "pipx:speedtest-cli" = "latest"
 "pipx:titlecase" = "latest"
 "pipx:zizmor" = "latest"
 pnpm = "latest"
-python = "latest"
+python = ["3.13", "3.11", "3.12"]
 ruby = "latest"
 shellcheck = "latest"
 uv = "latest"
