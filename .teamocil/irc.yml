@@ -1,0 +1,14 @@
+name: "general"
+windows:
+  - name: irc
+    root: ~/src/sahaj/project-irc/
+    layout: even-vertical
+    panes:
+      - focus: true
+      - uv run marimo edit --headless --no-token --watch high-risk.py
+      - aider
+  - name: irc-helper
+    root: ~/src/sahaj/project-irc/
+    layout: even-vertical
+    panes:
+      - uv run ruff check -w --fix
