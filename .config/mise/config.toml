@@ -23,6 +23,5 @@ pandoc = "latest"
 "pipx:zizmor" = "latest"
 pnpm = "latest"
 python = ["3.13", "3.11", "3.12"]
-ruby = "latest"
 shellcheck = "latest"
 uv = "latest"
