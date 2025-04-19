@@ -69,18 +69,6 @@ cask "qlstephen"
 cask "qlvideo"
 cask "quicklook-json"
 
-# ASD
-## AWS
-brew "awscli"
-cask "session-manager-plugin"
-
-## terraform
-brew "tfenv"
-
-# VA
-brew "azure-cli"
-cask "windows-app"
-
 # Apps
 cask "1password", greedy: true
 cask "1password-cli", greedy: true
@@ -100,8 +88,6 @@ cask "dbeaver-community", greedy: true
 cask "discord"
 cask "docker", greedy: true
 cask "dropbox", greedy: true
-cask "evernote"
-cask "figma"
 cask "firefox"
 cask "focusatwill"
 cask "fsnotes", greedy: true
@@ -132,7 +118,6 @@ cask "sourcetree", greedy: true
 cask "taskpaper"
 cask "the-unarchiver"
 cask "vlc"
-cask "wechat"
 cask "whatsapp"
 cask "zoom", greedy: true
 

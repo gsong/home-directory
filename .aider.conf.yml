@@ -1,8 +1,6 @@
-model: r1f
+model: gp
 editor-model: gp
 weak-model: haiku
-edit-format: ask
-editor-edit-format: diff
 cache-prompts: true
 show-model-warnings: false
 watch-files: true
@@ -22,14 +20,14 @@ alias:
   # - haiku:openrouter/anthropic/claude-3.5-haiku-20241022
 
   # - gp:gemini/gemini-2.5-pro-exp-03-25
-  - gft:gemini/gemini-2.0-flash-thinking-exp-01-21
-  - gf:gemini/gemini-2.0-flash
+  # - gft:gemini/gemini-2.0-flash-thinking-exp-01-21
+  # - gf:gemini/gemini-2.0-flash
 
-  - gp:openrouter/google/gemini-2.5-pro-exp-03-25:free
-  # - gft:openrouter/google/gemini-2.0-flash-thinking-exp-1219:free
-  # - gf:openrouter/google/gemini-2.0-flash-exp:free
+  - gp:openrouter/google/gemini-2.5-pro-preview-03-25
+  - gft:openrouter/google/gemini-2.5-flash-preview:thinking
+  - gf:openrouter/google/gemini-2.5-flash-preview
 
-  - o3mh:openrouter/openai/o3-mini-high
+  - o4mh:openrouter/openai/o4-mini-high
 
   - vhaiku:vertex_ai/claude-3-5-haiku@20241022
   - vsonnet:vertex_ai/claude-3-7-sonnet@20250219
