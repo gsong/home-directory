@@ -1,75 +1,69 @@
+# Taps
 tap "buo/cask-upgrade"
 tap "homebrew/bundle"
 tap "homebrew/services"
 
-# Better versions of Mac built-ins
-brew "bash"
-brew "gnu-sed"
-brew "rsync"
-brew "the_silver_searcher"
-
-# Bash completions
-brew "bash-completion@2"
-
-# General development
-brew "automake"
-brew "bfg"
-brew "gh"
-brew "git"
-brew "git-delta"
-brew "git-lfs"
-
-# Needed for magic
-brew "libmagic"
-
-# More nice-to-haves and various development tools
-brew "autojump"
-brew "czkawka"
-brew "eza"
-brew "fd"
-brew "fzf"
-brew "graphviz"
-brew "httpie"
-brew "m-cli"
-brew "mise"
-brew "multimarkdown"
-brew "ollama"
+# Core Utilities & Replacements
+brew "bash" # Better version of Mac built-in
+brew "gnu-sed" # Better version of Mac built-in
 brew "openssl"
-brew "pwgen"
-brew "qpdf"
-brew "ssh-copy-id"
-brew "starship"
-brew "stow"
-brew "swig"
-brew "tmux"
-brew "trash"
+brew "rsync" # Better version of Mac built-in
+brew "the_silver_searcher" # Better version of Mac built-in `grep`
 brew "tree"
-brew "wdiff"
 brew "wget"
 
-# tmux copy and paste
-brew "reattach-to-user-namespace"
+# Development Tools
+brew "automake"
+brew "bfg" # Git repo cleaner
+brew "gh" # GitHub CLI
+brew "git"
+brew "git-delta" # Syntax-highlighting pager for git, diff, and grep output
+brew "git-lfs"
+brew "graphviz"
+brew "libmagic" # Needed for file magic
+brew "libvips" # Needed for node sharp (astro)
+brew "libyaml" # Needed for Ruby compilation
+brew "multimarkdown"
+brew "swig"
 
-# tmux PAM reattch for Touch ID
-brew "pam-reattach"
+# Shell & Terminal Enhancements
+brew "autojump" # Directory navigation
+brew "bash-completion@2"
+brew "eza" # Modern replacement for ls
+brew "fd" # Simple, fast and user-friendly alternative to find
+brew "fzf" # Command-line fuzzy finder
+brew "m-cli" # macOS command-line tools
+brew "mise" # Polyglot tool version manager
+brew "pam-reattach" # tmux PAM reattach for Touch ID
+brew "reattach-to-user-namespace" # tmux copy and paste
+brew "starship" # Cross-shell prompt
+brew "stow" # Symlink farm manager
+brew "tmux" # Terminal multiplexer
 
-# Needed for node sharp (astro)
-brew "libvips"
-
-## neovim
-brew "luarocks"
+# Neovim & Editor Tools
+brew "luarocks" # Lua package manager
 brew "neovim"
-brew "ripgrep"
-cask "vimr"
+brew "ripgrep" # Line-oriented search tool (dependency for Telescope etc)
+cask "vimr" # Refined Vim Experience for OS X
 
-# Quick Look plugins
+# Miscellaneous CLI Tools
+brew "czkawka" # Multi functional app to find duplicates, empty folders, similar images etc.
+brew "httpie" # Modern command-line HTTP client
+brew "ollama" # Run large language models locally
+brew "pwgen" # Password generator
+brew "qpdf" # Tools for working with PDF files
+brew "ssh-copy-id"
+brew "trash" # Move files and folders to the trash
+brew "wdiff" # Display word differences between text files
+
+# Quick Look Plugins
 cask "qlimagesize"
 cask "qlmarkdown"
-cask "qlstephen"
+cask "qlstephen" # Preview plain text files without extension
 cask "qlvideo"
 cask "quicklook-json"
 
-# Apps
+# GUI Applications
 cask "1password", greedy: true
 cask "1password-cli", greedy: true
 cask "alfred", greedy: true
@@ -80,49 +74,47 @@ cask "betterdisplay", greedy: true
 cask "carbon-copy-cloner", greedy: true
 cask "chatgpt"
 cask "cheatsheet"
+cask "chromium", args: { no_quarantine: true } # Needed for prisma-erd-generator ARM64
 cask "claude"
 cask "coconutbattery"
-cask "cyberduck"
-cask "daisydisk"
-cask "dbeaver-community", greedy: true
+cask "cyberduck" # FTP/SFTP browser
+cask "daisydisk" # Disk space visualizer
+cask "dbeaver-community", greedy: true # Universal database tool
 cask "discord"
 cask "docker", greedy: true
 cask "dropbox", greedy: true
 cask "firefox"
-cask "focusatwill"
-cask "fsnotes", greedy: true
-cask "ghostty", greedy: true
+cask "focusatwill" # Background music for focus
+cask "fsnotes", greedy: true # Notes manager
+cask "ghostty", greedy: true # GPU-accelerated terminal emulator
 cask "google-drive"
-cask "imageoptim"
-cask "istat-menus", greedy: true
-cask "keepingyouawake"
-cask "keyboardcleantool"
-cask "mactracker"
-cask "macwhisper", greedy: true
-cask "marked", greedy: true
-cask "menuwhere"
-cask "micro-snitch"
-cask "moom"
-cask "ngrok"
-cask "p4v", greedy: true
-cask "pearcleaner"
-cask "pester"
-cask "rapidapi"
-cask "screenflow"
-cask "shottr"
-cask "signal"
+cask "imageoptim" # Image optimizer
+cask "istat-menus", greedy: true # System monitor
+cask "keepingyouawake" # Prevent Mac from sleeping
+cask "keyboardcleantool" # Disable keyboard for cleaning
+cask "mactracker" # Database of Apple hardware/software
+cask "macwhisper", greedy: true # Local transcription with OpenAI's Whisper
+cask "marked", greedy: true # Markdown previewer
+cask "menuwhere" # Bring frontmost app's menu bar to mouse location
+cask "micro-snitch" # Network monitor
+cask "moom" # Window manager
+cask "ngrok" # Secure introspectable tunnels to localhost
+cask "p4v", greedy: true # Perforce visual client
+cask "pearcleaner" # App uninstaller & cleaner
+cask "pester" # Simple timer/reminder app
+cask "rapidapi" # API client
+cask "screenflow" # Screen recording and video editing
+cask "shottr" # Screenshot tool
+cask "signal" # Secure messenger
 cask "slack", greedy: true
-cask "sloth"
-cask "soundsource", greedy: true
-cask "sourcetree", greedy: true
-cask "taskpaper"
-cask "the-unarchiver"
-cask "vlc"
+cask "sloth" # Show all open files and sockets in use
+cask "soundsource", greedy: true # Audio control
+cask "sourcetree", greedy: true # Git GUI
+cask "taskpaper" # Plain text to-do list manager
+cask "the-unarchiver" # Archive unpacker
+cask "vlc" # Media player
 cask "whatsapp"
 cask "zoom", greedy: true
-
-# https://github.com/keonik/prisma-erd-generator#-arm64-users-
-cask "chromium", args: { no_quarantine: true }
 
 # Fonts
 cask "font-sauce-code-pro-nerd-font"
