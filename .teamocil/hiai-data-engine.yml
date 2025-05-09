@@ -9,4 +9,4 @@ windows:
           - git fetch
           - pnpm i
           - turbo dev
-      - aider --model vsonnet
+      - aider

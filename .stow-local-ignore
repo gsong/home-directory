@@ -24,7 +24,7 @@ _darcs
 
 ^.aider.chat.history.md
 ^.aider.input.history
-^.aider.tags.cache.v3
+^.aider.tags.cache.*
 ^.ruff_cache
 
 dependencies

@@ -12,3 +12,4 @@ brew upgrade
 brew cu --all --yes --no-brew-update --no-quarantine
 brew cu --force --yes --no-brew-update --no-quarantine
 /usr/bin/qlmanage -r
+brew services restart ollama
