@@ -48,6 +48,7 @@ cask "vimr" # Refined Vim Experience for OS X
 
 # Miscellaneous CLI Tools
 brew "czkawka" # Multi functional app to find duplicates, empty folders, similar images etc.
+brew "gollama"
 brew "httpie" # Modern command-line HTTP client
 brew "ollama" # Run large language models locally
 brew "pwgen" # Password generator
@@ -92,6 +93,7 @@ cask "imageoptim" # Image optimizer
 cask "istat-menus", greedy: true # System monitor
 cask "keepingyouawake" # Prevent Mac from sleeping
 cask "keyboardcleantool" # Disable keyboard for cleaning
+cask "lm-studio"
 cask "mactracker" # Database of Apple hardware/software
 cask "macwhisper", greedy: true # Local transcription with OpenAI's Whisper
 cask "marked", greedy: true # Markdown previewer

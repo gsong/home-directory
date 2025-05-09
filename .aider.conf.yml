@@ -1,6 +1,6 @@
-model: gp
-editor-model: gp
-weak-model: haiku
+model: gemini
+editor-model: gemini
+weak-model: flash
 cache-prompts: true
 show-model-warnings: false
 watch-files: true
@@ -13,29 +13,25 @@ alias:
   - dsf:openrouter/deepseek/deepseek-chat-v3-0324:free
   - r1f:openrouter/deepseek/deepseek-r1:free
   - r1:openrouter/deepseek/deepseek-r1
-  - r170b:openrouter/deepseek/deepseek-r1-distill-llama-70b:free
+  # - r170b:openrouter/deepseek/deepseek-r1-distill-llama-70b:free
 
-  - sonnet-t:openrouter/anthropic/claude-3.7-sonnet:thinking
+  # - sonnet-t:openrouter/anthropic/claude-3.7-sonnet:thinking
   # - sonnet:openrouter/anthropic/claude-3.7-sonnet
   # - haiku:openrouter/anthropic/claude-3.5-haiku-20241022
 
-  # - gp:gemini/gemini-2.5-pro-exp-03-25
-  # - gft:gemini/gemini-2.0-flash-thinking-exp-01-21
-  # - gf:gemini/gemini-2.0-flash
-
-  - gp:openrouter/google/gemini-2.5-pro-preview-03-25
-  - gft:openrouter/google/gemini-2.5-flash-preview:thinking
-  - gf:openrouter/google/gemini-2.5-flash-preview
+  # - gf:gemini/gemini-2.5-flash-preview-04-17
+  # - gft:openrouter/google/gemini-2.5-flash-preview:thinking
+  # - gp:gemini/gemini-2.5-pro-preview-03-25
 
   - o4mh:openrouter/openai/o4-mini-high
 
   - vhaiku:vertex_ai/claude-3-5-haiku@20241022
   - vsonnet:vertex_ai/claude-3-7-sonnet@20250219
 
-  - gemma:ollama/gemma3:27b
-  - qwen:ollama/qwen2.5-coder:32b
-  - qwq:ollama/qwq:latest
-  - r132b:ollama/deepseek-r1:32b
+  # - gemma:ollama/gemma3:27b
+  # - qwen:ollama/qwen2.5-coder:32b
+  # - qwq:ollama/qwq:latest
+  # - r132b:ollama/deepseek-r1:32b
 
 commit-prompt: >
   You are an expert software engineer that generates concise Git commit messages based on the provided diffs, in conventional commits format.
