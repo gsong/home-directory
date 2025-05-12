@@ -26,3 +26,6 @@ python = ["3.13", "3.11", "3.12"]
 ruby = "3"
 shellcheck = "latest"
 uv = "latest"
+
+[tasks.scrape]
+run = "uv tool run --from aider-chat python -m aider.scrape"
