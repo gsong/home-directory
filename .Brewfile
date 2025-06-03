@@ -1,7 +1,5 @@
 # Taps
 tap "buo/cask-upgrade"
-tap "homebrew/bundle"
-tap "homebrew/services"
 
 # Core Utilities & Replacements
 brew "bash" # Better version of Mac built-in
@@ -15,6 +13,7 @@ brew "wget"
 # Development Tools
 brew "automake"
 brew "bfg" # Git repo cleaner
+brew "fx"
 brew "gh" # GitHub CLI
 brew "git"
 brew "git-delta" # Syntax-highlighting pager for git, diff, and grep output

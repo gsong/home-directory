@@ -1,5 +1,9 @@
 [settings]
 experimental = true
+idiomatic_version_file_enable_tools = []
+
+[env]
+AIDER_DESK_PYTHON = "/Users/george/.local/share/mise/installs/python/3.12.10/bin/python3.12"
 
 [tools]
 direnv = "latest"
@@ -10,17 +14,17 @@ lazydocker = "latest"
 lazygit = "latest"
 lua = "5.1"
 node = "lts"
+"npm:@anthropic-ai/claude-code" = "latest"
 "npm:@mermaid-js/mermaid-cli" = "latest"
+"npm:ccusage" = "latest"
 "npm:prettier" = "latest"
 "npm:repomix" = "latest"
 "npm:tldr" = "latest"
 pandoc = "latest"
 "pipx:crawl4ai" = "latest"
 "pipx:files-to-prompt" = "latest"
-"pipx:huggingface_hub" = { version = "latest", cli = "" }
 "pipx:speedtest-cli" = "latest"
 "pipx:titlecase" = "latest"
-"pipx:zizmor" = "latest"
 pnpm = "latest"
 python = ["3.13", "3.11", "3.12"]
 ruby = "3"
