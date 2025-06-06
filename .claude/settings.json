@@ -1,4 +1,23 @@
 {
   "includeCoAuthoredBy": false,
-  "model": "sonnet"
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(gh:*)",
+      "Bash(git:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(npx prettier:*)",
+      "Bash(prettier:*)",
+      "Bash(rg:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "mcp__context7__get-library-docs",
+      "mcp__context7__resolve-library-id",
+      "mcp__probe__extract_code",
+      "mcp__probe__search_code"
+    ]
+  }
 }
