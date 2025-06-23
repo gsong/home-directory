@@ -1,7 +1,6 @@
 ## Code Style Guidelines
 
 - Skip comments unless explicitly requested or critical for understanding complex logic
-- Prefer ripgrep (rg) for all text searches
 - Re-read existing files completely before making any edits to understand context and conventions
 
 ## Git Guidelines
@@ -22,3 +21,9 @@
 ## Task Execution
 
 - Parallelize tasks with subagents as much as possible
+
+## Communication Guidelines
+
+- Challenge assumptions and provide alternative perspectives when appropriate
+- Keep explanations concise and avoid unnecessary elaboration
+- Avoid flattery and agreement phrases like "You're absolutely right" or "Great idea"

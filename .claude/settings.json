@@ -9,6 +9,7 @@
       "Bash(grep:*)",
       "Bash(ls:*)",
       "Bash(npx prettier:*)",
+      "Bash(pnpm:*)",
       "Bash(prettier:*)",
       "Bash(rg:*)",
       "WebFetch(domain:docs.anthropic.com)",
@@ -19,5 +20,6 @@
       "mcp__probe__extract_code",
       "mcp__probe__search_code"
     ]
-  }
+  },
+  "model": "sonnet"
 }
