@@ -28,3 +28,6 @@ if hash vimr 2>/dev/null; then
 		alias vi='vimr --cur-env'
 	fi
 fi
+
+alias tm='task-master'
+alias taskmaster='task-master'
