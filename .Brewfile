@@ -81,23 +81,26 @@ cask "cyberduck" # FTP/SFTP browser
 cask "daisydisk" # Disk space visualizer
 cask "dbeaver-community", greedy: true # Universal database tool
 cask "discord"
-cask "docker", greedy: true
+cask "docker-desktop", greedy: true
 cask "dropbox", greedy: true
 cask "firefox"
 cask "focusatwill" # Background music for focus
 cask "fsnotes", greedy: true # Notes manager
 cask "ghostty", greedy: true # GPU-accelerated terminal emulator
+cask "google-chrome"
 cask "google-drive"
 cask "imageoptim" # Image optimizer
 cask "istat-menus", greedy: true # System monitor
 cask "keepingyouawake" # Prevent Mac from sleeping
 cask "keyboardcleantool" # Disable keyboard for cleaning
+cask "libreoffice"
 cask "lm-studio"
 cask "mactracker" # Database of Apple hardware/software
 cask "macwhisper", greedy: true # Local transcription with OpenAI's Whisper
-cask "marked", greedy: true # Markdown previewer
+cask "marked-app", greedy: true # Markdown previewer
 cask "menuwhere" # Bring frontmost app's menu bar to mouse location
 cask "micro-snitch" # Network monitor
+cask "microsoft-teams"
 cask "moom" # Window manager
 cask "ngrok" # Secure introspectable tunnels to localhost
 cask "p4v", greedy: true # Perforce visual client

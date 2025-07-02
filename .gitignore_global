@@ -1,5 +1,7 @@
 .DS_Store
 .aider*
+.claude-trace/
+.claude/settings.local.json
 .lazy.lua
 .lvimrc
 ai-swap/
