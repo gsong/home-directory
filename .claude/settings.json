@@ -21,5 +21,18 @@
       "mcp__probe__search_code"
     ]
   },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); prettier --write --ignore-unknown \"$(realpath \"$file\")\""
+          }
+        ]
+      }
+    ]
+  },
   "model": "sonnet"
 }
