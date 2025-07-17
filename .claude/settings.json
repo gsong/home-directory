@@ -12,9 +12,10 @@
       "Bash(pnpm:*)",
       "Bash(prettier:*)",
       "Bash(rg:*)",
-      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(sqlfluff:*)",
+      "WebFetch(domain:anthropic.com)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:githubusercontent.com)",
       "mcp__context7__get-library-docs",
       "mcp__context7__resolve-library-id",
       "mcp__probe__extract_code",
@@ -29,6 +30,10 @@
           {
             "type": "command",
             "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); prettier --write --ignore-unknown \"$(realpath \"$file\")\""
+          },
+          {
+            "type": "command",
+            "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); if [[ \"$file\" == *.sql ]]; then sqlfluff fix \"$(realpath \"$file\")\"; fi"
           }
         ]
       }
