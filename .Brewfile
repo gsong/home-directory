@@ -100,7 +100,6 @@ cask "macwhisper", greedy: true # Local transcription with OpenAI's Whisper
 cask "marked-app", greedy: true # Markdown previewer
 cask "menuwhere" # Bring frontmost app's menu bar to mouse location
 cask "micro-snitch" # Network monitor
-cask "microsoft-teams"
 cask "moom" # Window manager
 cask "ngrok" # Secure introspectable tunnels to localhost
 cask "p4v", greedy: true # Perforce visual client
