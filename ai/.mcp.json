@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "reminders": {
+      "type": "stdio",
+      "command": "mcp-server-apple-reminders",
+      "args": [],
+      "env": {}
+    }
+  }
+}
