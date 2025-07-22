@@ -5,6 +5,12 @@
       "command": "mcp-server-apple-reminders",
       "args": [],
       "env": {}
+    },
+    "browser": {
+      "type": "stdio",
+      "command": "mcp-server-browsermcp",
+      "args": [],
+      "env": {}
     }
   }
 }
