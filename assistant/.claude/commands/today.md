@@ -50,13 +50,19 @@ FOR each task:
    # Only include if task_date <= today_date
    if [[ "2025-07-19" > "2025-07-18" ]]; then echo "EXCLUDE"; fi
    ```
-5. **MANDATORY VERIFICATION:** Before showing any task, verify its date:
+5. **CHECK CRM FOLLOW-UPS:** Read `/Users/george/assistant/crm/crm.json` and include:
+   - Follow-ups due today or overdue (date <= today)
+   - Show client name, follow-up purpose, and due date
+6. **CHECK CONTACT SCHEDULE:** Read `/Users/george/assistant/friends/contacts.json` and include:
+   - Friends/contacts with nextContact date due today or overdue (nextContact <= today)
+   - Show name, contact frequency, and how overdue they are
+7. **MANDATORY VERIFICATION:** Before showing any task, verify its date:
    - Show the parsed date next to each task
    - Double-check: NO FUTURE TASKS should appear in output
-6. Categorize included tasks by:
+8. Categorize included tasks by:
    - Personal vs. Work-related
    - Physical vs. Virtual (phone/computer tasks)
-7. **FINAL VERIFICATION:** Re-scan output to ensure NO dates after today
+9. **FINAL VERIFICATION:** Re-scan output to ensure NO dates after today
 
 **⚠️ COMMON MISTAKES TO AVOID:**
 

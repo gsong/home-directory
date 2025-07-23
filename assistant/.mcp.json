@@ -11,6 +11,14 @@
       "command": "mcp-server-browsermcp",
       "args": [],
       "env": {}
+    },
+    "jira": {
+      "type": "stdio",
+      "command": "mcp-remote",
+      "args": [
+        "https://mcp.atlassian.com/v1/sse"
+      ],
+      "env": {}
     }
   }
 }
