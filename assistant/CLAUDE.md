@@ -48,3 +48,51 @@ Frequency calculations:
 - 6 weeks = +42 days
 - 2 months = +60 days
 - 3 months = +90 days
+
+## Business CRM (crm/crm.json)
+
+This is a minimal CRM (Customer Relationship Management) system that currently operates as a JSON-based data store. The system tracks client information, follow-ups, and custom fields for business relationship management.
+
+### Architecture
+
+- **Primary Data File**: `crm/crm.json` - Contains all client and follow-up data
+- **Storage Format**: JSON with structured schema for clients and follow-ups
+- **No Application Layer**: Currently a data-only system requiring manual JSON editing
+
+### Client Schema
+
+Each client record contains:
+
+- `id`: Unique identifier (format: company-name-001)
+- `name`: Company/client name
+- `updated_at`: ISO 8601 timestamp of last modification
+- `status`: Array of status tags (active, prospect, onboarding)
+- `follow_ups`: Array of scheduled follow-up tasks with id, date, and purpose
+- `custom_fields`: Flexible object for client-specific metadata
+
+### Follow-up Schema
+
+Each follow-up contains:
+
+- `id`: Unique identifier (format: fu-XXX)
+- `date`: Follow-up date in YYYY-MM-DD format
+- `purpose`: Description of the follow-up objective
+
+### Common Operations
+
+#### Working with Timestamps
+
+When updating client records, ALWAYS use the exact current UTC time by running this command first:
+
+```bash
+date -u +"%Y-%m-%dT%H:%M:%SZ"
+```
+
+Never guess or approximate timestamps - always get the actual current time.
+
+#### Data Management Patterns
+
+- Always update `updated_at` field when modifying client records
+- Use consistent ID formatting: `company-name-001` for clients, `fu-XXX` for follow-ups
+- Maintain JSON structure and avoid breaking syntax
+- Use `null` instead of empty strings for optional fields
