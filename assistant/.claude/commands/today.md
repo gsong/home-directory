@@ -1,86 +1,119 @@
-# Show Overdue Tasks
+# Today's Tasks Dashboard
 
-Get all reminders, filter for tasks due today or earlier, and organize by topic. Show only incomplete tasks that are overdue or due today.
+Show all tasks due today or overdue from multiple sources, organized by category.
 
-**🚨 CRITICAL DATE FILTERING - FUTURE TASKS MUST BE EXCLUDED 🚨**
+## Data Sources
 
-**STEP 1: GET TODAY'S DATE WITH CORRECT TIMEZONE**
+1. **Reminders**: via `mcp__reminders__list_reminders`
+2. **CRM Follow-ups**: `sahaj/crm.json`
+3. **Friend Contacts**: `personal/friends.json`
 
-- ALWAYS get the current date in the user's timezone using: `TZ="US/Pacific" date +"%Y-%m-%d %H:%M:%S %Z"`
-- DO NOT rely on environment context date - it may be in UTC or wrong timezone
-- Example: If user is in US/Pacific timezone, get Pacific time first
-- Parse the actual current date in user's timezone for comparison
+## Implementation Steps
 
-**STEP 2: STRICT FILTERING LOGIC**
+### 1. Get Current Date
 
-```
-FOR each task:
-  IF task.dueDate > TODAY:
-    EXCLUDE (DO NOT SHOW)
-  ELSE:
-    INCLUDE (SHOW)
+```bash
+# Get today's date in user's timezone (US/Pacific)
+TODAY=$(TZ="US/Pacific" date +"%Y-%m-%d")
 ```
 
-**ABSOLUTELY EXCLUDE THESE:**
+### 2. Fetch All Tasks
 
-- ❌ Tasks due TOMORROW (e.g., Jul 19 when today is Jul 18)
-- ❌ Tasks due NEXT WEEK
-- ❌ Tasks due NEXT MONTH
-- ❌ Tasks due NEXT YEAR
-- ❌ ANY task where date > today
+**Reminders:**
 
-**ONLY INCLUDE THESE:**
+- Call `mcp__reminders__list_reminders` without filters
+- Parse dates and compare: include only if dueDate <= TODAY
+- Skip tasks without due dates
 
-- ✅ Tasks due TODAY
-- ✅ Tasks due YESTERDAY or earlier
-- ✅ Tasks from past months/years
+**CRM Follow-ups:**
 
-**IMPLEMENTATION CHECKLIST:**
+- Read `sahaj/crm.json` (if exists)
+- For each client in `clients` array, check `follow_ups` array
+- Include if `date` <= TODAY
+- Format: "[Client Name] - purpose (due: date)"
 
-1. Use `mcp__reminders__list_reminders` to get all reminders
-2. Get today's exact date in user's timezone using `TZ="US/Pacific" date +"%Y-%m-%d %H:%M:%S %Z"`
-3. **MANDATORY DATE PARSING:** For EVERY task with a due date, use bash to convert dates:
-   ```bash
-   # Convert reminder date format to YYYY-MM-DD for comparison
-   date -j -f "%b %d, %Y" "Jul 19, 2025" "+%Y-%m-%d"  # → 2025-07-19
-   date -j -f "%b %d, %Y" "Jul 18, 2025" "+%Y-%m-%d"  # → 2025-07-18
-   ```
-4. **STRICT COMPARISON:** Use bash date comparison to verify:
-   ```bash
-   # Only include if task_date <= today_date
-   if [[ "2025-07-19" > "2025-07-18" ]]; then echo "EXCLUDE"; fi
-   ```
-5. **CHECK CRM FOLLOW-UPS:** Read `/Users/george/assistant/crm/crm.json` and include:
-   - Follow-ups due today or overdue (date <= today)
-   - Show client name, follow-up purpose, and due date
-6. **CHECK CONTACT SCHEDULE:** Read `/Users/george/assistant/friends/contacts.json` and include:
-   - Friends/contacts with nextContact date due today or overdue (nextContact <= today)
-   - Show name, contact frequency, and how overdue they are
-7. **MANDATORY VERIFICATION:** Before showing any task, verify its date:
-   - Show the parsed date next to each task
-   - Double-check: NO FUTURE TASKS should appear in output
-8. Categorize included tasks by:
-   - Personal vs. Work-related
-   - Physical vs. Virtual (phone/computer tasks)
-9. **FINAL VERIFICATION:** Re-scan output to ensure NO dates after today
+**Friend Contacts:**
 
-**⚠️ COMMON MISTAKES TO AVOID:**
+- Read `personal/friends.json` (if exists)
+- For each friend in `friends` array, check `nextContact` date
+- Include if `nextContact` <= TODAY
+- Calculate days overdue: (TODAY - nextContact)
+- Format: "Name (frequency) - X days overdue"
 
-- DO NOT include "tomorrow's" tasks
-- DO NOT include "next week's" tasks
-- DO NOT be fooled by #today tags on future-dated tasks
-- DO NOT show any date that comes after today
-- DO NOT rely on environment context date - always get timezone-specific date
-- DO NOT assume UTC time is user's local time
+### 3. Date Comparison
 
-**EXAMPLE FILTERING:**
-If today is July 18, 2025:
+For consistent date comparison across formats:
 
-- ✅ INCLUDE: Jul 18, 2025 (today)
-- ✅ INCLUDE: Jul 17, 2025 (yesterday)
-- ✅ INCLUDE: May 20, 2025 (past)
-- ❌ EXCLUDE: Jul 19, 2025 (tomorrow)
-- ❌ EXCLUDE: Jul 20, 2025 (future)
-- ❌ EXCLUDE: Aug 1, 2025 (future)
+```bash
+# Platform-aware date parsing (macOS uses -j, Linux uses -d)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # macOS: Convert reminder format to YYYY-MM-DD
+  parsed_date=$(date -j -f "%b %d, %Y" "$date_string" "+%Y-%m-%d" 2>/dev/null)
+else
+  # Linux: Convert reminder format to YYYY-MM-DD
+  parsed_date=$(date -d "$date_string" "+%Y-%m-%d" 2>/dev/null)
+fi
 
-**FINAL REMINDER**: If you see ANY task with a date after today in your output, you have made an error. Future tasks are NEVER today's tasks.
+# Compare dates: include if task_date <= today
+if [[ "$parsed_date" > "$TODAY" ]]; then
+  # EXCLUDE - this is a future task
+else
+  # INCLUDE - this is due today or overdue
+fi
+```
+
+### 4. Output Format
+
+```
+📅 TODAY'S TASKS (YYYY-MM-DD)
+
+💼 WORK
+━━━━━━━━━━━━━━━━
+CRM Follow-ups:
+• [Client Name] - Follow-up purpose (due: YYYY-MM-DD)
+
+
+Work Reminders:
+• Task description (due: YYYY-MM-DD)
+
+🏠 PERSONAL
+━━━━━━━━━━━━━━━━
+Friend Contacts:
+• Name (frequency) - X days overdue
+
+Personal Reminders:
+• Task description (due: YYYY-MM-DD)
+
+📊 SUMMARY: X work tasks, Y personal tasks
+```
+
+## Critical Rules
+
+1. **NEVER show future tasks** - Any date > TODAY must be excluded
+2. **Handle missing data gracefully** - Check if files exist before reading
+3. **Sort by urgency** - Most overdue tasks first within each category
+4. **Empty sections** - Hide sections with no tasks
+
+## Contact Frequency Mapping
+
+When calculating next contact date and overdue days:
+
+- "1 week" = 7 days
+- "2 weeks" = 14 days
+- "1 month" = 30 days
+- "6 weeks" = 42 days
+- "2 months" = 60 days
+- "3 months" = 90 days
+
+Example calculation:
+
+```bash
+# Days between two dates
+days_overdue=$(( ($(date -j -f "%Y-%m-%d" "$TODAY" "+%s") - $(date -j -f "%Y-%m-%d" "$nextContact" "+%s")) / 86400 ))
+```
+
+## Error Handling
+
+- If reminder service is unavailable, note it and continue with other sources
+- If JSON files don't exist or are malformed, skip that source
+- Always show at least the summary line, even if no tasks found
