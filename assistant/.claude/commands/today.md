@@ -24,6 +24,7 @@ TODAY=$(TZ="US/Pacific" date +"%Y-%m-%d")
 - Call `mcp__reminders__list_reminders` without filters
 - Parse dates and compare: include only if dueDate <= TODAY
 - Skip tasks without due dates
+- Separate by list: "Sahaj tasks" vs "Costmine tasks" vs "Personal tasks"
 
 **CRM Follow-ups:**
 
@@ -67,13 +68,17 @@ fi
 ```
 📅 TODAY'S TASKS (YYYY-MM-DD)
 
-💼 WORK
+🔶 SAHAJ
 ━━━━━━━━━━━━━━━━
 CRM Follow-ups:
 • [Client Name] - Follow-up purpose (due: YYYY-MM-DD)
 
+Sahaj Reminders:
+• Task description (due: YYYY-MM-DD)
 
-Work Reminders:
+🟦 COSTMINE
+━━━━━━━━━━━━━━━━
+Costmine Tasks:
 • Task description (due: YYYY-MM-DD)
 
 🏠 PERSONAL
@@ -84,7 +89,7 @@ Friend Contacts:
 Personal Reminders:
 • Task description (due: YYYY-MM-DD)
 
-📊 SUMMARY: X work tasks, Y personal tasks
+📊 SUMMARY: X Sahaj tasks, Y Costmine tasks, Z personal tasks
 ```
 
 ## Critical Rules
