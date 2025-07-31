@@ -1,6 +1,10 @@
 # Taps
 tap "buo/cask-upgrade"
 
+# JIRA
+tap "atlassian/homebrew-acli"
+brew "atlassian/homebrew-acli/acli"
+
 # Core Utilities
 brew "bash"                    # Modern Bash shell
 brew "gnu-sed"                 # GNU sed (gsed)

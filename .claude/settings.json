@@ -39,5 +39,7 @@
       }
     ]
   },
-  "model": "sonnet"
+  "feedbackSurveyState": {
+    "lastShownTime": 1753925015835
+  }
 }

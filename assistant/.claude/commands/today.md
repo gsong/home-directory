@@ -92,6 +92,48 @@ Personal Reminders:
 📊 SUMMARY: X Sahaj tasks, Y Costmine tasks, Z personal tasks
 ```
 
+### 5. Personal Task Subcategorization
+
+When there are many personal tasks (10+), organize them into logical subcategories:
+
+**Common subcategories:**
+
+- **🏠 House & Maintenance**: cleaning, repairs, utilities, home automation
+- **💻 Tech & Digital**: device maintenance, backups, passwords, subscriptions
+- **🚗 Vehicle**: car maintenance, checks, cleaning
+- **📱 Communication**: contacts to reach out to, messages to check
+- **💰 Financial**: invoices, bills, insurance, rewards
+- **🐾 Pets**: feeding, grooming, cleaning
+- **🌿 Plants & Garden**: watering, maintenance
+- **📋 Admin**: paperwork, documents, scheduling
+
+**Example formatted output with subcategories:**
+
+```
+🏠 PERSONAL
+━━━━━━━━━━━━━━━━
+Friend Contacts:
+• Name (frequency) - X days overdue
+
+House & Maintenance:
+• Rotate living room sofa
+• Clean heater air filter
+• Empty dehumidifier
+
+Tech & Digital:
+• Recharge keyboard
+• Update LinkedIn profile
+• Scan passport to 1Password
+
+Vehicle:
+• Check tire pressure
+• Look up car infotainment dimming
+
+Financial:
+• Issue RRH invoices
+• Look into insurance alternatives
+```
+
 ## Critical Rules
 
 1. **NEVER show future tasks** - Any date > TODAY must be excluded
