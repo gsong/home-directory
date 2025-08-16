@@ -4,6 +4,7 @@ idiomatic_version_file_enable_tools = []
 
 [env]
 AIDER_DESK_PYTHON = "/Users/george/.local/share/mise/installs/python/3.12.10/bin/python3.12"
+CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR = "true"
 
 [tools]
 direnv = "latest"
