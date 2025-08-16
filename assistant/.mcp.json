@@ -1,11 +1,5 @@
 {
   "mcpServers": {
-    "reminders": {
-      "type": "stdio",
-      "command": "mcp-server-apple-reminders",
-      "args": [],
-      "env": {}
-    },
     "browser": {
       "type": "stdio",
       "command": "mcp-server-browsermcp",
@@ -17,6 +11,14 @@
       "command": "mcp-remote",
       "args": [
         "https://mcp.atlassian.com/v1/sse"
+      ],
+      "env": {}
+    },
+    "linear": {
+      "type": "stdio",
+      "command": "mcp-remote",
+      "args": [
+        "https://mcp.linear.app/sse"
       ],
       "env": {}
     }
