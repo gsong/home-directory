@@ -61,3 +61,8 @@ Simple structure:
 ```
 
 Operations: add person, add feedback entry
+
+**Feedback Recording Guidelines:**
+
+- Don't use verbatim input - edit for clarity and readability while retaining intent
+- Improve grammar, structure, and flow while preserving the original meaning
