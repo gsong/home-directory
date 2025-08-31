@@ -20,9 +20,22 @@
       "mcp__context7__get-library-docs",
       "mcp__context7__resolve-library-id",
       "mcp__probe__extract_code",
-      "mcp__probe__search_code"
+      "mcp__probe__search_code",
+      "mcp__browser__browser_navigate",
+      "mcp__browser__browser_go_back",
+      "mcp__browser__browser_go_forward",
+      "mcp__browser__browser_snapshot",
+      "mcp__browser__browser_click",
+      "mcp__browser__browser_hover",
+      "mcp__browser__browser_type",
+      "mcp__browser__browser_select_option",
+      "mcp__browser__browser_press_key",
+      "mcp__browser__browser_wait",
+      "mcp__browser__browser_get_console_logs",
+      "mcp__browser__browser_screenshot"
     ]
   },
+  "model": "opusplan",
   "hooks": {
     "PostToolUse": [
       {
@@ -46,6 +59,5 @@
   },
   "feedbackSurveyState": {
     "lastShownTime": 1754086408110
-  },
-  "model": "sonnet"
+  }
 }
