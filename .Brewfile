@@ -133,6 +133,7 @@ cask "fsnotes", greedy: true   # Markdown notes manager
 cask "imageoptim"              # Image optimization
 cask "macwhisper", greedy: true # Local audio transcription
 cask "marked-app", greedy: true # Markdown preview
+cask "notion"                  # All-in-one workspace
 cask "screenflow"              # Screen recording
 cask "shottr"                  # Screenshot tool
 cask "taskpaper"               # Plain text task management
