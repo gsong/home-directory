@@ -19,8 +19,6 @@ alias restart-docker='stop-docker && start-docker'
 
 alias speedtest='speedtest --secure'
 
-alias aider-scrape='uv tool run --from aider-chat python -m aider.scrape'
-
 alias vimr='vimr --cur-env'
 
 if hash vimr 2>/dev/null; then
