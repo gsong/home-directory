@@ -3,10 +3,10 @@ experimental = true
 idiomatic_version_file_enable_tools = []
 
 [env]
-AIDER_DESK_PYTHON = "/Users/george/.local/share/mise/installs/python/3.12.10/bin/python3.12"
 CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR = "true"
 
 [tools]
+ast-grep = "latest"
 direnv = "latest"
 dive = "latest"
 "gem:teamocil" = "latest"
@@ -17,11 +17,11 @@ lua = "5.1"
 node = "lts"
 "npm:@anthropic-ai/claude-code" = "latest"
 "npm:@browsermcp/mcp" = "latest"
-"npm:@buger/probe-mcp" = "latest"
 "npm:@google/gemini-cli" = "latest"
 "npm:@mariozechner/claude-trace" = "latest"
 "npm:@mermaid-js/mermaid-cli" = "latest"
 "npm:@openai/codex" = "latest"
+"npm:@probelabs/probe" = "latest"
 "npm:@upstash/context7-mcp" = "latest"
 "npm:ccusage" = "latest"
 "npm:mcp-remote" = "latest"
@@ -32,13 +32,13 @@ node = "lts"
 pandoc = "latest"
 "pipx:crawl4ai" = "latest"
 "pipx:files-to-prompt" = "latest"
+"pipx:markitdown" = { version = "latest", extras = "all" }
 "pipx:speedtest-cli" = "latest"
+"pipx:sqlfluff" = "latest"
 "pipx:titlecase" = "latest"
 pnpm = "latest"
 python = ["3.13", "3.11", "3.12"]
 ruby = "3"
 shellcheck = "latest"
+tree-sitter = "latest"
 uv = "latest"
-
-[tasks.scrape]
-run = "uv tool run --from aider-chat python -m aider.scrape"
