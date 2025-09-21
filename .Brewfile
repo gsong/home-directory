@@ -107,6 +107,7 @@ cask "claude"                  # Anthropic Claude desktop
 cask "dbeaver-community", greedy: true # Database management
 cask "docker-desktop", greedy: true
 cask "ghostty", greedy: true   # GPU-accelerated terminal
+cask "helpwire-operator"       # Helpwire operator
 cask "linear-linear"           # Linear project management
 cask "lm-studio"               # Run LLMs locally
 cask "ngrok"                   # Secure tunnels to localhost
