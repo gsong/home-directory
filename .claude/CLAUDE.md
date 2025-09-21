@@ -1,29 +1,50 @@
-## Code Style Guidelines
+# Core Principles (CRITICAL - Always Follow)
 
-- Skip comments unless explicitly requested or critical for understanding complex logic
-- Re-read existing files completely before making any edits to understand context and conventions
+## File Management
 
-## Git Guidelines
+- **NEVER** create files unless absolutely necessary for the goal
+- **ALWAYS** prefer editing existing files over creating new ones
+- **NEVER** proactively create documentation files (\*.md) or README files
+- Only create documentation if explicitly requested
 
-- Always use `git push --force-with-lease` instead of `git push --force` to prevent overwriting others' work
-- Always use conventional commits format for commit messages (e.g., "feat:", "fix:", "docs:", "refactor:", "test:", "chore:")
+_Rationale: Minimizes codebase clutter and maintains existing project structure_
+
+## Communication Style
+
+- Challenge assumptions and provide alternative perspectives when appropriate
+- Keep explanations concise - avoid unnecessary elaboration
+- Avoid flattery phrases like "You're absolutely right" or "Great idea"
+- Do what has been asked; nothing more, nothing less
+
+# Development Workflow
+
+## Analysis Phase
+
+- Re-read existing files completely before making edits to understand context
+- Parallelize tasks with subagents as much as possible
+
+## Coding Standards
+
+- Skip comments unless explicitly requested or critical for complex logic
+- Follow existing conventions and patterns in the codebase
 
 ## Testing Philosophy
 
-- Write tests that verify user-facing behavior and outcomes, not internal implementation
-- Test from the perspective of how users interact with the code
-- Validate all modifications against the actual implementation before finalizing
-- Minimize mocks in tests - prefer real implementations when possible
+- Write tests that verify user-facing behavior, not internal implementation
+- Test from the user's perspective of how they interact with the code
+- Validate all modifications against actual implementation before finalizing
+- **Mock minimally**: Prefer real implementations when possible
 - Only mock external services, network calls, or slow operations
-- When mocking is necessary, mock at the boundary (e.g., HTTP clients, not internal functions)
-- Prefer dependency injection and factory patterns to enable easy real/test implementations
+- When mocking is necessary, mock at boundaries (HTTP clients, not internal functions)
+- Use dependency injection and factory patterns for testability
 
-## Task Execution
+## Version Control
 
-- Parallelize tasks with subagents as much as possible
+- Use `git push --force-with-lease` instead of `git push --force`
+- Use conventional commits: "feat:", "fix:", "docs:", "refactor:", "test:", "chore:"
 
-## Communication Guidelines
+# Tool Preferences
 
-- Challenge assumptions and provide alternative perspectives when appropriate
-- Keep explanations concise and avoid unnecessary elaboration
-- Avoid flattery and agreement phrases like "You're absolutely right" or "Great idea"
+- **ALWAYS** use built-in `/bin/ls` command for listing files and directories
+- **NEVER** use ls aliases, exa, or other alternatives
+- This ensures consistent, predictable output across all systems
