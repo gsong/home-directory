@@ -4,7 +4,6 @@ windows:
     root: ~/assistant/
     layout: even-vertical
     panes:
-      - focus: false
       - commands:
           - claude
         focus: true
