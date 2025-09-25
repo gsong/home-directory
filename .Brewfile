@@ -21,6 +21,7 @@ brew "fx"                      # JSON viewer and processor
 brew "gh"                      # GitHub CLI
 brew "git"                     # Distributed version control
 brew "git-delta"               # Syntax-highlighting pager for git/diff
+brew "git-filter-repo"         # Fast, flexible tool for rewriting git history
 brew "git-lfs"                 # Git Large File Storage
 brew "glow"                    # Terminal markdown renderer
 brew "graphviz"                # Graph visualization software
@@ -33,7 +34,6 @@ brew "swig"                    # Interface compiler
 # Shell & Terminal Enhancements
 brew "autojump"                # Smart directory navigation
 brew "bash-completion@2"       # Bash completion scripts
-brew "eza"                     # Modern ls replacement
 brew "fd"                      # Modern find replacement
 brew "fzf"                     # Command-line fuzzy finder
 brew "m-cli"                   # macOS command-line tools
@@ -51,6 +51,7 @@ brew "neovim"                  # Hyperextensible Vim-based text editor
 cask "vimr"                    # Neovim GUI for macOS
 
 # Miscellaneous CLI Tools
+brew "asciinema"               # Record terminal sessions
 brew "czkawka"                 # Find duplicates, empty folders, similar images
 brew "gollama"                 # Ollama GUI/TUI
 brew "httpie"                  # User-friendly HTTP client
