@@ -4,16 +4,18 @@
   "permissions": {
     "allow": [
       "Bash(/bin/ls:*)",
+      "Bash(ast-grep:*)",
       "Bash(cat:*)",
+      "Bash(eza:*)",
       "Bash(find:*)",
       "Bash(gh:*)",
       "Bash(git:*)",
       "Bash(grep:*)",
       "Bash(ls:*)",
+      "Bash(mise:*)",
       "Bash(npx prettier:*)",
       "Bash(pnpm:*)",
       "Bash(prettier:*)",
-      "Bash(rg:*)",
       "Bash(sqlfluff:*)",
       "WebFetch(domain:anthropic.com)",
       "WebFetch(domain:github.com)",
@@ -36,7 +38,6 @@
       "mcp__browser__browser_screenshot"
     ]
   },
-  "model": "opusplan",
   "hooks": {
     "PostToolUse": [
       {
@@ -60,5 +61,6 @@
   },
   "feedbackSurveyState": {
     "lastShownTime": 1754086408110
-  }
+  },
+  "model": "opusplan"
 }
