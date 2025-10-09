@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "chrome-dev": {
+      "command": "chrome-devtools-mcp"
+    }
+  }
+}

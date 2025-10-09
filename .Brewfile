@@ -17,6 +17,7 @@ brew "wget"                    # Non-interactive network downloader
 # Development Tools
 brew "automake"                # Makefile generator
 brew "bfg"                     # Remove large files from Git history
+brew "dotnet"                  # .NET SDK
 brew "fx"                      # JSON viewer and processor
 brew "gh"                      # GitHub CLI
 brew "git"                     # Distributed version control
@@ -52,6 +53,7 @@ cask "vimr"                    # Neovim GUI for macOS
 
 # Miscellaneous CLI Tools
 brew "asciinema"               # Record terminal sessions
+brew "cloc"                    # Count lines of code
 brew "czkawka"                 # Find duplicates, empty folders, similar images
 brew "gollama"                 # Ollama GUI/TUI
 brew "httpie"                  # User-friendly HTTP client
@@ -76,6 +78,7 @@ cask "1password", greedy: true
 cask "1password-cli", greedy: true
 cask "alfred", greedy: true    # Application launcher and productivity
 cask "bartender", greedy: true # Menu bar organization
+cask "jordanbaird-ice"        # Menu bar management
 cask "betterdisplay", greedy: true # Display management
 cask "cheatsheet"              # Display active app shortcuts
 cask "focusatwill"             # Focus music
