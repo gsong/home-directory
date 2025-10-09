@@ -1,5 +1,9 @@
 # Core Principles
 
+## Command Usage
+
+- Always use `rm -f` to delete files (not just `rm`) to avoid interactive prompts
+
 ## File Management
 
 - NEVER create files unless absolutely necessary
@@ -16,10 +20,14 @@
 
 ## Development
 
-- Re-read files completely before editing
 - Parallelize with subagents when possible
 - Skip comments unless requested or critical
 - Follow existing codebase conventions
+
+## Code Organization
+
+- Place public methods/functions at the top of modules
+- Place implementation details toward the bottom
 
 ## Testing
 
