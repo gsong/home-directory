@@ -27,4 +27,6 @@ _darcs
 ^.aider.tags.cache.*
 ^.ruff_cache
 
+\.DS_Store
+
 dependencies
