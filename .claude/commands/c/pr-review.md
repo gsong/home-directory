@@ -4,22 +4,22 @@ Perform a comprehensive code review for PR #$ARGUMENTS
 
 ## Review Process
 
-1. **Analyze Changes**: Examine all modified files and understand the scope of changes
-2. **Code Quality**: Check for adherence to project conventions, best practices, and style guidelines
-3. **Security**: Review for potential security vulnerabilities or data exposure
-4. **Performance**: Identify potential performance issues or improvements
-5. **Documentation**: Ensure code is self-documenting and complex logic is explained
+1. **Run `/review` command**: First run `/review $ARGUMENTS` and incorporate its results into your analysis
+2. **Analyze Changes**: Examine all modified files and understand the scope of changes
+3. **Code Quality**: Check for adherence to project conventions, best practices, and style guidelines
+4. **Security**: Review for potential security vulnerabilities or data exposure
+5. **Performance**: Identify potential performance issues or improvements
+6. **Documentation**: Ensure code is self-documenting and complex logic is explained
 
 ## Output Format
 
-Provide a structured review with:
+Focus on actionable items and decisions only. Skip praise and in-depth analysis.
 
-- **Approval Status**: Ready to merge, needs changes, or needs discussion
-- **Summary**: Brief overview of the changes
-- **Strengths**: What's well done
-- **Issues**: Critical problems that must be addressed
-- **Suggestions**: Non-blocking improvements
-- **Testing**: Assessment of test coverage and quality
+Provide a concise review with:
+
+- **Decision**: MERGE or NO MERGE
+- **Action Items**: Only include items that require fixing or decisions
+- **Needs Decision**: Items that require user input or clarification
 
 Focus on user-facing behavior, maintainability, and adherence to the project's testing philosophy of minimizing mocks and testing real implementations.
 
