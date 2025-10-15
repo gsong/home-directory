@@ -1,7 +1,15 @@
-**/.claude/settings.local.json
+# macOS
 .DS_Store
-.aider*
-.claude-trace/
+
+# Editor/IDE
 .lazy.lua
 .lvimrc
+
+# Git
+.worktrees/
+
+# AI Tools
+**/.claude/settings.local.json
+.claude-trace/
+.aider*
 ai-swap/
