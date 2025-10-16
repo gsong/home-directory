@@ -63,6 +63,7 @@ brew "qpdf"                    # PDF manipulation tools
 brew "ssh-copy-id"             # Install SSH keys on remote servers
 brew "trash"                   # Move files to trash
 brew "wdiff"                   # Word-diff between text files
+brew "zizmor"                  # GitHub Actions security analyzer
 
 # Quick Look Plugins
 cask "qlimagesize"             # Display image size and resolution
