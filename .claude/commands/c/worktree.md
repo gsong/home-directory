@@ -65,7 +65,13 @@ git worktree add -b {branch-name} .worktrees/{short-dir-name}
 cd .worktrees/{short-dir-name} && mise trust
 ```
 
-3. If `package.json` exists in the new worktree, install dependencies:
+3. If `.envrc` exists in the new worktree, allow direnv:
+
+```bash
+cd .worktrees/{short-dir-name} && direnv allow
+```
+
+4. If `package.json` exists in the new worktree, install dependencies:
 
 ```bash
 cd .worktrees/{short-dir-name} && pnpm install
@@ -79,4 +85,4 @@ Tell the user:
 
 - The branch name that was created
 - The worktree directory path
-- Which setup steps were performed (mise trusted if applicable, dependencies installed if applicable)
+- Which setup steps were performed (mise trusted if applicable, direnv allowed if applicable, dependencies installed if applicable)
