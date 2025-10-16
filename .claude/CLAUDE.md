@@ -17,9 +17,13 @@
 
 ## Development
 
-- Parallelize with subagents when possible
+- **FIRST STEP**: Read project-specific .claude/CLAUDE.md and follow ALL pre-flight checklists
 - Skip comments unless requested or critical
 - Follow existing codebase conventions
+
+## Package Management
+
+- ALWAYS use `pnpm` over `npm` for Node.js projects
 
 ## Code Organization
 
@@ -46,4 +50,11 @@
 
 ## Subagents
 
+- **STRONGLY PREFER subagents for ALL tasks**
+- **Use subagents when they can do things faster** - speed and efficiency are paramount
+- Parallelize subagents whenever possible for maximum efficiency
+- **CRITICAL**: Check project-specific .claude/CLAUDE.md for MANDATORY subagent usage (e.g., docs-lookup)
+- **ALWAYS** follow project-specific pre-flight checklists before coding
 - ALWAYS use date-calculator subagent for date/datetime calculations (including relative dates)
+- ALWAYS use Explore subagent for codebase exploration, understanding structure, finding patterns
+- When project has docs-lookup agent: USE IT for refactoring, UI changes, new features, state changes
