@@ -78,7 +78,6 @@ cask "quicklook-json"          # Preview JSON files
 cask "1password", greedy: true
 cask "1password-cli", greedy: true
 cask "alfred", greedy: true    # Application launcher and productivity
-cask "bartender", greedy: true # Menu bar organization
 cask "jordanbaird-ice"        # Menu bar management
 cask "betterdisplay", greedy: true # Display management
 cask "cheatsheet"              # Display active app shortcuts
@@ -94,9 +93,9 @@ cask "soundsource", greedy: true # Audio routing
 
 # Web Browsers
 cask "arc", greedy: true        # Innovative web browser
-cask "chromium", args: { no_quarantine: true } # Open-source Chrome (for prisma-erd-generator)
 cask "firefox"                 # Mozilla Firefox browser
 cask "google-chrome"           # Google Chrome browser
+cask "ungoogled-chromium", args: { no_quarantine: true } # Open-source Chrome (for prisma-erd-generator)
 
 # Communication
 cask "discord"
