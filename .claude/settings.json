@@ -121,7 +121,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cc-notify.mjs --title \"CC: Done\" --subtitle \"{{basename}}\" --message \"Task completed: {{dir}}\" --sound \"Glass\""
+            "command": "cc-notify.mjs"
           }
         ]
       }
@@ -131,7 +131,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cc-notify.mjs --title \"CC: Input Required\" --subtitle \"{{basename}}\" --message \"Input required: {{dir}}\" --sound \"Ping\""
+            "command": "cc-notify.mjs"
           }
         ]
       }
