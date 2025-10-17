@@ -73,12 +73,43 @@ function getAllTimestampsFromFile(filePath) {
 }
 
 /**
- * Floors a timestamp to the beginning of the hour
+ * Floors a timestamp to the beginning of the hour in Pacific timezone
  */
-function floorToHour(timestamp) {
-  const floored = new Date(timestamp);
-  floored.setUTCMinutes(0, 0, 0);
-  return floored;
+function floorToHourPacific(timestamp) {
+  // Convert to Pacific time string and parse components
+  const pacificString = timestamp.toLocaleString("en-US", {
+    timeZone: "America/Los_Angeles",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+
+  // Parse: "MM/DD/YYYY, HH:MM:SS"
+  const match = pacificString.match(/(\d+)\/(\d+)\/(\d+),\s+(\d+):(\d+):(\d+)/);
+  if (!match) return timestamp;
+
+  const [, month, day, year, hours, minutes, seconds] = match;
+
+  // Construct ISO string for the start of this hour in Pacific time
+  const hourStartISO = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}T${hours.padStart(2, "0")}:00:00-07:00`; // PDT
+  const hourStartPST = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}T${hours.padStart(2, "0")}:00:00-08:00`; // PST
+
+  // Try both offsets and see which is closer to our timestamp
+  const pdtTime = new Date(hourStartISO);
+  const pstTime = new Date(hourStartPST);
+
+  // Pick whichever is closer but not after the timestamp
+  if (pdtTime.getTime() <= timestamp.getTime()) {
+    return pdtTime;
+  } else if (pstTime.getTime() <= timestamp.getTime()) {
+    return pstTime;
+  }
+
+  return timestamp; // fallback
 }
 
 /**
@@ -183,7 +214,7 @@ function findMostRecentBlockStartTime(rootDir, sessionDurationHours = 5) {
       (currentBlockEnd && timestamp.getTime() > currentBlockEnd.getTime())
     ) {
       // Start new block
-      currentBlockStart = floorToHour(timestamp);
+      currentBlockStart = floorToHourPacific(timestamp);
       currentBlockEnd = new Date(
         currentBlockStart.getTime() + sessionDurationMs,
       );
@@ -241,22 +272,43 @@ if (!blockMetrics) {
   process.exit(0);
 }
 
+// Debug: show block start time
+if (process.argv.includes("--debug")) {
+  console.error("Block start (UTC):", blockMetrics.startTime.toISOString());
+  console.error("Block start (local):", blockMetrics.startTime.toString());
+  console.error("Last activity:", blockMetrics.lastActivity.toString());
+}
+
 const now = new Date();
 const elapsed = now.getTime() - blockMetrics.startTime.getTime();
 const fiveHours = 5 * 60 * 60 * 1000;
 const remaining = fiveHours - elapsed;
+const blockEndTime = new Date(blockMetrics.startTime.getTime() + fiveHours);
+
+// Format end time (e.g., "4:30pm")
+const hours = blockEndTime.getHours();
+const minutes = blockEndTime.getMinutes();
+const ampm = hours >= 12 ? "pm" : "am";
+const displayHours = hours % 12 || 12;
+const displayMinutes = minutes.toString().padStart(2, "0");
+const endTimeStr = `${displayHours}:${displayMinutes}${ampm}`;
 
 if (remaining <= 0) {
-  console.log("0m");
+  console.log(`0m (${endTimeStr})`);
 } else {
-  const hours = Math.floor(remaining / (60 * 60 * 1000));
-  const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
+  const remainingHours = Math.floor(remaining / (60 * 60 * 1000));
+  const remainingMinutes = Math.floor(
+    (remaining % (60 * 60 * 1000)) / (60 * 1000),
+  );
 
-  if (hours === 0) {
-    console.log(`${minutes}m`);
-  } else if (minutes === 0) {
-    console.log(`${hours}hr`);
+  let timeLeft;
+  if (remainingHours === 0) {
+    timeLeft = `${remainingMinutes}m`;
+  } else if (remainingMinutes === 0) {
+    timeLeft = `${remainingHours}hr`;
   } else {
-    console.log(`${hours}hr${minutes}m`);
+    timeLeft = `${remainingHours}hr${remainingMinutes}m`;
   }
+
+  console.log(`${timeLeft} (${endTimeStr})`);
 }
