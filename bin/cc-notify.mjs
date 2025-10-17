@@ -5,8 +5,17 @@ import { basename } from "path";
 
 /**
  * Send macOS notification for Claude Code events
+ * Reads event JSON from stdin and dispatches based on hook_event_name
  * Only sends if not in tmux or tmux pane is inactive
  */
+
+const readStdin = async () => {
+  const chunks = [];
+  for await (const chunk of process.stdin) {
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks).toString();
+};
 
 const isInTmux = () => {
   return !!process.env.TMUX;
@@ -115,9 +124,52 @@ const parseArgs = () => {
   return options;
 };
 
-const main = () => {
+const getNotificationConfig = (eventData) => {
+  const { lastTwo, current } = getDirectoryInfo();
+
+  switch (eventData.hook_event_name) {
+    case "Notification":
+      return {
+        title: "CC: Input Required",
+        subtitle: current,
+        message: eventData.message || "Input required",
+        sound: "Ping",
+      };
+
+    case "Stop":
+      return {
+        title: "CC: Done",
+        subtitle: current,
+        message: `Task completed: ${lastTwo}`,
+        sound: "Glass",
+      };
+
+    default:
+      return {
+        title: "Claude Code",
+        subtitle: current,
+        message: eventData.message || `Event: ${eventData.hook_event_name}`,
+        sound: "default",
+      };
+  }
+};
+
+const main = async () => {
   const options = parseArgs();
   const { lastTwo, current } = getDirectoryInfo();
+
+  // Try to read event JSON from stdin
+  let eventData = null;
+  let stdinData = "";
+
+  try {
+    stdinData = await readStdin();
+    if (stdinData.trim()) {
+      eventData = JSON.parse(stdinData);
+    }
+  } catch (error) {
+    // Not JSON or no stdin, fall back to CLI args
+  }
 
   const inTmux = isInTmux();
   const activePane = isActiveTmuxPane();
@@ -141,23 +193,40 @@ const main = () => {
     console.log("  isActiveTmuxPane:", activePane);
     console.log("  shouldNotify:", shouldNotify(options.force));
     console.log("  force:", options.force);
+    console.log("  eventData:", eventData);
   }
 
-  // Support template variables in message
-  const message = (options.message || "")
-    .replace("{{dir}}", lastTwo)
-    .replace("{{basename}}", current);
+  let title, subtitle, message, sound, force;
 
-  const subtitle = (options.subtitle || current)
-    .replace("{{dir}}", lastTwo)
-    .replace("{{basename}}", current);
+  // If we have event data with hook_event_name, use that
+  if (eventData && eventData.hook_event_name) {
+    const config = getNotificationConfig(eventData);
+    title = config.title;
+    subtitle = config.subtitle;
+    message = config.message;
+    sound = config.sound;
+    force = false; // Events don't force notifications
+  } else {
+    // Fall back to CLI args for backward compatibility
+    message = (options.message || "")
+      .replace("{{dir}}", lastTwo)
+      .replace("{{basename}}", current);
+
+    subtitle = (options.subtitle || current)
+      .replace("{{dir}}", lastTwo)
+      .replace("{{basename}}", current);
+
+    title = options.title || "Claude Code";
+    sound = options.sound || "default";
+    force = options.force;
+  }
 
   sendNotification({
-    title: options.title || "Claude Code",
+    title,
     subtitle,
     message,
-    sound: options.sound || "default",
-    force: options.force,
+    sound,
+    force,
   });
 };
 
