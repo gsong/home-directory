@@ -61,6 +61,7 @@ brew "ollama"                  # Run LLMs locally
 brew "pwgen"                   # Password generator
 brew "qpdf"                    # PDF manipulation tools
 brew "ssh-copy-id"             # Install SSH keys on remote servers
+brew "terminal-notifier"       # Send macOS notifications from command line
 brew "trash"                   # Move files to trash
 brew "wdiff"                   # Word-diff between text files
 brew "zizmor"                  # GitHub Actions security analyzer
