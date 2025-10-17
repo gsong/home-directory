@@ -1,3 +1,3 @@
-mise x -- uv tool install -p 3.13 https://github.com/powerline/powerline/archive/refs/tags/2.8.4.tar.gz
+mise x -- uv tool install -p 3.13 powerline-status
 
 mise x -- uv tool upgrade --all
