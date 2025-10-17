@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "probe": {
-      "command": "probe",
-      "args": ["mcp"]
+      "command": "pnpm",
+      "args": ["dlx", "@probelabs/probe", "mcp"]
     }
   }
 }
