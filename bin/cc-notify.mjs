@@ -77,24 +77,14 @@ const sendNotification = ({
     return;
   }
 
-  const escapeArg = (arg) => {
-    return `'${arg.replace(/'/g, "'\\''")}'`;
+  const escapeAppleScript = (str) => {
+    return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
   };
 
-  const cmd = [
-    "terminal-notifier",
-    "-title",
-    escapeArg(title),
-    "-subtitle",
-    escapeArg(subtitle),
-    "-message",
-    escapeArg(message),
-    "-sound",
-    sound,
-  ];
+  const appleScript = `display notification "${escapeAppleScript(message)}" with title "${escapeAppleScript(title)}" subtitle "${escapeAppleScript(subtitle)}" sound name "${sound}"`;
 
   try {
-    execSync(cmd.join(" "), {
+    execSync(`osascript -e '${appleScript.replace(/'/g, "'\\''")}'`, {
       stdio: "ignore",
       shell: true,
     });
@@ -205,7 +195,7 @@ const main = async () => {
     subtitle = config.subtitle;
     message = config.message;
     sound = config.sound;
-    force = false; // Events don't force notifications
+    force = options.force || false; // Allow --force flag to override
   } else {
     // Fall back to CLI args for backward compatibility
     message = (options.message || "")
