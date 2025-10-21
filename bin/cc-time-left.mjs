@@ -293,22 +293,4 @@ const displayHours = hours % 12 || 12;
 const displayMinutes = minutes.toString().padStart(2, "0");
 const endTimeStr = `${displayHours}:${displayMinutes}${ampm}`;
 
-if (remaining <= 0) {
-  console.log(`0m (${endTimeStr})`);
-} else {
-  const remainingHours = Math.floor(remaining / (60 * 60 * 1000));
-  const remainingMinutes = Math.floor(
-    (remaining % (60 * 60 * 1000)) / (60 * 1000),
-  );
-
-  let timeLeft;
-  if (remainingHours === 0) {
-    timeLeft = `${remainingMinutes}m`;
-  } else if (remainingMinutes === 0) {
-    timeLeft = `${remainingHours}hr`;
-  } else {
-    timeLeft = `${remainingHours}hr${remainingMinutes}m`;
-  }
-
-  console.log(`${timeLeft} (${endTimeStr})`);
-}
+console.log(endTimeStr);
