@@ -58,6 +58,7 @@ brew "czkawka"                 # Find duplicates, empty folders, similar images
 brew "gollama"                 # Ollama GUI/TUI
 brew "httpie"                  # User-friendly HTTP client
 brew "ollama"                  # Run LLMs locally
+brew "pandoc"                  # Universal document converter
 brew "pwgen"                   # Password generator
 brew "qpdf"                    # PDF manipulation tools
 brew "ssh-copy-id"             # Install SSH keys on remote servers
