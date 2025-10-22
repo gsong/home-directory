@@ -74,45 +74,96 @@ function getAllTimestampsFromFile(filePath) {
 
 /**
  * Floors a timestamp to the beginning of the hour in Pacific timezone
+ * Properly handles DST transitions by validating the offset
  */
 function floorToHourPacific(timestamp) {
-  // Convert to Pacific time string and parse components
-  const pacificString = timestamp.toLocaleString("en-US", {
+  // Get components in Pacific time
+  const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/Los_Angeles",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
     hour12: false,
-  });
+  }).formatToParts(timestamp);
 
-  // Parse: "MM/DD/YYYY, HH:MM:SS"
-  const match = pacificString.match(/(\d+)\/(\d+)\/(\d+),\s+(\d+):(\d+):(\d+)/);
-  if (!match) return timestamp;
+  const partsMap = new Map(parts.map((p) => [p.type, p.value]));
 
-  const [, month, day, year, hours, minutes, seconds] = match;
+  // Build ISO string for the start of this hour (without timezone offset yet)
+  const dateStr = `${partsMap.get("year")}-${partsMap.get("month")}-${partsMap.get("day")}T${partsMap.get("hour")}:00:00`;
 
-  // Construct ISO string for the start of this hour in Pacific time
-  const hourStartISO = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}T${hours.padStart(2, "0")}:00:00-07:00`; // PDT
-  const hourStartPST = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}T${hours.padStart(2, "0")}:00:00-08:00`; // PST
+  // Pacific time is either PST (UTC-8) or PDT (UTC-7)
+  // Try both offsets and validate which produces the correct Pacific time
+  for (const offset of ["-08:00", "-07:00"]) {
+    const candidate = new Date(dateStr + offset);
 
-  // Try both offsets and see which is closer to our timestamp
-  const pdtTime = new Date(hourStartISO);
-  const pstTime = new Date(hourStartPST);
+    // Verify this candidate formats to our target hour in Pacific time
+    const verifyParts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Los_Angeles",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      hour12: false,
+    }).formatToParts(candidate);
 
-  // Pick whichever is closer but not after the timestamp
-  if (pdtTime.getTime() <= timestamp.getTime()) {
-    return pdtTime;
-  } else if (pstTime.getTime() <= timestamp.getTime()) {
-    return pstTime;
+    const verifyMap = new Map(verifyParts.map((p) => [p.type, p.value]));
+
+    // Check if all components match
+    if (
+      verifyMap.get("year") === partsMap.get("year") &&
+      verifyMap.get("month") === partsMap.get("month") &&
+      verifyMap.get("day") === partsMap.get("day") &&
+      verifyMap.get("hour") === partsMap.get("hour")
+    ) {
+      return candidate;
+    }
   }
 
-  return timestamp; // fallback
+  return timestamp; // fallback (should never reach here)
 }
 
 /**
+ * Block Calculation Algorithm:
+ *
+ *   Timeline (working backwards from NOW):
+ *   ═══════════════════════════════════════════════════════════════
+ *
+ *   Step 1: Progressive Lookback
+ *   ─────────────────────────────
+ *   NOW ◄────10h────┤ ◄────20h────┤ ◄────48h────┤
+ *                   │             │              │
+ *   Try small first, expand if needed to find session gap
+ *
+ *   Step 2: Find Session Gap (5+ hours)
+ *   ────────────────────────────────────
+ *   ...─●─●─●─●───────────────●─●─●─●─●─NOW
+ *         timestamps      ▲    continuous work
+ *                      5h gap
+ *                (session boundary)
+ *
+ *   Step 3: Build 5-Hour Blocks (floored to Pacific hour)
+ *   ──────────────────────────────────────────────────────
+ *   ┌─────────┐      ┌─────────┐
+ *   │ Block 1 │      │ Block 2 │
+ *   │ 9am-2pm │──────│ 3pm-8pm │
+ *   └─────────┘  gap └─────────┘
+ *        ●─●           ●─●─●─●─●─NOW
+ *
+ *   Each timestamp starts a new block if:
+ *   - No current block exists, OR
+ *   - Timestamp is after current block's end time
+ *
+ *   Block start = floorToHourPacific(first timestamp in block)
+ *   Block end = block start + 5 hours
+ *
+ *   Step 4: Find Current Block
+ *   ───────────────────────────
+ *   Check each block: is NOW between block.start and block.end?
+ *   - YES + has activity → return this block ✓
+ *   - NO → keep searching
+ *   - No block found → return null (no active block)
+ *
  * Efficiently finds the most recent 5-hour block start time from JSONL files
  */
 function findMostRecentBlockStartTime(rootDir, sessionDurationHours = 5) {
