@@ -1,347 +1,308 @@
 #!/usr/bin/env node
 
-import { readFileSync, statSync, existsSync, readdirSync } from "fs";
-import { join, dirname, basename } from "path";
+/**
+ * Claude Code Usage API - Time Left Calculator
+ *
+ * This script queries the Anthropic API to get the exact end time of the current
+ * 5-hour usage block for Claude Code when using a Claude subscription (OAuth).
+ *
+ * Caching:
+ * - Results are cached for 5 minutes in ~/.cache/cc-time-left/usage-data.json
+ * - Multiple script instances share the same cache
+ * - Use --force-refresh to bypass cache and fetch fresh data
+ * - Use --debug to see cache hit/miss information
+ *
+ * API Details:
+ * - Endpoint: https://api.anthropic.com/api/oauth/usage
+ * - Authentication: OAuth Bearer token from macOS Keychain
+ * - Required Headers:
+ *   - Authorization: Bearer <oauth_token>
+ *   - Content-Type: application/json
+ *   - User-Agent: claude-code/2.0.25
+ *   - anthropic-beta: oauth-2025-04-20 (CRITICAL - enables OAuth on this endpoint)
+ *
+ * API Response Structure:
+ * {
+ *   "five_hour": {
+ *     "utilization": <number 0-100>,      // Percentage of 5-hour limit used
+ *     "resets_at": "<ISO 8601 timestamp>" // When current block ends
+ *   },
+ *   "seven_day": {
+ *     "utilization": <number 0-100>,      // Percentage of 7-day limit used
+ *     "resets_at": "<ISO 8601 timestamp>" // When 7-day window resets
+ *   },
+ *   "seven_day_oauth_apps": null,         // OAuth apps usage (if applicable)
+ *   "seven_day_opus": {
+ *     "utilization": <number 0-100>,      // Opus-specific usage
+ *     "resets_at": "<ISO 8601 timestamp>" // Opus limit reset time (null if unlimited)
+ *   }
+ * }
+ *
+ * Keychain Storage:
+ * - Service: "Claude Code-credentials"
+ * - Account: Current macOS username
+ * - Location: ~/Library/Keychains/login.keychain-db
+ * - Data: JSON with claudeAiOauth.accessToken
+ */
+
+import { execSync } from "child_process";
 import { homedir } from "os";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
+import { join } from "path";
+
+// Cache configuration
+const CACHE_DIR = join(homedir(), ".cache", "cc-time-left");
+const CACHE_FILE = join(CACHE_DIR, "usage-data.json");
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+// Visual indicators
+const INDICATORS = {
+  SAFE: "🟢",
+  WARNING: "🟡",
+  DANGER: "🔴",
+};
+
+// Utilization thresholds
+const THRESHOLDS = {
+  SAFE: 60, // < 60% is safe (green)
+  WARNING: 85, // 60-85% is warning (yellow), >= 85% is danger (red)
+};
 
 /**
- * Recursively finds all JSONL files in a directory
+ * Ensures cache directory exists
  */
-function findJsonlFiles(dir, results = []) {
+function ensureCacheDir() {
+  if (!existsSync(CACHE_DIR)) {
+    mkdirSync(CACHE_DIR, { recursive: true });
+  }
+}
+
+/**
+ * Reads cached usage data if valid
+ * @returns {Object|null} Cached usage data or null if expired/missing
+ */
+function readCache() {
   try {
-    const entries = readdirSync(dir, { withFileTypes: true });
+    if (!existsSync(CACHE_FILE)) {
+      return null;
+    }
 
-    for (const entry of entries) {
-      const fullPath = join(dir, entry.name);
+    const cacheData = JSON.parse(readFileSync(CACHE_FILE, "utf-8"));
+    const now = Date.now();
 
-      if (entry.isDirectory()) {
-        findJsonlFiles(fullPath, results);
-      } else if (entry.isFile() && entry.name.endsWith(".jsonl")) {
-        results.push(fullPath);
+    // Check if cache is still valid (within TTL)
+    if (now - cacheData.timestamp < CACHE_TTL_MS) {
+      if (process.argv.includes("--debug")) {
+        console.error(
+          "Using cached data (age: " +
+            Math.round((now - cacheData.timestamp) / 1000) +
+            "s)",
+        );
       }
-    }
-  } catch {
-    // Ignore errors (permission denied, etc.)
-  }
-
-  return results;
-}
-
-/**
- * Gets all timestamps from a JSONL file
- */
-function getAllTimestampsFromFile(filePath) {
-  const timestamps = [];
-  try {
-    const content = readFileSync(filePath, "utf-8");
-    const lines = content
-      .trim()
-      .split("\n")
-      .filter((line) => line.length > 0);
-
-    for (const line of lines) {
-      try {
-        const json = JSON.parse(line);
-
-        // Only treat entries with real token usage as block activity
-        const usage = json.message?.usage;
-        if (!usage) continue;
-
-        const hasInputTokens = typeof usage.input_tokens === "number";
-        const hasOutputTokens = typeof usage.output_tokens === "number";
-        if (!hasInputTokens || !hasOutputTokens) continue;
-
-        if (json.isSidechain === true) continue;
-
-        const timestamp = json.timestamp;
-        if (typeof timestamp !== "string") continue;
-
-        const date = new Date(timestamp);
-        if (!isNaN(date.getTime())) {
-          timestamps.push(date);
-        }
-      } catch {
-        // Skip invalid JSON lines
-        continue;
-      }
+      return cacheData.data;
     }
 
-    return timestamps;
-  } catch {
-    return [];
-  }
-}
-
-/**
- * Floors a timestamp to the beginning of the hour in Pacific timezone
- * Properly handles DST transitions by validating the offset
- */
-function floorToHourPacific(timestamp) {
-  // Get components in Pacific time
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "America/Los_Angeles",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    hour12: false,
-  }).formatToParts(timestamp);
-
-  const partsMap = new Map(parts.map((p) => [p.type, p.value]));
-
-  // Build ISO string for the start of this hour (without timezone offset yet)
-  const dateStr = `${partsMap.get("year")}-${partsMap.get("month")}-${partsMap.get("day")}T${partsMap.get("hour")}:00:00`;
-
-  // Pacific time is either PST (UTC-8) or PDT (UTC-7)
-  // Try both offsets and validate which produces the correct Pacific time
-  for (const offset of ["-08:00", "-07:00"]) {
-    const candidate = new Date(dateStr + offset);
-
-    // Verify this candidate formats to our target hour in Pacific time
-    const verifyParts = new Intl.DateTimeFormat("en-US", {
-      timeZone: "America/Los_Angeles",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      hour12: false,
-    }).formatToParts(candidate);
-
-    const verifyMap = new Map(verifyParts.map((p) => [p.type, p.value]));
-
-    // Check if all components match
-    if (
-      verifyMap.get("year") === partsMap.get("year") &&
-      verifyMap.get("month") === partsMap.get("month") &&
-      verifyMap.get("day") === partsMap.get("day") &&
-      verifyMap.get("hour") === partsMap.get("hour")
-    ) {
-      return candidate;
+    if (process.argv.includes("--debug")) {
+      console.error("Cache expired, fetching fresh data");
     }
-  }
-
-  return timestamp; // fallback (should never reach here)
-}
-
-/**
- * Block Calculation Algorithm:
- *
- *   Timeline (working backwards from NOW):
- *   ═══════════════════════════════════════════════════════════════
- *
- *   Step 1: Progressive Lookback
- *   ─────────────────────────────
- *   NOW ◄────10h────┤ ◄────20h────┤ ◄────48h────┤
- *                   │             │              │
- *   Try small first, expand if needed to find session gap
- *
- *   Step 2: Find Session Gap (5+ hours)
- *   ────────────────────────────────────
- *   ...─●─●─●─●───────────────●─●─●─●─●─NOW
- *         timestamps      ▲    continuous work
- *                      5h gap
- *                (session boundary)
- *
- *   Step 3: Build 5-Hour Blocks (floored to Pacific hour)
- *   ──────────────────────────────────────────────────────
- *   ┌─────────┐      ┌─────────┐
- *   │ Block 1 │      │ Block 2 │
- *   │ 9am-2pm │──────│ 3pm-8pm │
- *   └─────────┘  gap └─────────┘
- *        ●─●           ●─●─●─●─●─NOW
- *
- *   Each timestamp starts a new block if:
- *   - No current block exists, OR
- *   - Timestamp is after current block's end time
- *
- *   Block start = floorToHourPacific(first timestamp in block)
- *   Block end = block start + 5 hours
- *
- *   Step 4: Find Current Block
- *   ───────────────────────────
- *   Check each block: is NOW between block.start and block.end?
- *   - YES + has activity → return this block ✓
- *   - NO → keep searching
- *   - No block found → return null (no active block)
- *
- * Efficiently finds the most recent 5-hour block start time from JSONL files
- */
-function findMostRecentBlockStartTime(rootDir, sessionDurationHours = 5) {
-  const sessionDurationMs = sessionDurationHours * 60 * 60 * 1000;
-  const now = new Date();
-
-  // Find all JSONL files with their modification times
-  const projectsDir = join(rootDir, "projects");
-  if (!existsSync(projectsDir)) return null;
-
-  const files = findJsonlFiles(projectsDir);
-
-  if (files.length === 0) return null;
-
-  // Get file stats and sort by modification time (most recent first)
-  const filesWithStats = files.map((file) => {
-    const stats = statSync(file);
-    return { file, mtime: stats.mtime };
-  });
-
-  filesWithStats.sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
-
-  // Progressive lookback - start small and expand if needed
-  const lookbackChunks = [10, 20, 48]; // hours
-
-  let timestamps = [];
-  let mostRecentTimestamp = null;
-  let continuousWorkStart = null;
-  let foundSessionGap = false;
-
-  for (const lookbackHours of lookbackChunks) {
-    const cutoffTime = new Date(now.getTime() - lookbackHours * 60 * 60 * 1000);
-    timestamps = [];
-
-    // Collect timestamps for this lookback period
-    for (const { file, mtime } of filesWithStats) {
-      if (mtime.getTime() < cutoffTime.getTime()) break;
-      const fileTimestamps = getAllTimestampsFromFile(file);
-      timestamps.push(...fileTimestamps);
+    return null;
+  } catch (error) {
+    if (process.argv.includes("--debug")) {
+      console.error("Failed to read cache:", error.message);
     }
-
-    if (timestamps.length === 0) continue;
-
-    // Sort timestamps (most recent first)
-    timestamps.sort((a, b) => b.getTime() - a.getTime());
-
-    // Get most recent timestamp (only set once)
-    if (!mostRecentTimestamp && timestamps[0]) {
-      mostRecentTimestamp = timestamps[0];
-
-      // Check if the most recent activity is within the current session period
-      const timeSinceLastActivity =
-        now.getTime() - mostRecentTimestamp.getTime();
-      if (timeSinceLastActivity > sessionDurationMs) {
-        return null; // No activity within the current session period
-      }
-    }
-
-    // Look for a session gap in this chunk
-    continuousWorkStart = mostRecentTimestamp;
-    for (let i = 1; i < timestamps.length; i++) {
-      const currentTimestamp = timestamps[i];
-      const previousTimestamp = timestamps[i - 1];
-
-      if (!currentTimestamp || !previousTimestamp) continue;
-
-      const gap = previousTimestamp.getTime() - currentTimestamp.getTime();
-
-      if (gap >= sessionDurationMs) {
-        foundSessionGap = true;
-        break;
-      }
-
-      continuousWorkStart = currentTimestamp;
-    }
-
-    if (foundSessionGap) break;
-
-    // If this was our last chunk, use what we have
-    if (lookbackHours === lookbackChunks[lookbackChunks.length - 1]) break;
-  }
-
-  if (!mostRecentTimestamp || !continuousWorkStart) return null;
-
-  // Build actual blocks from timestamps going forward
-  const blocks = [];
-  const sortedTimestamps = timestamps
-    .slice()
-    .sort((a, b) => a.getTime() - b.getTime());
-
-  let currentBlockStart = null;
-  let currentBlockEnd = null;
-
-  for (const timestamp of sortedTimestamps) {
-    if (timestamp.getTime() < continuousWorkStart.getTime()) continue;
-
-    if (
-      !currentBlockStart ||
-      (currentBlockEnd && timestamp.getTime() > currentBlockEnd.getTime())
-    ) {
-      // Start new block
-      currentBlockStart = floorToHourPacific(timestamp);
-      currentBlockEnd = new Date(
-        currentBlockStart.getTime() + sessionDurationMs,
-      );
-      blocks.push({ start: currentBlockStart, end: currentBlockEnd });
-    }
-  }
-
-  // Find current block
-  for (const block of blocks) {
-    if (
-      now.getTime() >= block.start.getTime() &&
-      now.getTime() <= block.end.getTime()
-    ) {
-      // Verify we have activity in this block
-      const hasActivity = timestamps.some(
-        (t) =>
-          t.getTime() >= block.start.getTime() &&
-          t.getTime() <= block.end.getTime(),
-      );
-
-      if (hasActivity) {
-        return {
-          startTime: block.start,
-          lastActivity: mostRecentTimestamp,
-        };
-      }
-    }
-  }
-
-  return null;
-}
-
-/**
- * Gets block metrics for the current 5-hour block
- */
-function getBlockMetrics() {
-  const claudePath = join(homedir(), ".claude");
-
-  if (!existsSync(claudePath)) {
     return null;
   }
+}
 
+/**
+ * Writes usage data to cache
+ * @param {Object} data - Usage data to cache
+ */
+function writeCache(data) {
   try {
-    return findMostRecentBlockStartTime(claudePath);
-  } catch {
+    ensureCacheDir();
+    const cacheData = {
+      timestamp: Date.now(),
+      data: data,
+    };
+    writeFileSync(CACHE_FILE, JSON.stringify(cacheData, null, 2), "utf-8");
+    if (process.argv.includes("--debug")) {
+      console.error("Cache updated");
+    }
+  } catch (error) {
+    if (process.argv.includes("--debug")) {
+      console.error("Failed to write cache:", error.message);
+    }
+  }
+}
+
+/**
+ * Retrieves OAuth token from macOS Keychain
+ * @returns {string|null} OAuth access token or null if not found
+ */
+function getOAuthTokenFromKeychain() {
+  try {
+    // Query macOS keychain for Claude Code credentials
+    const keychainData = execSync(
+      'security find-generic-password -a "$USER" -s "Claude Code-credentials" -w',
+      { encoding: "utf-8" },
+    ).trim();
+
+    if (!keychainData) {
+      return null;
+    }
+
+    // Parse the JSON stored in keychain
+    const credentials = JSON.parse(keychainData);
+
+    // Extract the OAuth access token
+    return credentials?.claudeAiOauth?.accessToken || null;
+  } catch (error) {
+    if (process.argv.includes("--debug")) {
+      console.error("Failed to retrieve token from keychain:", error.message);
+    }
     return null;
+  }
+}
+
+/**
+ * Fetches usage data from Anthropic API
+ * @param {string} accessToken - OAuth access token
+ * @returns {Promise<Object|null>} Usage data or null on error
+ */
+async function fetchUsageData(accessToken) {
+  try {
+    const response = await fetch("https://api.anthropic.com/api/oauth/usage", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+        "User-Agent": "claude-code/2.0.25",
+        "anthropic-beta": "oauth-2025-04-20", // Required for OAuth endpoint
+      },
+    });
+
+    if (!response.ok) {
+      if (process.argv.includes("--debug")) {
+        console.error(
+          `API request failed: ${response.status} ${response.statusText}`,
+        );
+        const errorBody = await response.text();
+        console.error("Error response:", errorBody);
+      }
+      return null;
+    }
+
+    const data = await response.json();
+
+    // Debug: show full API response
+    if (process.argv.includes("--debug")) {
+      console.error("API Response:");
+      console.error(JSON.stringify(data, null, 2));
+    }
+
+    return data;
+  } catch (error) {
+    if (process.argv.includes("--debug")) {
+      console.error("Failed to fetch usage data:", error.message);
+    }
+    return null;
+  }
+}
+
+/**
+ * Formats a timestamp as local time (e.g., "4:30pm")
+ * @param {string} isoTimestamp - ISO 8601 timestamp
+ * @returns {string} Formatted time string
+ */
+function formatTime(isoTimestamp) {
+  const date = new Date(isoTimestamp);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours >= 12 ? "pm" : "am";
+  const displayHours = hours % 12 || 12;
+  const displayMinutes = minutes.toString().padStart(2, "0");
+  return `${displayHours}:${displayMinutes}${ampm}`;
+}
+
+/**
+ * Gets visual indicator based on utilization percentage
+ * @param {number} utilization - Percentage of 5-hour limit used (0-100)
+ * @returns {string} Emoji indicator
+ */
+function getIndicatorForUtilization(utilization) {
+  if (utilization < THRESHOLDS.SAFE) {
+    return INDICATORS.SAFE;
+  } else if (utilization < THRESHOLDS.WARNING) {
+    return INDICATORS.WARNING;
+  } else {
+    return INDICATORS.DANGER;
   }
 }
 
 // Main execution
-const blockMetrics = getBlockMetrics();
+(async () => {
+  // Step 1: Check cache first (unless --force-refresh is specified)
+  let usageData = null;
+  if (!process.argv.includes("--force-refresh")) {
+    usageData = readCache();
+  } else if (process.argv.includes("--debug")) {
+    console.error("Force refresh requested, skipping cache");
+  }
 
-if (!blockMetrics) {
-  console.log("No active block");
-  process.exit(0);
-}
+  // Step 2: If no valid cache, fetch from API
+  if (!usageData) {
+    const accessToken = getOAuthTokenFromKeychain();
 
-// Debug: show block start time
-if (process.argv.includes("--debug")) {
-  console.error("Block start (UTC):", blockMetrics.startTime.toISOString());
-  console.error("Block start (local):", blockMetrics.startTime.toString());
-  console.error("Last activity:", blockMetrics.lastActivity.toString());
-}
+    if (!accessToken) {
+      console.log("No OAuth token found");
+      process.exit(1);
+    }
 
-const now = new Date();
-const elapsed = now.getTime() - blockMetrics.startTime.getTime();
-const fiveHours = 5 * 60 * 60 * 1000;
-const remaining = fiveHours - elapsed;
-const blockEndTime = new Date(blockMetrics.startTime.getTime() + fiveHours);
+    if (process.argv.includes("--debug")) {
+      console.error("OAuth token found:", accessToken.substring(0, 20) + "...");
+    }
 
-// Format end time (e.g., "4:30pm")
-const hours = blockEndTime.getHours();
-const minutes = blockEndTime.getMinutes();
-const ampm = hours >= 12 ? "pm" : "am";
-const displayHours = hours % 12 || 12;
-const displayMinutes = minutes.toString().padStart(2, "0");
-const endTimeStr = `${displayHours}:${displayMinutes}${ampm}`;
+    usageData = await fetchUsageData(accessToken);
 
-console.log(endTimeStr);
+    if (!usageData) {
+      console.log("Failed to fetch usage data");
+      process.exit(1);
+    }
+
+    // Step 3: Cache the fresh data
+    writeCache(usageData);
+  }
+
+  // Step 4: Extract 5-hour block reset time
+  const fiveHourData = usageData.five_hour;
+
+  if (!fiveHourData || !fiveHourData.resets_at) {
+    console.log("No active block");
+    process.exit(0);
+  }
+
+  // Step 5: Format and display the end time with visual indicator
+  const endTimeStr = formatTime(fiveHourData.resets_at);
+  const indicator = getIndicatorForUtilization(fiveHourData.utilization);
+
+  console.log(`${indicator}${endTimeStr}`);
+
+  // Debug: show additional info
+  if (process.argv.includes("--debug")) {
+    console.error("\n--- Usage Summary ---");
+    console.error(
+      `5-hour block: ${fiveHourData.utilization}% used, resets at ${fiveHourData.resets_at}`,
+    );
+    if (usageData.seven_day) {
+      console.error(
+        `7-day usage: ${usageData.seven_day.utilization}% used, resets at ${usageData.seven_day.resets_at}`,
+      );
+    }
+    if (usageData.seven_day_opus) {
+      console.error(
+        `7-day Opus: ${usageData.seven_day_opus.utilization}% used, resets at ${usageData.seven_day_opus.resets_at || "unlimited"}`,
+      );
+    }
+  }
+})();
