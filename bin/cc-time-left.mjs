@@ -388,81 +388,76 @@ function getCachedData() {
 }
 
 // Main execution
-(async () => {
-  // Handle help flag
-  if (flags.help) {
-    showHelp();
+if (flags.help) {
+  showHelp();
+}
+
+// Step 1: Try to get cached data
+const cache = getCachedData();
+let usageData = cache.data;
+
+// Step 2: If no valid cache, fetch from API
+if (!cache.valid) {
+  const accessToken = getOAuthTokenFromKeychain();
+
+  if (!accessToken) {
+    console.error("Error: No OAuth token found in keychain.");
+    console.error("Please ensure you're logged into Claude Code.");
+    process.exit(1);
   }
 
-  // Step 1: Try to get cached data
-  const cache = getCachedData();
-  let usageData = cache.data;
+  debug("OAuth token found, fetching usage data...");
 
-  // Step 2: If no valid cache, fetch from API
-  if (!cache.valid) {
-    const accessToken = getOAuthTokenFromKeychain();
+  usageData = await fetchUsageData(accessToken);
 
-    if (!accessToken) {
-      console.error("Error: No OAuth token found in keychain.");
-      console.error("Please ensure you're logged into Claude Code.");
-      process.exit(1);
-    }
-
-    debug("OAuth token found, fetching usage data...");
-
-    usageData = await fetchUsageData(accessToken);
-
-    if (!usageData) {
-      console.error("Error: Failed to fetch usage data from API.");
-      console.error("Please check your network connection and try again.");
-      process.exit(1);
-    }
-
-    // Step 3: Validate API response
-    if (!validateUsageData(usageData)) {
-      console.error("Error: Invalid usage data received from API.");
-      process.exit(1);
-    }
-
-    // Step 4: Cache the fresh data
-    writeCache(usageData);
+  if (!usageData) {
+    console.error("Error: Failed to fetch usage data from API.");
+    console.error("Please check your network connection and try again.");
+    process.exit(1);
   }
 
-  // Step 5: Extract 5-hour block reset time
-  const fiveHourData = usageData.five_hour;
-
-  if (!fiveHourData || !fiveHourData.resets_at) {
-    console.log("No active block");
-    process.exit(0);
+  // Step 3: Validate API response
+  if (!validateUsageData(usageData)) {
+    console.error("Error: Invalid usage data received from API.");
+    process.exit(1);
   }
 
-  // Step 6: Format and display the end time with visual indicator (burn rate based)
-  const endTimeStr = formatTime(fiveHourData.resets_at);
-  const indicator = getIndicatorForBurnRate(
-    fiveHourData.utilization,
-    fiveHourData.resets_at,
-    PERIOD_DURATION.FIVE_HOUR,
+  // Step 4: Cache the fresh data
+  writeCache(usageData);
+}
+
+// Step 5: Extract 5-hour block reset time
+const fiveHourData = usageData.five_hour;
+
+if (!fiveHourData || !fiveHourData.resets_at) {
+  console.log("No active block");
+  process.exit(0);
+}
+
+// Step 6: Format and display the end time with visual indicator (burn rate based)
+const endTimeStr = formatTime(fiveHourData.resets_at);
+const indicator = getIndicatorForBurnRate(
+  fiveHourData.utilization,
+  fiveHourData.resets_at,
+  PERIOD_DURATION.FIVE_HOUR,
+);
+
+// Step 7: Add 7-day quota indicator if available
+let output = `${indicator}${endTimeStr}`;
+
+if (usageData.seven_day && usageData.seven_day.resets_at) {
+  const sevenDayIndicator = getIndicatorForBurnRate(
+    usageData.seven_day.utilization,
+    usageData.seven_day.resets_at,
+    PERIOD_DURATION.SEVEN_DAY,
   );
+  const sevenDayRemaining = formatTimeRemaining(usageData.seven_day.resets_at);
+  output += ` ${sevenDayIndicator}${sevenDayRemaining}`;
+}
 
-  // Step 7: Add 7-day quota indicator if available
-  let output = `${indicator}${endTimeStr}`;
+console.log(output);
 
-  if (usageData.seven_day && usageData.seven_day.resets_at) {
-    const sevenDayIndicator = getIndicatorForBurnRate(
-      usageData.seven_day.utilization,
-      usageData.seven_day.resets_at,
-      PERIOD_DURATION.SEVEN_DAY,
-    );
-    const sevenDayRemaining = formatTimeRemaining(
-      usageData.seven_day.resets_at,
-    );
-    output += ` ${sevenDayIndicator}${sevenDayRemaining}`;
-  }
-
-  console.log(output);
-
-  // Debug: show additional info with burn rate analysis
-  if (flags.debug) {
-    analyzeBurnRate(usageData);
-  }
-})();
+// Debug: show additional info with burn rate analysis
+if (flags.debug) {
+  analyzeBurnRate(usageData);
+}
