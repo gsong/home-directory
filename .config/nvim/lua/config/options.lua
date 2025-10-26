@@ -6,7 +6,7 @@ vim.g.lazyvim_prettier_needs_config = false
 vim.g.snacks_animate = false
 vim.opt.relativenumber = false
 
-if vim.env.VIMRUNTIME:lower():match("vimr") ~= nil then
+if vim.env.VIMRUNTIME and vim.env.VIMRUNTIME:lower():find("vimr") then
   vim.o.background = "light"
 else
   vim.o.background = "dark"
