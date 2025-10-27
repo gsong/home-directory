@@ -41,6 +41,7 @@
       "Bash(test:*)",
       "Bash(touch:*)",
       "Bash(wget:*)",
+      "SlashCommand(/review:*)",
       "WebFetch(domain:anthropic.com)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:githubusercontent.com)",
