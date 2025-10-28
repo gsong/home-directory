@@ -41,6 +41,7 @@
       "Bash(test:*)",
       "Bash(touch:*)",
       "Bash(wget:*)",
+      "Skill(date-calculator)",
       "SlashCommand(/review:*)",
       "WebFetch(domain:anthropic.com)",
       "WebFetch(domain:github.com)",
