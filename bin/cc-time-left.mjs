@@ -255,18 +255,23 @@ async function fetchUsageData(accessToken) {
 }
 
 /**
- * Formats a timestamp as local time (e.g., "4:30pm")
+ * Formats a timestamp as local time, rounded to nearest hour (e.g., "4pm")
  * @param {string} isoTimestamp - ISO 8601 timestamp
  * @returns {string} Formatted time string
  */
 function formatTime(isoTimestamp) {
   const date = new Date(isoTimestamp);
-  const hours = date.getHours();
   const minutes = date.getMinutes();
+  let hours = date.getHours();
+
+  // Round up if 30 minutes or more
+  if (minutes >= 30) {
+    hours = (hours + 1) % 24;
+  }
+
   const ampm = hours >= 12 ? "pm" : "am";
   const displayHours = hours % 12 || 12;
-  const displayMinutes = minutes.toString().padStart(2, "0");
-  return `${displayHours}:${displayMinutes}${ampm}`;
+  return `${displayHours}${ampm}`;
 }
 
 /**
