@@ -161,7 +161,7 @@
     "command": "ccstatusline",
     "padding": 0
   },
-  "alwaysThinkingEnabled": true,
+  "alwaysThinkingEnabled": false,
   "feedbackSurveyState": {
     "lastShownTime": 1754086408110
   }
