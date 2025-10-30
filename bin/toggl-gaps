@@ -13,65 +13,16 @@ Shows when you started your day and identifies gaps in time tracking.
 """
 
 import click
-import requests
-from datetime import datetime, date, time, timedelta
-from zoneinfo import ZoneInfo
+from datetime import datetime, date, timedelta
 from typing import List, Dict, Optional
-from pathlib import Path
 import sys
-import json
 
-
-def get_local_timezone() -> ZoneInfo:
-    """Get the system's local timezone."""
-    # Use localtime to get the system timezone
-    return ZoneInfo('UTC')  # Will be replaced with actual local detection
-
-
-def get_time_entries(api_token: str, target_date: date) -> List[Dict]:
-    """Fetch time entries from Toggl API for a specific date."""
-    # Convert date to start/end datetime in UTC
-    local_tz = datetime.now().astimezone().tzinfo
-    start_dt = datetime.combine(target_date, time.min).replace(tzinfo=local_tz)
-    end_dt = datetime.combine(target_date, time.max).replace(tzinfo=local_tz)
-
-    # Convert to UTC for API
-    start_utc = start_dt.astimezone(ZoneInfo('UTC'))
-    end_utc = end_dt.astimezone(ZoneInfo('UTC'))
-
-    # Format for API (ISO 8601)
-    start_str = start_utc.strftime('%Y-%m-%dT%H:%M:%S.000Z')
-    end_str = end_utc.strftime('%Y-%m-%dT%H:%M:%S.000Z')
-
-    url = f"https://api.track.toggl.com/api/v9/me/time_entries"
-    params = {
-        'start_date': start_str,
-        'end_date': end_str
-    }
-
-    response = requests.get(
-        url,
-        params=params,
-        auth=(api_token, 'api_token')
-    )
-
-    if response.status_code == 403:
-        click.echo("Error: Authentication failed. Check your API token.", err=True)
-        sys.exit(1)
-    elif response.status_code == 402:
-        click.echo("Error: API quota exceeded.", err=True)
-        sys.exit(1)
-    elif response.status_code != 200:
-        click.echo(f"Error: API request failed with status {response.status_code}", err=True)
-        sys.exit(1)
-
-    return response.json()
-
-
-def parse_time(time_str: str, local_tz) -> datetime:
-    """Parse ISO 8601 time string and convert to local timezone."""
-    dt = datetime.fromisoformat(time_str.replace('Z', '+00:00'))
-    return dt.astimezone(local_tz)
+# Import shared Toggl utilities
+from toggl_common import (
+    get_time_entries,
+    parse_time,
+    get_project_name
+)
 
 
 def format_duration(seconds: int) -> str:
@@ -118,87 +69,6 @@ def find_gaps(entries: List[Dict], local_tz) -> List[Dict]:
     return gaps
 
 
-def get_cache_path() -> Path:
-    """Get the path to the project cache file."""
-    cache_dir = Path.home() / '.cache' / 'toggl-gaps'
-    cache_dir.mkdir(parents=True, exist_ok=True)
-    return cache_dir / 'projects.json'
-
-
-def load_project_cache() -> Dict[str, str]:
-    """Load project ID to name mapping from cache."""
-    cache_path = get_cache_path()
-    if cache_path.exists():
-        try:
-            with open(cache_path, 'r') as f:
-                return json.load(f)
-        except (json.JSONDecodeError, IOError):
-            return {}
-    return {}
-
-
-def save_project_cache(cache: Dict[str, str]) -> None:
-    """Save project ID to name mapping to cache."""
-    cache_path = get_cache_path()
-    try:
-        with open(cache_path, 'w') as f:
-            json.dump(cache, f, indent=2)
-    except IOError:
-        # Silently fail if we can't write cache
-        pass
-
-
-def fetch_projects(api_token: str) -> Dict[str, str]:
-    """Fetch all projects from Toggl API and return ID to name mapping."""
-    # First get the user's workspaces
-    response = requests.get(
-        'https://api.track.toggl.com/api/v9/me',
-        auth=(api_token, 'api_token')
-    )
-
-    if response.status_code != 200:
-        return {}
-
-    user_data = response.json()
-    workspace_id = user_data.get('default_workspace_id')
-
-    if not workspace_id:
-        return {}
-
-    # Fetch projects for the workspace
-    response = requests.get(
-        f'https://api.track.toggl.com/api/v9/workspaces/{workspace_id}/projects',
-        auth=(api_token, 'api_token')
-    )
-
-    if response.status_code != 200:
-        return {}
-
-    projects = response.json()
-    return {str(p['id']): p['name'] for p in projects if 'id' in p and 'name' in p}
-
-
-def get_project_name(project_id: int, api_token: str) -> str:
-    """Get project name from cache or fetch if not cached."""
-    project_id_str = str(project_id)
-
-    # Load cache
-    cache = load_project_cache()
-
-    # Check if project is in cache
-    if project_id_str in cache:
-        return cache[project_id_str]
-
-    # Not in cache, fetch all projects and update cache
-    fresh_projects = fetch_projects(api_token)
-
-    # Update cache with fresh data (this replaces old entries)
-    save_project_cache(fresh_projects)
-
-    # Return the project name if found, otherwise return the ID as string
-    return fresh_projects.get(project_id_str, f"Project {project_id}")
-
-
 @click.command(context_settings={'help_option_names': ['-h', '--help']})
 @click.argument('date_arg', required=False)
 @click.option('--token', envvar='TOGGL_API_TOKEN', help='Toggl API token (or set TOGGL_API_TOKEN env var)')
@@ -227,7 +97,7 @@ def main(date_arg: Optional[str], token: Optional[str]):
 
     # Fetch time entries
     click.echo(f"Fetching time entries for {target_date}...")
-    entries = get_time_entries(token, target_date)
+    entries = get_time_entries(token, target_date)  # end_date defaults to start_date
 
     if not entries:
         click.echo(f"\nNo time entries found for {target_date}")
