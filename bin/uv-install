@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 mise x -- uv tool install -p 3.13 powerline-status
 
 mise x -- uv tool upgrade --all
