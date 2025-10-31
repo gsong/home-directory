@@ -2,19 +2,20 @@
 Shared utilities for Toggl API scripts.
 """
 
-import requests
 import json
-from datetime import datetime, date, time
-from zoneinfo import ZoneInfo
-from typing import List, Dict, Optional
-from pathlib import Path
 import sys
+from datetime import date, datetime, time
+from pathlib import Path
+from typing import Dict, List, Optional
+from zoneinfo import ZoneInfo
+
 import click
+import requests
 
 
 def get_cache_dir() -> Path:
     """Get the cache directory."""
-    cache_dir = Path.home() / ".cache" / "toggl-gaps"
+    cache_dir = Path.home() / ".cache" / "toggl"
     cache_dir.mkdir(parents=True, exist_ok=True)
     return cache_dir
 
@@ -237,7 +238,7 @@ def get_time_entries(
     start_str = start_utc.strftime("%Y-%m-%dT%H:%M:%S.000Z")
     end_str = end_utc.strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
-    url = f"https://api.track.toggl.com/api/v9/me/time_entries"
+    url = "https://api.track.toggl.com/api/v9/me/time_entries"
     params = {"start_date": start_str, "end_date": end_str}
 
     response = requests.get(url, params=params, auth=(api_token, "api_token"))

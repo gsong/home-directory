@@ -12,25 +12,25 @@ Toggl time tracking gap checker.
 Shows when you started your day and identifies gaps in time tracking.
 """
 
-import click
-from datetime import datetime, date, timedelta
-from typing import List, Dict, Optional
 import sys
+from datetime import date, datetime, timedelta
+from typing import Dict, List, Optional
+
+import click
 
 # Import shared Toggl utilities
 from toggl_common import (
-    get_time_entries,
-    parse_time,
-    get_project_name,
-    get_local_timezone,
-    parse_date_argument,
-    validate_api_token,
-    format_duration_str,
-    calculate_entry_duration,
     SECONDS_PER_HOUR,
     SECONDS_PER_MINUTE,
+    calculate_entry_duration,
+    format_duration_str,
+    get_local_timezone,
+    get_project_name,
+    get_time_entries,
+    parse_date_argument,
+    parse_time,
+    validate_api_token,
 )
-
 
 # Constants
 MIN_GAP_SECONDS = 600  # 10 minutes minimum
