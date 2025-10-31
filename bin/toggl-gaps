@@ -45,24 +45,31 @@ def find_gaps(entries: List[Dict], local_tz) -> List[Dict]:
     sorted_entries = sorted(entries, key=lambda e: e["start"])
 
     gaps = []
-    for i in range(len(sorted_entries) - 1):
+    coverage_end = None  # Track the latest end time seen so far
+
+    for i in range(len(sorted_entries)):
         current = sorted_entries[i]
-        next_entry = sorted_entries[i + 1]
 
         # Skip if current entry is still running (no stop time)
         if not current.get("stop"):
             continue
 
+        current_start = parse_time(current["start"], local_tz)
         current_end = parse_time(current["stop"], local_tz)
-        next_start = parse_time(next_entry["start"], local_tz)
 
-        # Check if there's a gap (ignore gaps less than 10 minutes)
-        if next_start > current_end:
-            gap_duration = (next_start - current_end).total_seconds()
+        # Check if there's a gap between coverage_end and current_start
+        if coverage_end is not None and current_start > coverage_end:
+            gap_duration = (current_start - coverage_end).total_seconds()
             if gap_duration >= MIN_GAP_SECONDS:
                 gaps.append(
-                    {"start": current_end, "end": next_start, "duration": gap_duration}
+                    {"start": coverage_end, "end": current_start, "duration": gap_duration}
                 )
+
+        # Update coverage_end to the maximum end time seen so far
+        if coverage_end is None:
+            coverage_end = current_end
+        else:
+            coverage_end = max(coverage_end, current_end)
 
     return gaps
 
