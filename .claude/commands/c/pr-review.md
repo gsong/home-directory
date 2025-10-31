@@ -4,12 +4,13 @@ Perform a comprehensive code review for PR #$ARGUMENTS
 
 ## Review Process
 
-1. **Run `/review` command**: First run `/review $ARGUMENTS` and incorporate its results into your analysis
-2. **Analyze Changes**: Examine all modified files and understand the scope of changes
-3. **Code Quality**: Check for adherence to project conventions, best practices, and style guidelines
-4. **Security**: Review for potential security vulnerabilities or data exposure
-5. **Performance**: Identify potential performance issues or improvements
-6. **Documentation**: Ensure code is self-documenting and complex logic is explained
+1. **Checkout Branch**: Use `gh pr checkout $ARGUMENTS` to check out the PR branch locally for thorough review
+2. **Run `/review` command**: Run `/review $ARGUMENTS` and incorporate its results into your analysis
+3. **Analyze Changes**: Examine all modified files and understand the scope of changes
+4. **Code Quality**: Check for adherence to project conventions, best practices, and style guidelines
+5. **Security**: Review for potential security vulnerabilities or data exposure
+6. **Performance**: Identify potential performance issues or improvements
+7. **Documentation**: Ensure code is self-documenting and complex logic is explained
 
 ## Output Format
 
