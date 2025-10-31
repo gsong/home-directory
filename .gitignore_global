@@ -13,3 +13,8 @@
 .claude-trace/
 .aider*
 ai-swap/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
