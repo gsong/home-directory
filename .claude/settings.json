@@ -151,6 +151,10 @@
           {
             "type": "command",
             "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); if [[ \"$file\" == *.sql ]]; then sqlfluff fix \"$(realpath \"$file\")\"; fi"
+          },
+          {
+            "type": "command",
+            "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); if [[ \"$file\" == *.py ]]; then ruff check --fix \"$(realpath \"$file\")\"; fi"
           }
         ]
       }
