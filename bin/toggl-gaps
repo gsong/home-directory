@@ -21,19 +21,19 @@ import sys
 from toggl_common import (
     get_time_entries,
     parse_time,
-    get_project_name
+    get_project_name,
+    get_local_timezone,
+    parse_date_argument,
+    validate_api_token,
+    format_duration_str,
+    calculate_entry_duration,
+    SECONDS_PER_HOUR,
+    SECONDS_PER_MINUTE,
 )
 
 
-def format_duration(seconds: int) -> str:
-    """Format duration in seconds to human-readable string."""
-    hours = seconds // 3600
-    minutes = (seconds % 3600) // 60
-
-    if hours > 0:
-        return f"{hours}h {minutes}m"
-    else:
-        return f"{minutes}m"
+# Constants
+MIN_GAP_SECONDS = 600  # 10 minutes minimum
 
 
 def find_gaps(entries: List[Dict], local_tz) -> List[Dict]:
@@ -42,7 +42,7 @@ def find_gaps(entries: List[Dict], local_tz) -> List[Dict]:
         return []
 
     # Sort entries by start time
-    sorted_entries = sorted(entries, key=lambda e: e['start'])
+    sorted_entries = sorted(entries, key=lambda e: e["start"])
 
     gaps = []
     for i in range(len(sorted_entries) - 1):
@@ -50,50 +50,46 @@ def find_gaps(entries: List[Dict], local_tz) -> List[Dict]:
         next_entry = sorted_entries[i + 1]
 
         # Skip if current entry is still running (no stop time)
-        if not current.get('stop'):
+        if not current.get("stop"):
             continue
 
-        current_end = parse_time(current['stop'], local_tz)
-        next_start = parse_time(next_entry['start'], local_tz)
+        current_end = parse_time(current["stop"], local_tz)
+        next_start = parse_time(next_entry["start"], local_tz)
 
         # Check if there's a gap (ignore gaps less than 10 minutes)
         if next_start > current_end:
             gap_duration = (next_start - current_end).total_seconds()
-            if gap_duration >= 600:  # Only track gaps of 10 minutes or more
-                gaps.append({
-                    'start': current_end,
-                    'end': next_start,
-                    'duration': gap_duration
-                })
+            if gap_duration >= MIN_GAP_SECONDS:
+                gaps.append(
+                    {"start": current_end, "end": next_start, "duration": gap_duration}
+                )
 
     return gaps
 
 
-@click.command(context_settings={'help_option_names': ['-h', '--help']})
-@click.argument('date_arg', required=False)
-@click.option('--token', envvar='TOGGL_API_TOKEN', help='Toggl API token (or set TOGGL_API_TOKEN env var)')
+@click.command(context_settings={"help_option_names": ["-h", "--help"]})
+@click.argument("date_arg", required=False)
+@click.option(
+    "--token",
+    envvar="TOGGL_API_TOKEN",
+    help="Toggl API token (or set TOGGL_API_TOKEN env var)",
+)
 def main(date_arg: Optional[str], token: Optional[str]):
     """
     Check Toggl time tracking for gaps.
 
     DATE_ARG: Date to check in YYYY-MM-DD format (defaults to today)
     """
-    if not token:
-        click.echo("Error: API token required. Set TOGGL_API_TOKEN environment variable or use --token", err=True)
-        sys.exit(1)
+    validate_api_token(token)
 
     # Parse date argument
     if date_arg:
-        try:
-            target_date = datetime.strptime(date_arg, '%Y-%m-%d').date()
-        except ValueError:
-            click.echo(f"Error: Invalid date format '{date_arg}'. Use YYYY-MM-DD", err=True)
-            sys.exit(1)
+        target_date = parse_date_argument(date_arg)
     else:
         target_date = date.today()
 
     # Get local timezone
-    local_tz = datetime.now().astimezone().tzinfo
+    local_tz = get_local_timezone()
 
     # Fetch time entries
     click.echo(f"Fetching time entries for {target_date}...")
@@ -104,20 +100,20 @@ def main(date_arg: Optional[str], token: Optional[str]):
         sys.exit(0)
 
     # Sort entries by start time
-    sorted_entries = sorted(entries, key=lambda e: e['start'])
+    sorted_entries = sorted(entries, key=lambda e: e["start"])
 
     # Find when day started
     first_entry = sorted_entries[0]
-    day_start = parse_time(first_entry['start'], local_tz)
+    day_start = parse_time(first_entry["start"], local_tz)
 
     click.echo(f"\n📅 Date: {target_date}")
     click.echo(f"⏰ Day started: {day_start.strftime('%I:%M %p')}")
 
     # Check if there's a currently running entry
-    running_entry = next((e for e in entries if not e.get('stop')), None)
+    running_entry = next((e for e in entries if not e.get("stop")), None)
     if running_entry:
-        description = running_entry.get('description', '(no description)')
-        project_id = running_entry.get('project_id') or running_entry.get('pid')
+        description = running_entry.get("description", "(no description)")
+        project_id = running_entry.get("project_id") or running_entry.get("pid")
         if project_id:
             project_name = get_project_name(project_id, token)
             click.echo(f"▶️  Currently tracking: {description} ({project_name})")
@@ -132,29 +128,23 @@ def main(date_arg: Optional[str], token: Optional[str]):
         total_gap_time = 0
 
         for i, gap in enumerate(gaps, 1):
-            duration_str = format_duration(int(gap['duration']))
-            start_str = gap['start'].strftime('%I:%M %p')
-            end_str = gap['end'].strftime('%I:%M %p')
+            duration_str = format_duration_str(int(gap["duration"]))
+            start_str = gap["start"].strftime("%I:%M %p")
+            end_str = gap["end"].strftime("%I:%M %p")
             click.echo(f"  {i}. {start_str} → {end_str} ({duration_str})")
-            total_gap_time += gap['duration']
+            total_gap_time += gap["duration"]
 
-        click.echo(f"\n📊 Total gap time: {format_duration(int(total_gap_time))}")
+        click.echo(f"\n📊 Total gap time: {format_duration_str(int(total_gap_time))}")
     else:
         click.echo("\n✅ No gaps found!")
 
     # Calculate total tracked time
     total_tracked = 0
     for entry in entries:
-        if entry.get('duration', 0) > 0:
-            total_tracked += entry['duration']
-        elif running_entry and entry['id'] == running_entry['id']:
-            # Calculate duration for running entry
-            start = parse_time(entry['start'], local_tz)
-            now = datetime.now(local_tz)
-            total_tracked += (now - start).total_seconds()
+        total_tracked += calculate_entry_duration(entry, local_tz)
 
-    click.echo(f"⏱️  Total tracked: {format_duration(int(total_tracked))}")
+    click.echo(f"⏱️  Total tracked: {format_duration_str(int(total_tracked))}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
