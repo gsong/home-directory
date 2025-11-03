@@ -293,8 +293,12 @@ function formatTimeRemaining(isoTimestamp) {
   if (hoursRemaining >= 24) {
     const daysRemaining = Math.floor(hoursRemaining / 24);
     return `${daysRemaining}d`;
-  } else {
+  } else if (hoursRemaining > 0) {
     return `${hoursRemaining}h`;
+  } else {
+    // Less than 1 hour - show minutes
+    const minutesRemaining = Math.floor(msRemaining / (1000 * 60));
+    return `${minutesRemaining}m`;
   }
 }
 
