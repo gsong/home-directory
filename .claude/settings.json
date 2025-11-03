@@ -160,6 +160,11 @@
       }
     ]
   },
+  "sandbox": {
+    "excludedCommands": ["git", "gh"],
+    "autoAllowBashIfSandboxed": true,
+    "enabled": true
+  },
   "statusLine": {
     "type": "command",
     "command": "ccstatusline",
