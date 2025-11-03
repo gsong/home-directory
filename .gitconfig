@@ -97,3 +97,8 @@
 	helper = !/opt/homebrew/bin/gh auth git-credential
 [alias]
 	statusline = "!git rev-parse --git-dir >/dev/null 2>&1 && printf \"%d • %s%s\\n\" \"$(git status -s | wc -l)\" \"$(git rev-parse --git-dir | grep -q 'worktrees' && echo '(wt)' || echo '')\" \"$(git branch --show-current)\" || true"
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
