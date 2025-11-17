@@ -3,6 +3,7 @@
 ## Command Usage
 
 - Use `rm -f` (not `rm`) to avoid prompts
+- Disable sandbox (`dangerouslyDisableSandbox: true`) for `git` and `gh` commands
 
 ## File Management
 
@@ -53,3 +54,4 @@
 
 - Inline dependencies with `uv` (PEP 723); no separate requirements.txt
 - Run with `uv`: `uv run script.py`
+- Executable scripts: use shebang `#!/usr/bin/env -S uv run --script` and `chmod +x`

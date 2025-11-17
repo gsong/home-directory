@@ -41,9 +41,11 @@
       "Bash(test:*)",
       "Bash(touch:*)",
       "Bash(wget:*)",
+      "Bash(zizmor:*)",
       "Skill(date-calculator)",
       "SlashCommand(/review:*)",
       "WebFetch(domain:anthropic.com)",
+      "WebFetch(domain:zizmor.sh)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:githubusercontent.com)",
       "WebFetch(domain:mise.jdx.dev)",
@@ -160,15 +162,15 @@
       }
     ]
   },
-  "sandbox": {
-    "excludedCommands": ["git", "gh"],
-    "autoAllowBashIfSandboxed": true,
-    "enabled": true
-  },
   "statusLine": {
     "type": "command",
     "command": "ccstatusline",
     "padding": 0
+  },
+  "sandbox": {
+    "excludedCommands": ["git", "gh"],
+    "autoAllowBashIfSandboxed": true,
+    "enabled": true
   },
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
