@@ -125,7 +125,7 @@ function validateUsageData(data) {
   if (!data || typeof data !== "object") return false;
   if (!data.five_hour || typeof data.five_hour.utilization !== "number")
     return false;
-  if (!data.five_hour.resets_at) return false;
+  // Allow null resets_at when no active block (utilization is 0)
   return true;
 }
 
