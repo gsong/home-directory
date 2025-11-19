@@ -303,6 +303,63 @@ function formatTimeRemaining(isoTimestamp) {
 }
 
 /**
+ * Formats milliseconds as "Xd", "X.Xh", or "Xm"
+ * @param {number} msRemaining - Milliseconds remaining
+ * @returns {string} Formatted time (e.g., "2d", "1.5h", "45m")
+ */
+function formatMsRemaining(msRemaining) {
+  if (msRemaining <= 0) {
+    return "0m";
+  }
+
+  const hoursRemaining = msRemaining / (1000 * 60 * 60);
+
+  if (hoursRemaining >= 24) {
+    const daysRemaining = Math.floor(hoursRemaining / 24);
+    return `${daysRemaining}d`;
+  } else if (hoursRemaining >= 1) {
+    return `${hoursRemaining.toFixed(1)}h`;
+  } else {
+    const minutesRemaining = Math.floor(msRemaining / (1000 * 60));
+    return `${minutesRemaining}m`;
+  }
+}
+
+/**
+ * Calculates time until tokens are exhausted based on current burn rate
+ * @param {number} utilization - Percentage used (0-100)
+ * @param {string} resetsAt - ISO 8601 timestamp when period resets
+ * @param {number} periodDurationMs - Total period duration in milliseconds
+ * @returns {number|null} Milliseconds until exhaustion, or null if not applicable
+ */
+function calculateTimeUntilExhausted(utilization, resetsAt, periodDurationMs) {
+  const now = Date.now();
+  const resetTime = new Date(resetsAt).getTime();
+  const startTime = resetTime - periodDurationMs;
+  const timeElapsed = now - startTime;
+
+  // If we haven't used anything yet, can't calculate
+  if (utilization === 0 || timeElapsed <= 0) {
+    return null;
+  }
+
+  const remainingPercent = 100 - utilization;
+
+  // Already exhausted
+  if (remainingPercent <= 0) {
+    return 0;
+  }
+
+  // Calculate burn rate: percentage per millisecond
+  const burnRatePerMs = utilization / timeElapsed;
+
+  // Calculate time until exhaustion
+  const msUntilExhausted = remainingPercent / burnRatePerMs;
+
+  return msUntilExhausted;
+}
+
+/**
  * Gets visual indicator based on burn rate (usage vs time elapsed)
  * @param {number} utilization - Percentage of limit used (0-100)
  * @param {string} resetsAt - ISO 8601 timestamp when period resets
@@ -355,10 +412,24 @@ function analyzeBurnRate(usageData) {
     ((now - fiveHourStartTime) / PERIOD_DURATION.FIVE_HOUR) * 100;
   const fiveHourBurnRatio = fiveHourData.utilization / fiveHourElapsed;
 
-  debug(
+  let fiveHourMsg =
     `5-hour block: ${fiveHourData.utilization.toFixed(1)}% used, ${fiveHourElapsed.toFixed(1)}% elapsed, ` +
-      `burn ratio: ${fiveHourBurnRatio.toFixed(2)}x, resets at ${fiveHourData.resets_at}`,
-  );
+    `burn ratio: ${fiveHourBurnRatio.toFixed(2)}x, resets at ${fiveHourData.resets_at}`;
+
+  // Add exhaustion projection if burning too fast
+  if (fiveHourBurnRatio >= 1.3) {
+    const msUntilExhausted = calculateTimeUntilExhausted(
+      fiveHourData.utilization,
+      fiveHourData.resets_at,
+      PERIOD_DURATION.FIVE_HOUR,
+    );
+    if (msUntilExhausted !== null) {
+      const exhaustionTime = formatMsRemaining(msUntilExhausted);
+      fiveHourMsg += ` → projected exhaustion in ${exhaustionTime}`;
+    }
+  }
+
+  debug(fiveHourMsg);
 
   // 7-day usage analysis
   if (usageData.seven_day) {
@@ -368,10 +439,24 @@ function analyzeBurnRate(usageData) {
       ((now - sevenDayStartTime) / PERIOD_DURATION.SEVEN_DAY) * 100;
     const sevenDayBurnRatio = usageData.seven_day.utilization / sevenDayElapsed;
 
-    debug(
+    let sevenDayMsg =
       `7-day usage: ${usageData.seven_day.utilization.toFixed(1)}% used, ${sevenDayElapsed.toFixed(1)}% elapsed, ` +
-        `burn ratio: ${sevenDayBurnRatio.toFixed(2)}x, resets at ${usageData.seven_day.resets_at}`,
-    );
+      `burn ratio: ${sevenDayBurnRatio.toFixed(2)}x, resets at ${usageData.seven_day.resets_at}`;
+
+    // Add exhaustion projection if burning too fast
+    if (sevenDayBurnRatio >= 1.3) {
+      const msUntilExhausted = calculateTimeUntilExhausted(
+        usageData.seven_day.utilization,
+        usageData.seven_day.resets_at,
+        PERIOD_DURATION.SEVEN_DAY,
+      );
+      if (msUntilExhausted !== null) {
+        const exhaustionTime = formatMsRemaining(msUntilExhausted);
+        sevenDayMsg += ` → projected exhaustion in ${exhaustionTime}`;
+      }
+    }
+
+    debug(sevenDayMsg);
   }
 
   // Opus usage
@@ -451,8 +536,22 @@ const indicator = getIndicatorForBurnRate(
   PERIOD_DURATION.FIVE_HOUR,
 );
 
+// Add projection when in danger
+let fiveHourDisplay = `${indicator}${endTimeStr}`;
+if (indicator === INDICATORS.DANGER) {
+  const msUntilExhausted = calculateTimeUntilExhausted(
+    fiveHourData.utilization,
+    fiveHourData.resets_at,
+    PERIOD_DURATION.FIVE_HOUR,
+  );
+  if (msUntilExhausted !== null) {
+    const exhaustionTime = formatMsRemaining(msUntilExhausted);
+    fiveHourDisplay = `${indicator}${exhaustionTime}/${endTimeStr}`;
+  }
+}
+
 // Step 7: Add 7-day quota indicator if available
-let output = `${indicator}${endTimeStr}`;
+let output = fiveHourDisplay;
 
 if (usageData.seven_day && usageData.seven_day.resets_at) {
   const sevenDayIndicator = getIndicatorForBurnRate(
@@ -461,7 +560,23 @@ if (usageData.seven_day && usageData.seven_day.resets_at) {
     PERIOD_DURATION.SEVEN_DAY,
   );
   const sevenDayRemaining = formatTimeRemaining(usageData.seven_day.resets_at);
-  output += ` ${sevenDayIndicator}${sevenDayRemaining}`;
+
+  let sevenDayDisplay = `${sevenDayIndicator}${sevenDayRemaining}`;
+
+  // Add projection for 7-day when in danger
+  if (sevenDayIndicator === INDICATORS.DANGER) {
+    const msUntilExhausted = calculateTimeUntilExhausted(
+      usageData.seven_day.utilization,
+      usageData.seven_day.resets_at,
+      PERIOD_DURATION.SEVEN_DAY,
+    );
+    if (msUntilExhausted !== null) {
+      const exhaustionTime = formatMsRemaining(msUntilExhausted);
+      sevenDayDisplay = `${sevenDayIndicator}${exhaustionTime}/${sevenDayRemaining}`;
+    }
+  }
+
+  output += ` ${sevenDayDisplay}`;
 }
 
 console.log(output);
