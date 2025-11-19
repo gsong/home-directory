@@ -168,9 +168,12 @@
     "padding": 0
   },
   "sandbox": {
-    "excludedCommands": ["git", "gh"],
+    "enabled": true,
     "autoAllowBashIfSandboxed": true,
-    "enabled": true
+    "excludedCommands": [
+      "git",
+      "gh"
+    ]
   },
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
