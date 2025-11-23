@@ -78,6 +78,7 @@ cask "quicklook-json"          # Preview JSON files
 cask "1password", greedy: true
 cask "1password-cli", greedy: true
 cask "alfred", greedy: true    # Application launcher and productivity
+cask "bartender", greedy: true   # Menu bar management
 cask "betterdisplay", greedy: true # Display management
 cask "cheatsheet"              # Display active app shortcuts
 cask "focusatwill"             # Focus music
