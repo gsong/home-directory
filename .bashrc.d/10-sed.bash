@@ -1,5 +1,3 @@
-if hash gsed 2>/dev/null; then
-  brew_prefix=$(brew --prefix)
-
-  export PATH=$brew_prefix/opt/gnu-sed/libexec/gnubin:$PATH
+if command -v gsed >/dev/null 2>&1 && [[ -n "${HOMEBREW_PREFIX}" ]]; then
+	export PATH="${HOMEBREW_PREFIX}/opt/gnu-sed/libexec/gnubin:${PATH}"
 fi

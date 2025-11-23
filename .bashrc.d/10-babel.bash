@@ -1,1 +1,1 @@
-export BABEL_CACHE_PATH=/tmp/babel.json
+export BABEL_CACHE_PATH="${TMPDIR:-/tmp}/babel-${USER}.json"

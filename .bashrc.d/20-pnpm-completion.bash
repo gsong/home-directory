@@ -1,4 +1,7 @@
 ###-begin-pnpm-completion-###
+# Only load in interactive shells
+[[ $- == *i* ]] || return
+
 if type complete &>/dev/null; then
   _pnpm_completion () {
     local words cword
@@ -9,16 +12,16 @@ if type complete &>/dev/null; then
       words=("${COMP_WORDS[@]}")
     fi
 
-    local si="$IFS"
+    local saved_ifs="$IFS"
     IFS=$'\n' COMPREPLY=($(COMP_CWORD="$cword" \
                            COMP_LINE="$COMP_LINE" \
                            COMP_POINT="$COMP_POINT" \
                            SHELL=bash \
                            pnpm completion-server -- "${words[@]}" \
                            2>/dev/null)) || return $?
-    IFS="$si"
+    IFS="$saved_ifs"
 
-    if [ "$COMPREPLY" = "__tabtab_complete_files__" ]; then
+    if [[ "$COMPREPLY" == "__tabtab_complete_files__" ]]; then
       COMPREPLY=($(compgen -f -- "$cword"))
     fi
 

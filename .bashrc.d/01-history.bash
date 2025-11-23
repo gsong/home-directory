@@ -1,6 +1,8 @@
 export HISTCONTROL=ignoredups:erasedups:ignorespace
 export HISTIGNORE="&:?:??:exit:history:j *:tmux"
-export HISTSIZE=10000
+export HISTSIZE=50000
+export HISTFILESIZE=50000
+export HISTTIMEFORMAT='%F %T '
 shopt -s histappend
 
 if [[ $- == *i* ]]; then
