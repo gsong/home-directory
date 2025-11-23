@@ -1,13 +1,11 @@
-CPU=$(uname -p)
+CPU=$(uname -m)
 
-if [[ "$CPU" == "arm" ]]; then
+if [[ "$CPU" == "arm64" ]]; then
 	export HOMEBREW_PREFIX="/opt/homebrew"
-elif hash brew 2>/dev/null; then
-	export HOMEBREW_PREFIX=$(brew --prefix)
+else
+	export HOMEBREW_PREFIX="/usr/local"
 fi
 
-export HOMEBREW_CELLAR="${HOMEBREW_PREFIX}/Cellar"
-export HOMEBREW_REPOSITORY="${HOMEBREW_PREFIX}"
 export PATH="${HOMEBREW_PREFIX}/bin:${HOMEBREW_PREFIX}/sbin${PATH+:$PATH}"
 export MANPATH="${HOMEBREW_PREFIX}/share/man${MANPATH+:$MANPATH}:"
 export INFOPATH="${HOMEBREW_PREFIX}/share/info:${INFOPATH:-}"

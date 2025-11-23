@@ -10,7 +10,6 @@ alias npx='pnpm dlx'
 alias pdfcombine='"/System/Library/Automator/Combine PDF Pages.action/Contents/Resources/join.py"'
 alias pgrep='pgrep -f -l'
 alias pkill='pkill -f -l'
-alias rm='rm -i'
 alias top='top -s 5 -o cpu -stats pid,user,command,cpu,rsize,vsize,threads,state'
 
 alias start-docker='open -ga Docker'
@@ -21,7 +20,7 @@ alias speedtest='speedtest --secure'
 
 alias vimr='vimr --cur-env'
 
-if hash vimr 2>/dev/null; then
+if command -v vimr >/dev/null 2>&1; then
 	if [[ "$TERM_PROGRAM" == "Apple_Terminal" ]] || [[ "$TERM_PROGRAM" == "tmux" ]]; then
 		alias vi='vimr --cur-env'
 	fi
