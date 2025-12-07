@@ -1,12 +1,16 @@
 # ${HOME} Setup
 
-Configurations and habits for JavaScript and Python development on macOS.
+macOS dotfiles for JS/Python development.
 
-Here's the rough steps (not tested yet):
+## Prerequisites
 
-1. Install [Homebrew](https://brew.sh/)
+- macOS
+- [Homebrew](https://brew.sh/)
+
+## Setup
+
 1. `brew install stow`
-1. Clone this repo to `${HOME}/.home-directory/` (or any other directory off of `${HOME}`)
-1. `stow -R --no-folding --adopt .`
+2. Clone to `~/.home-directory/`
+3. `stow -R --no-folding --adopt .`
 
-Setup inspired by <https://knowler.dev/blog/maintaining-dotfiles>.
+Inspired by <https://knowler.dev/blog/maintaining-dotfiles>.
