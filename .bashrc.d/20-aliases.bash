@@ -28,3 +28,5 @@ fi
 
 alias tm='task-master'
 alias taskmaster='task-master'
+
+alias ccd='ccmcp --allow-dangerously-skip-permissions'
