@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "perplexity": {
+      "command": "perplexity-mcp"
+    }
+  }
+}

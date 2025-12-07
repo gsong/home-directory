@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "auth0": {
+      "command": "auth0-mcp",
+      "args": ["run"]
+    }
+  }
+}
