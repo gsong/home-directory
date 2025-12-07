@@ -118,7 +118,11 @@
       "mcp__notion__notion-update-page",
       "mcp__probe__extract_code",
       "mcp__probe__query_code",
-      "mcp__probe__search_code"
+      "mcp__probe__search_code",
+      "mcp__perplexity__perplexity_ask",
+      "mcp__perplexity__perplexity_research",
+      "mcp__perplexity__perplexity_reason",
+      "mcp__perplexity__perplexity_search"
     ]
   },
   "hooks": {
@@ -166,14 +170,6 @@
     "type": "command",
     "command": "ccstatusline",
     "padding": 0
-  },
-  "sandbox": {
-    "enabled": true,
-    "autoAllowBashIfSandboxed": true,
-    "excludedCommands": [
-      "git",
-      "gh"
-    ]
   },
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
