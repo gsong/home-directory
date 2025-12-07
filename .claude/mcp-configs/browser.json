@@ -1,10 +1,7 @@
 {
   "mcpServers": {
     "browser": {
-      "type": "stdio",
-      "command": "mcp-server-browsermcp",
-      "args": [],
-      "env": {}
+      "command": "mcp-server-browsermcp"
     }
   }
 }

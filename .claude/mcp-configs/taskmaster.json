@@ -1,10 +1,7 @@
 {
   "mcpServers": {
     "tm": {
-      "type": "stdio",
-      "command": "task-master-mcp",
-      "args": [],
-      "env": {}
+      "command": "task-master-mcp"
     }
   }
 }
