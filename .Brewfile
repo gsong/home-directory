@@ -17,7 +17,6 @@ brew "wget"                    # Non-interactive network downloader
 # Development Tools
 brew "automake"                # Makefile generator
 brew "bfg"                     # Remove large files from Git history
-brew "dotnet"                  # .NET SDK
 brew "fx"                      # JSON viewer and processor
 brew "gh"                      # GitHub CLI
 brew "git"                     # Distributed version control
