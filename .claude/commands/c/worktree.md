@@ -59,19 +59,25 @@ Execute the following commands as separate, discrete operations:
 git worktree add -b {branch-name} .worktrees/{short-dir-name}
 ```
 
-2. If `.mise.toml` exists in the new worktree, trust it:
+2. If `.env` exists in the project root, copy it to the new worktree:
+
+```bash
+cp .env .worktrees/{short-dir-name}/.env
+```
+
+3. If `mise.toml` or `.mise.toml` exists in the new worktree, trust it:
 
 ```bash
 cd .worktrees/{short-dir-name} && mise trust
 ```
 
-3. If `.envrc` exists in the new worktree, allow direnv:
+4. If `.envrc` exists in the new worktree, allow direnv:
 
 ```bash
 cd .worktrees/{short-dir-name} && direnv allow
 ```
 
-4. If `package.json` exists in the new worktree, install dependencies:
+5. If `package.json` exists in the new worktree, install dependencies:
 
 ```bash
 cd .worktrees/{short-dir-name} && pnpm install
@@ -85,4 +91,4 @@ Tell the user:
 
 - The branch name that was created
 - The worktree directory path
-- Which setup steps were performed (mise trusted if applicable, direnv allowed if applicable, dependencies installed if applicable)
+- Which setup steps were performed (.env copied if applicable, mise trusted if applicable, direnv allowed if applicable, dependencies installed if applicable)
