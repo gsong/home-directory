@@ -8,7 +8,7 @@ CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR = "true"
 [tools]
 "cargo:zizmor" = "latest"
 "gem:teamocil" = "latest"
-"npm:@anthropic-ai/claude-code" = "2.0.51"
+"npm:@anthropic-ai/claude-code" = "latest"
 "npm:@auth0/auth0-mcp-server" = "latest"
 "npm:@browsermcp/mcp" = "latest"
 "npm:@google/gemini-cli" = "latest"
@@ -52,3 +52,4 @@ shellcheck = "latest"
 tree-sitter = "latest"
 uv = "latest"
 dotnet = "latest"
+aws-cli = { version = "latest", symlink_bins = "true" }
