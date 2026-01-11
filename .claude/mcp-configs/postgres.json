@@ -2,9 +2,14 @@
   "mcpServers": {
     "postgres": {
       "command": "uvx",
-      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "args": [
+        "--python",
+        "3.12",
+        "postgres-mcp",
+        "--access-mode=unrestricted"
+      ],
       "env": {
-        "DATABASE_URI": "postgres://postgres:postgres@localhost:5432/postgres"
+        "DATABASE_URI": "${DATABASE_URL}"
       }
     }
   }
