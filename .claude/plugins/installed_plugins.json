@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "plugins": {
+    "frontend-design@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/frontend-design/4fee769bf4ec",
+        "version": "4fee769bf4ec",
+        "installedAt": "2026-01-13T19:44:07.991Z",
+        "lastUpdated": "2026-01-13T19:44:07.991Z",
+        "gitCommitSha": "4fee769bf4ec2f271f46c908f44e1cdf6add897c"
+      }
+    ],
+    "ast-grep@ast-grep-marketplace": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/ast-grep-marketplace/ast-grep/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-01-13T19:44:16.148Z",
+        "lastUpdated": "2026-01-13T19:44:16.148Z",
+        "gitCommitSha": "d46b7d0cd238000e35bfcd57aa95edb3ed6a573c"
+      }
+    ],
+    "feature-dev@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/feature-dev/4fee769bf4ec",
+        "version": "4fee769bf4ec",
+        "installedAt": "2026-01-13T19:46:21.001Z",
+        "lastUpdated": "2026-01-13T19:46:21.001Z",
+        "gitCommitSha": "4fee769bf4ec2f271f46c908f44e1cdf6add897c"
+      }
+    ],
+    "code-review@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/code-review/unknown",
+        "version": "unknown",
+        "installedAt": "2026-01-14T01:40:19.846Z",
+        "lastUpdated": "2026-01-14T01:40:19.846Z"
+      }
+    ]
+  }
+}
