@@ -36,7 +36,7 @@
 ## Tools
 
 - Use `/bin/ls` for file listing
-- Prefer ast-grep for code search
+- **CRITICAL: Use `ast-grep` skill for structural code search** - invoke via Skill tool when exploring codebases, finding patterns, locating functions/classes, or understanding code structure. Prefer over Grep/Glob for semantic code queries.
 - **CRITICAL: Use mermaid v10.2.3 syntax - NON-NEGOTIABLE**
 
 ## Subagents

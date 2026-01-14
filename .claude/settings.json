@@ -171,6 +171,12 @@
     "command": "ccstatusline",
     "padding": 0
   },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": false,
+    "ast-grep@ast-grep-marketplace": true,
+    "feature-dev@claude-plugins-official": false,
+    "code-review@claude-plugins-official": true
+  },
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754086408110
