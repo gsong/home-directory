@@ -2,26 +2,44 @@
 
 Perform a comprehensive code review for PR #$ARGUMENTS
 
-## Review Process
+**All output goes to `ai-swap/pr-review-$ARGUMENTS.md` - never post comments to GitHub.**
 
-1. **Checkout Branch**: Use `gh pr checkout $ARGUMENTS` to check out the PR branch locally for thorough review
-2. **Run `/code-review:code-review` command**: Run `/code-review:code-review $ARGUMENTS` and incorporate its results into your analysis
-3. **Analyze Changes**: Examine all modified files and understand the scope of changes
-4. **Code Quality**: Check for adherence to project conventions, best practices, and style guidelines
-5. **Security**: Review for potential security vulnerabilities or data exposure
-6. **Performance**: Identify potential performance issues or improvements
-7. **Documentation**: Ensure code is self-documenting and complex logic is explained
+## Setup
+
+1. Create output file: `ai-swap/pr-review-$ARGUMENTS.md`
+2. Checkout the PR branch: `gh pr checkout $ARGUMENTS`
+
+## Reviews
+
+### Phase 1: Initial Reviews (parallel)
+
+Run these two in parallel. Include in each prompt:
+
+> "Write findings to `ai-swap/pr-review-$ARGUMENTS.md`. Do not post comments to GitHub."
+
+1. **Agent review**: Launch `superpowers:code-reviewer` agent (Task tool) for PR #$ARGUMENTS
+2. **Built-in review**: Run `/review $ARGUMENTS` (Skill tool)
+
+Wait for both to complete, then draft the preliminary report to `ai-swap/pr-review-$ARGUMENTS.md`.
+
+### Phase 2: Final Review
+
+Run `/code-review:code-review $ARGUMENTS` (Skill tool) with the same constraint.
+
+Update the report with its findings.
 
 ## Output Format
 
-Do NOT comment directly on the PR itself. Focus on actionable items and decisions only. Skip praise and in-depth analysis.
-
-Provide a concise review with:
+The final report in `ai-swap/pr-review-$ARGUMENTS.md` should contain:
 
 - **Decision**: MERGE or NO MERGE
-- **Action Items**: Only include items that require fixing or decisions
-- **Needs Decision**: Items that require user input or clarification
+- **Action Items**: Issues that require fixing
+- **Needs Decision**: Items requiring user input or clarification
 
-Focus on user-facing behavior, maintainability, and adherence to the project's testing philosophy of minimizing mocks and testing real implementations.
+Focus on:
 
-Ultrathink and create a structured markdown file with the assessment in the ai-swap/ directory.
+- User-facing behavior
+- Maintainability
+- Testing philosophy (minimize mocks, test real implementations)
+
+Skip praise and lengthy analysis - actionable items only.

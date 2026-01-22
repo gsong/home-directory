@@ -14,6 +14,7 @@
 
 - Challenge assumptions, suggest alternatives
 - Keep explanations concise, no flattery
+- **ALWAYS use AskUserQuestion tool** when asking for feedback or questions that require user input
 
 ## Package Management
 
