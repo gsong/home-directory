@@ -4,10 +4,10 @@
     "frontend-design@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/frontend-design/4fee769bf4ec",
-        "version": "4fee769bf4ec",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/frontend-design/96276205880a",
+        "version": "96276205880a",
         "installedAt": "2026-01-13T19:44:07.991Z",
-        "lastUpdated": "2026-01-13T19:44:07.991Z",
+        "lastUpdated": "2026-01-18T01:07:54.192Z",
         "gitCommitSha": "4fee769bf4ec2f271f46c908f44e1cdf6add897c"
       }
     ],
@@ -24,20 +24,50 @@
     "feature-dev@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/feature-dev/4fee769bf4ec",
-        "version": "4fee769bf4ec",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/feature-dev/96276205880a",
+        "version": "96276205880a",
         "installedAt": "2026-01-13T19:46:21.001Z",
-        "lastUpdated": "2026-01-13T19:46:21.001Z",
+        "lastUpdated": "2026-01-18T01:07:43.632Z",
         "gitCommitSha": "4fee769bf4ec2f271f46c908f44e1cdf6add897c"
       }
     ],
     "code-review@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/code-review/unknown",
-        "version": "unknown",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/code-review/96276205880a",
+        "version": "96276205880a",
         "installedAt": "2026-01-14T01:40:19.846Z",
-        "lastUpdated": "2026-01-14T01:40:19.846Z"
+        "lastUpdated": "2026-01-18T01:07:08.525Z"
+      }
+    ],
+    "typescript-lsp@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/typescript-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-01-16T21:17:49.094Z",
+        "lastUpdated": "2026-01-16T21:17:49.094Z",
+        "gitCommitSha": "f70b65538da094ff474a855e7a679fb2c2c8064f"
+      }
+    ],
+    "superpowers@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/superpowers/4.0.3",
+        "version": "4.0.3",
+        "installedAt": "2026-01-18T01:08:38.861Z",
+        "lastUpdated": "2026-01-18T01:08:38.861Z",
+        "gitCommitSha": "a08f088968d0789a44a4f5f5f7d8d6bbe46a0b44"
+      }
+    ],
+    "code-simplifier@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/code-simplifier/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-01-21T15:28:57.129Z",
+        "lastUpdated": "2026-01-21T15:28:57.129Z",
+        "gitCommitSha": "e30768372b4150ca1bc0839d93283e8edc30d60d"
       }
     ]
   }
