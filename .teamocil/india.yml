@@ -1,4 +1,4 @@
-name: "general"
+name: "main"
 windows:
   - name: india
     root: ~/src/gsong/indianagy.com/
