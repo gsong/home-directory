@@ -1,0 +1,3 @@
+[submodule ".tmux/plugins/tmux-powerkit"]
+	path = .tmux/plugins/tmux-powerkit
+	url = https://github.com/fabioluciano/tmux-powerkit.git
