@@ -182,6 +182,7 @@
     "code-simplifier@claude-plugins-official": true
   },
   "alwaysThinkingEnabled": true,
+  "autoUpdatesChannel": "latest",
   "feedbackSurveyState": {
     "lastShownTime": 1754086408110
   }
