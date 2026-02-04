@@ -1,4 +1,4 @@
-name: "general"
+name: "main"
 windows:
   - name: site
     root: ~/src/gsong/personal-site/
