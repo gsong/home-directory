@@ -15,7 +15,7 @@ Shell (bash), git, tmux, and editor configs.
 
 1. `brew install stow`
 2. Clone to `~/.home-directory/`
-3. `stow -R --no-folding --adopt .`
+3. `git submodule update --init --recursive && stow -R --no-folding --adopt .`
 4. `bin/brew-install`
 
 Inspired by <https://knowler.dev/blog/maintaining-dotfiles>.
