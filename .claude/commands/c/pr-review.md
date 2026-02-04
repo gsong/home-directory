@@ -4,41 +4,76 @@ Perform a comprehensive code review for PR #$ARGUMENTS
 
 **All output goes to `ai-swap/pr-review-$ARGUMENTS.md` - never post comments to GitHub.**
 
-## Setup
+## Phase 1: Setup
 
-1. Create output file: `ai-swap/pr-review-$ARGUMENTS.md`
-2. Checkout the PR branch: `gh pr checkout $ARGUMENTS`
+1. Checkout the PR branch: `gh pr checkout $ARGUMENTS`
+2. Get PR metadata: `gh pr view $ARGUMENTS --json title,body,files,additions,deletions`
 
-## Reviews
+## Phase 2: Initial Reviews (parallel)
 
-### Phase 1: Initial Reviews (parallel)
+Launch these two agents in parallel. **Agents return findings only - do not write to files.**
 
-Run these two in parallel. Include in each prompt:
+1. **superpowers:code-reviewer agent** (Task tool)
+   - Prompt: "Review PR #$ARGUMENTS. Return your findings as structured output. Do not write to any files. Do not post comments to GitHub."
 
-> "Write findings to `ai-swap/pr-review-$ARGUMENTS.md`. Do not post comments to GitHub."
+2. **Built-in /review skill** (Skill tool)
+   - Run: `/review $ARGUMENTS`
 
-1. **Agent review**: Launch `superpowers:code-reviewer` agent (Task tool) for PR #$ARGUMENTS
-2. **Built-in review**: Run `/review $ARGUMENTS` (Skill tool)
+Wait for both to complete before proceeding.
 
-Wait for both to complete, then draft the preliminary report to `ai-swap/pr-review-$ARGUMENTS.md`.
+## Phase 3: Final Review (serial)
 
-### Phase 2: Final Review
+After Phase 2 completes, run:
 
-Run `/code-review:code-review $ARGUMENTS` (Skill tool) with the same constraint.
+- **/code-review:code-review skill** (Skill tool)
+  - Run: `/code-review:code-review $ARGUMENTS`
 
-Update the report with its findings.
+This must run after the initial reviews complete.
+
+## Phase 4: Synthesis
+
+**You (the orchestrator) write the final report.** Do not delegate this step.
+
+1. Read the findings returned by all three agents
+2. Deduplicate issues (same issue from multiple agents = one item)
+3. Categorize by severity and actionability
+4. Write the consolidated report to `ai-swap/pr-review-$ARGUMENTS.md`
 
 ## Output Format
 
-The final report in `ai-swap/pr-review-$ARGUMENTS.md` should contain:
+The final report must contain:
 
-- **Decision**: MERGE or NO MERGE
-- **Action Items**: Issues that require fixing
-- **Needs Decision**: Items requiring user input or clarification
+```markdown
+# PR #$ARGUMENTS Review
 
-Focus on:
+## Decision: MERGE | NO MERGE
 
-- User-facing behavior
+## Action Items
+
+<!-- Issues that must be fixed before merge -->
+
+## Needs Decision
+
+<!-- Items requiring user input or clarification -->
+
+## Findings by Source
+
+### superpowers:code-reviewer
+
+<!-- Summary of findings -->
+
+### Built-in /review
+
+<!-- Summary of findings -->
+
+### /code-review:code-review
+
+<!-- Summary of findings -->
+```
+
+## Review Focus
+
+- User-facing behavior correctness
 - Maintainability
 - Testing philosophy (minimize mocks, test real implementations)
 
