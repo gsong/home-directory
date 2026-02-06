@@ -45,7 +45,7 @@
 - **STRONGLY PREFER subagents** - use for speed and efficiency
 - Parallelize whenever possible
 - **CRITICAL**: Check .claude/CLAUDE.md for MANDATORY subagent usage
-- When docs-lookup exists: use for refactoring, UI changes, features, state
+- When docs-lookup skill exists: use before code changes (hook auto-prompts this)
 
 ## Skills
 
