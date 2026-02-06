@@ -1,4 +1,6 @@
 {
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": ["reminders"],
   "permissions": {
     "allow": [
       "Bash(TZ:*)",
@@ -70,10 +72,6 @@
       "mcp__linear__get_user",
       "mcp__linear__search_documentation",
       "WebSearch"
-    ],
-    "deny": [],
-    "ask": []
-  },
-  "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": ["reminders"]
+    ]
+  }
 }
