@@ -4,10 +4,10 @@
     "frontend-design@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/frontend-design/236752ad9ab3",
-        "version": "236752ad9ab3",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/frontend-design/2cd88e7947b7",
+        "version": "2cd88e7947b7",
         "installedAt": "2026-01-13T19:44:07.991Z",
-        "lastUpdated": "2026-02-05T22:42:21.763Z",
+        "lastUpdated": "2026-02-06T23:53:15.876Z",
         "gitCommitSha": "4fee769bf4ec2f271f46c908f44e1cdf6add897c"
       }
     ],
@@ -24,20 +24,20 @@
     "feature-dev@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/feature-dev/236752ad9ab3",
-        "version": "236752ad9ab3",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/feature-dev/2cd88e7947b7",
+        "version": "2cd88e7947b7",
         "installedAt": "2026-01-13T19:46:21.001Z",
-        "lastUpdated": "2026-02-05T22:42:21.764Z",
+        "lastUpdated": "2026-02-06T23:53:15.875Z",
         "gitCommitSha": "4fee769bf4ec2f271f46c908f44e1cdf6add897c"
       }
     ],
     "code-review@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/code-review/236752ad9ab3",
-        "version": "236752ad9ab3",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/code-review/2cd88e7947b7",
+        "version": "2cd88e7947b7",
         "installedAt": "2026-01-14T01:40:19.846Z",
-        "lastUpdated": "2026-02-05T22:42:21.764Z"
+        "lastUpdated": "2026-02-06T23:53:15.873Z"
       }
     ],
     "typescript-lsp@claude-plugins-official": [
