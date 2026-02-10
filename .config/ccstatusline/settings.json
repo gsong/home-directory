@@ -1,0 +1,87 @@
+{
+  "version": 3,
+  "lines": [
+    [
+      {
+        "id": "1",
+        "type": "model",
+        "color": "brightGreen",
+        "rawValue": true
+      },
+      {
+        "id": "2",
+        "type": "separator",
+        "character": "|"
+      },
+      {
+        "id": "3",
+        "type": "context-percentage",
+        "color": "brightYellow",
+        "rawValue": true
+      },
+      {
+        "id": "7277ec1b-7775-4da9-8b85-0385dcffd1ee",
+        "type": "custom-text",
+        "customText": " ("
+      },
+      {
+        "id": "5",
+        "type": "context-length",
+        "color": "brightMagenta",
+        "rawValue": true
+      },
+      {
+        "id": "026978c5-ce97-42dd-bf8a-d2b5d0bce113",
+        "type": "custom-text",
+        "customText": ") | ⟳ "
+      },
+      {
+        "id": "ab219f7a-eddb-4738-8784-c363c00546b1",
+        "type": "custom-command",
+        "commandPath": "cc-time-left.mjs",
+        "color": ""
+      }
+    ],
+    [
+      {
+        "id": "035e0979-ce83-4707-8d2c-6c07fa0f4d54",
+        "type": "current-working-dir",
+        "color": "",
+        "backgroundColor": "bgBrightBlack",
+        "rawValue": true,
+        "metadata": {
+          "segments": "2"
+        }
+      },
+      {
+        "id": "cc-pr-number",
+        "type": "custom-command",
+        "commandPath": "cc-pr-number.mjs",
+        "color": "brightGreen"
+      },
+      {
+        "id": "2ad7e866-745b-4fb5-8310-7433dfa6a775",
+        "type": "separator"
+      },
+      {
+        "id": "1f04e061-2ad3-4ac6-b827-9bff3171262c",
+        "type": "custom-command",
+        "color": "brightCyan",
+        "commandPath": "git statusline"
+      }
+    ]
+  ],
+  "flexMode": "full-until-compact",
+  "compactThreshold": 60,
+  "colorLevel": 3,
+  "inheritSeparatorColors": false,
+  "globalBold": false,
+  "powerline": {
+    "enabled": false,
+    "separators": [""],
+    "separatorInvertBackground": [false],
+    "startCaps": [],
+    "endCaps": [],
+    "autoAlign": false
+  }
+}
