@@ -37,6 +37,7 @@ brew "bash-completion@2"       # Bash completion scripts
 brew "fd"                      # Modern find replacement
 brew "fzf"                     # Command-line fuzzy finder
 brew "m-cli"                   # macOS command-line tools
+brew "mole"                    # Deep clean and optimize your Mac
 brew "mise"                    # Polyglot runtime version manager
 brew "pam-reattach"            # Touch ID support for tmux
 brew "reattach-to-user-namespace" # macOS clipboard support for tmux
