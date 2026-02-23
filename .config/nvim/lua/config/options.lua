@@ -6,8 +6,11 @@ vim.g.lazyvim_prettier_needs_config = false
 vim.g.snacks_animate = false
 vim.opt.relativenumber = false
 
-if vim.env.VIMRUNTIME and vim.env.VIMRUNTIME:lower():find("vimr") then
+if (vim.env.VIMRUNTIME and vim.env.VIMRUNTIME:lower():find("vimr")) or vim.g.neovide then
   vim.o.background = "light"
+  if vim.g.neovide then
+    vim.o.guifont = "SauceCodePro NF:h14"
+  end
 else
   vim.o.background = "dark"
 end
