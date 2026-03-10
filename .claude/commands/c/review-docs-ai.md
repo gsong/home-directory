@@ -58,10 +58,10 @@ You are the **team lead**. Use delegate mode (Shift+Tab) during Phase 2 to stay 
    3. **Remove unnecessary content**:
       - Outdated information
       - Verbose explanations that could be one line
-      - Code snippets that could be file:line references
+      - Code snippets that could be file::Symbol references
       - Redundant information covered elsewhere
    4. **Edit for effectiveness**:
-      - Use file:line references (e.g., `src/store/useAppStore.ts:45`) instead of code blocks
+      - Use file::Symbol references (e.g., `src/store/useAppStore.ts::useAppStore`) instead of code blocks
       - Keep explanations concise and scannable
       - Ensure headings clearly indicate content
       - Focus on "what Claude Code needs to know" not "what humans want to read"
@@ -79,7 +79,7 @@ You are the **team lead**. Use delegate mode (Shift+Tab) during Phase 2 to stay 
 1. **Spawn QA teammate**: Use Task tool with `team_name: "docs-review"`, `name: "qa"`, general-purpose subagent type. QA prompt must instruct it to:
    - Read every doc file that was edited in Phase 2
    - **Validate cross-references**: Ensure links between docs point to real sections that exist
-   - **Validate file:line references**: Spot-check that referenced files and approximate line numbers exist
+   - **Validate file::Symbol references**: Spot-check that referenced symbols exist in the referenced files (grep for the symbol name)
    - **Check consistency**: Terminology, formatting, heading styles, and voice should be uniform across all docs
    - **Check completeness**: Verify the structural analysis recommendations from Phase 1 were addressed
    - **Fix minor issues directly**: Typos, broken links, formatting inconsistencies
