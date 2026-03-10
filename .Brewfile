@@ -49,7 +49,6 @@ brew "tmux"                    # Terminal multiplexer
 # Editor Tools
 brew "luarocks"                # Lua package manager (for Neovim)
 brew "neovim"                  # Hyperextensible Vim-based text editor
-cask "neovide"                 # Neovim GUI with animations
 cask "vimr"                    # Neovim GUI for macOS
 
 # Miscellaneous CLI Tools
