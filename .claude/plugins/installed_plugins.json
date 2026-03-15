@@ -4,10 +4,10 @@
     "frontend-design@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/frontend-design/205b6e0b3036",
-        "version": "205b6e0b3036",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/frontend-design/d5c15b861cd2",
+        "version": "d5c15b861cd2",
         "installedAt": "2026-01-13T19:44:07.991Z",
-        "lastUpdated": "2026-03-04T01:10:33.938Z",
+        "lastUpdated": "2026-03-13T22:03:40.491Z",
         "gitCommitSha": "4fee769bf4ec2f271f46c908f44e1cdf6add897c"
       }
     ],
@@ -24,20 +24,20 @@
     "feature-dev@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/feature-dev/205b6e0b3036",
-        "version": "205b6e0b3036",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/feature-dev/d5c15b861cd2",
+        "version": "d5c15b861cd2",
         "installedAt": "2026-01-13T19:46:21.001Z",
-        "lastUpdated": "2026-03-04T01:10:33.938Z",
+        "lastUpdated": "2026-03-13T22:03:40.491Z",
         "gitCommitSha": "4fee769bf4ec2f271f46c908f44e1cdf6add897c"
       }
     ],
     "code-review@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/code-review/205b6e0b3036",
-        "version": "205b6e0b3036",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/code-review/d5c15b861cd2",
+        "version": "d5c15b861cd2",
         "installedAt": "2026-01-14T01:40:19.846Z",
-        "lastUpdated": "2026-03-04T01:10:33.937Z"
+        "lastUpdated": "2026-03-13T22:03:40.488Z"
       }
     ],
     "typescript-lsp@claude-plugins-official": [
@@ -53,10 +53,10 @@
     "superpowers@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.0",
-        "version": "5.0.0",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.2",
+        "version": "5.0.2",
         "installedAt": "2026-01-18T01:08:38.861Z",
-        "lastUpdated": "2026-03-09T22:38:20.835Z",
+        "lastUpdated": "2026-03-12T14:03:17.352Z",
         "gitCommitSha": "a08f088968d0789a44a4f5f5f7d8d6bbe46a0b44"
       }
     ],
