@@ -141,6 +141,7 @@ cask "notion"                  # All-in-one workspace
 cask "screenflow"              # Screen recording
 cask "shottr"                  # Screenshot tool
 cask "taskpaper"               # Plain text task management
+cask "adobe-acrobat-reader"    # PDF viewer
 cask "vlc"                     # Media player
 
 # Fonts
