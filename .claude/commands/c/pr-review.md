@@ -2,7 +2,7 @@
 
 Perform a comprehensive code review for PR #$ARGUMENTS
 
-**All output goes to `ai-swap/pr-review-$ARGUMENTS.md` - never post comments to GitHub.**
+**All output goes to `ai-swap/pr-review-$ARGUMENTS.md` and `ai-swap/pr-review-$ARGUMENTS.json` - never post comments to GitHub directly.**
 
 ## Phase 1: Setup
 
@@ -70,6 +70,42 @@ The final report must contain:
 
 <!-- Summary of findings -->
 ```
+
+## Phase 5: Structured JSON Output
+
+After writing the markdown report, also produce a machine-readable JSON file for `/c:post-pr-comments`.
+
+1. Get the current PR head SHA: `gh pr view $ARGUMENTS --json headRefOid --jq .headRefOid`
+2. Get the repo in `owner/repo` format: `gh repo view --json nameWithOwner --jq .nameWithOwner`
+3. Get the PR diff: `gh pr diff $ARGUMENTS`
+4. For each **actionable** finding in the markdown report (Action Items and Needs Decision sections only — skip praise and observations):
+   - Identify the `path` (file path relative to repo root)
+   - Identify the `line` (end line in the new version of the file) and optional `start_line` (for multi-line ranges)
+   - Verify both `line` and `start_line` fall within a diff hunk for that file — if not, skip the finding and note it was unmappable
+   - Set `severity` to `must-fix`, `should-fix`, or `nit` based on the finding's categorization
+   - Set `side` to `LEFT` only if the comment targets a deleted line; otherwise omit (defaults to `RIGHT`)
+   - Validate `body` is under 65536 characters
+5. Write the JSON to `ai-swap/pr-review-$ARGUMENTS.json`:
+
+```json
+{
+  "pr": 311,
+  "repo": "owner/repo",
+  "head_sha": "<commit SHA>",
+  "findings": [
+    {
+      "path": "relative/file/path.ts",
+      "line": 45,
+      "start_line": 38,
+      "body": "Comment text with **markdown** support",
+      "severity": "must-fix"
+    }
+  ]
+}
+```
+
+6. Report how many findings were mapped to diff positions and how many were skipped.
+7. Remind the user: "Run `/c:post-pr-comments $ARGUMENTS` to review and post these as GitHub PR comments."
 
 ## Review Focus
 
