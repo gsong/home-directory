@@ -15,8 +15,8 @@ Use `AskUserQuestion` to collect:
 
 **Model** — ask which model to use:
 
-- `gpt-5.3-codex` — latest frontier agentic coding model (Recommended)
-- `gpt-5.4` — latest frontier agentic coding model
+- `gpt-5.4` — latest frontier agentic coding model (Recommended)
+- `gpt-5.3-codex` — previous Codex model
 
 **Reasoning effort** — ask the level:
 

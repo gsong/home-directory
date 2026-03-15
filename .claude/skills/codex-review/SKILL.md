@@ -13,7 +13,7 @@ Review a pull request using OpenAI's Codex CLI via parallel agents.
 
 - **Required:** PR number (first positional argument)
 - **Optional flags:**
-  - `--model <model>` — Codex model (default: `gpt-5.3-codex`)
+  - `--model <model>` — Codex model (default: `gpt-5.4`)
   - `--effort <level>` — Reasoning effort: low, medium, high, xhigh (default: `medium`)
   - `--threshold <number>` — Confidence display threshold tier boundaries (default: 80/50)
 
