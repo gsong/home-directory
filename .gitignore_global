@@ -1,5 +1,9 @@
-# macOS
-.DS_Store
+# AI Tools
+.aider*
+ai-swap/
+**/.claude/settings.local.json
+.claude-trace/
+CLAUDE.local.md
 
 # Editor/IDE
 .lazy.lua
@@ -8,16 +12,16 @@
 # Git
 .worktrees/
 
-# AI Tools
-**/.claude/settings.local.json
-.claude-trace/
-.aider*
-ai-swap/
+# macOS
+.DS_Store
+
+# Project-local config
+mise.local.toml
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 
+# Superpowers
 docs/superpowers
-CLAUDE.local.md
