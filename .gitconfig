@@ -1,14 +1,14 @@
 # Core Git settings
 [core]
   autocrlf = input
-  excludesfile = ~/.gitignore_global
+	excludesfile = /Users/george/.gitignore_global
   whitespace = trailing-space,space-before-tab
   editor = vimr -s --wait
   pager = delta
 
 [user]
-  name = George Song
-  email = george@gsong.dev
+	name = George Song
+	email = george@gsong.dev
 
 [init]
   defaultBranch = main
@@ -45,6 +45,7 @@
 
 [commit]
   verbose = true
+	template = /Users/george/.stCommitMsg
 
 [help]
   autocorrect = prompt
