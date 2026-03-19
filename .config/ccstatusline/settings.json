@@ -38,15 +38,15 @@
       {
         "id": "ab219f7a-eddb-4738-8784-c363c00546b1",
         "type": "custom-command",
-        "commandPath": "cc-time-left.mjs",
-        "color": ""
+        "color": "",
+        "commandPath": "cc-time-left.mjs"
       }
     ],
     [
       {
         "id": "035e0979-ce83-4707-8d2c-6c07fa0f4d54",
         "type": "current-working-dir",
-        "color": "",
+        "color": "brightWhite",
         "backgroundColor": "bgBrightBlack",
         "rawValue": true,
         "metadata": {
@@ -56,8 +56,8 @@
       {
         "id": "cc-pr-number",
         "type": "custom-command",
-        "commandPath": "cc-pr-number.mjs",
-        "color": "brightGreen"
+        "color": "brightGreen",
+        "commandPath": "cc-pr-number.mjs"
       },
       {
         "id": "2ad7e866-745b-4fb5-8310-7433dfa6a775",
@@ -78,8 +78,12 @@
   "globalBold": false,
   "powerline": {
     "enabled": false,
-    "separators": [""],
-    "separatorInvertBackground": [false],
+    "separators": [
+      ""
+    ],
+    "separatorInvertBackground": [
+      false
+    ],
     "startCaps": [],
     "endCaps": [],
     "autoAlign": false
