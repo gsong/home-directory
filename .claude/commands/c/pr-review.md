@@ -78,7 +78,7 @@ After writing the markdown report, also produce a machine-readable JSON file for
 1. Get the current PR head SHA: `gh pr view $ARGUMENTS --json headRefOid --jq .headRefOid`
 2. Get the repo in `owner/repo` format: `gh repo view --json nameWithOwner --jq .nameWithOwner`
 3. Get the PR diff: `gh pr diff $ARGUMENTS`
-4. For each **actionable** finding in the markdown report (Action Items and Needs Decision sections only — skip praise and observations):
+4. For each finding across **all** sections of the markdown report — include anything that has not been actively disproven. Only exclude findings that are confirmed false positives or duplicates of another included finding. Do not exclude findings just because they scored below a threshold or were categorized as low-severity — if the issue is real, include it:
    - Identify the `path` (file path relative to repo root)
    - Identify the `line` (end line in the new version of the file) and optional `start_line` (for multi-line ranges)
    - Verify both `line` and `start_line` fall within a diff hunk for that file — if not, skip the finding and note it was unmappable
