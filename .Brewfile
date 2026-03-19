@@ -104,6 +104,9 @@ cask "slack", greedy: true
 cask "whatsapp"
 cask "zoom", greedy: true
 
+# Microsoft
+cask "microsoft-auto-update"   # Microsoft AutoUpdate
+
 # Development Tools
 cask "chatgpt"                 # OpenAI ChatGPT desktop
 cask "claude"                  # Anthropic Claude desktop
