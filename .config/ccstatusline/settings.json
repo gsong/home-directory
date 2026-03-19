@@ -3,13 +3,24 @@
   "lines": [
     [
       {
+        "id": "cc-auth-status",
+        "type": "custom-command",
+        "color": "",
+        "commandPath": "cc-auth-status.mjs"
+      },
+      {
+        "id": "sep-after-auth",
+        "type": "separator",
+        "character": "|"
+      },
+      {
         "id": "1",
         "type": "model",
         "color": "brightGreen",
         "rawValue": true
       },
       {
-        "id": "2",
+        "id": "sep-after-model",
         "type": "separator",
         "character": "|"
       },
