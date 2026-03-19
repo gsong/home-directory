@@ -76,7 +76,13 @@ After the user selects findings to post, ask (via AskUserQuestion):
 
    Do NOT include an `event` field — omitting it creates a pending (draft) review.
 
-3. If the API call fails, show the full error and stop. Do not retry.
+3. **IMPORTANT: GitHub API limitation** — You cannot add comments to an existing pending review. A user can only have one pending review per PR. If a pending review already exists, you must either:
+   - **Delete it first** (`gh api --method DELETE /repos/{repo}/pulls/{pr}/reviews/{review_id}`) and recreate with all comments in one call, OR
+   - **Submit it first** (`gh api --method POST /repos/{repo}/pulls/{pr}/reviews/{review_id}/events --input <(echo '{"event":"COMMENT"}')`) before creating a new pending review
+
+   Always batch all approved comments into a single `POST .../reviews` call to avoid this issue.
+
+4. If the API call fails, show the full error and stop. Do not retry.
 
 ## Step 7: Report
 
