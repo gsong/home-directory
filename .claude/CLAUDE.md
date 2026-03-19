@@ -14,7 +14,16 @@
 
 - Challenge assumptions, suggest alternatives
 - Keep explanations concise, no flattery
-- **ALWAYS use AskUserQuestion tool** when asking for feedback or questions that require user input
+- **CRITICAL**: ALWAYS use the `AskUserQuestion` tool when asking questions, soliciting feedback, or needing user input. NEVER put questions as inline text. This applies to ALL workflows including brainstorming.
+
+## Brainstorming & Planning
+
+- When using the superpowers brainstorming skill, write **both the spec and the plan** to an appropriately named subdirectory under `ai-swap/` (e.g., `ai-swap/add-user-auth/spec.md`, `ai-swap/add-user-auth/plan.md`). Name the subdirectory after the specific task being brainstormed.
+- **CRITICAL**: NEVER commit `ai-swap/` to git. It is gitignored and must stay local only.
+
+## Code Reviews
+
+- **CRITICAL**: NEVER post PR comments (via `gh` or any other tool) unless explicitly instructed to do so. Review output should stay local in the conversation.
 
 ## Package Management
 
