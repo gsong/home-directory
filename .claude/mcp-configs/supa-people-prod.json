@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "supa-people-prod": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=xlxhwsevlciruhfhbxod&read_only=true"
+    }
+  }
+}
