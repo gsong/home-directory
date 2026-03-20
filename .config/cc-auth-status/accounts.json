@@ -1,5 +1,14 @@
 {
-  "e4803d2d-4195-4997-b568-db6ad72cd663": "Personal",
-  "b7b284d8-9ab4-4de3-874b-29a81d49fbf7": "ET",
-  "c43c1267-e799-489e-ac09-9811bedf8204": "Sahaj"
+  "e4803d2d-4195-4997-b568-db6ad72cd663": {
+    "label": "Personal",
+    "color": "brightCyan"
+  },
+  "b7b284d8-9ab4-4de3-874b-29a81d49fbf7": {
+    "label": "ET",
+    "color": "brightGreen"
+  },
+  "c43c1267-e799-489e-ac09-9811bedf8204": {
+    "label": "Sahaj",
+    "color": "brightMagenta"
+  }
 }
