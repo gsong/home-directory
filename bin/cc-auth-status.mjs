@@ -114,9 +114,11 @@ try {
   debug("Auth status:", JSON.stringify(status, null, 2));
 
   const accounts = loadAccountMap();
-  const label = accounts[status.orgId] || status.orgName || "?";
+  const entry = accounts[status.orgId];
+  const label = entry?.label || status.orgName || "?";
+  const color = entry?.color;
 
-  process.stdout.write(label);
+  process.stdout.write(colorize(label, color));
 } catch {
   process.stdout.write("?");
 }
