@@ -3,6 +3,7 @@ tap "buo/cask-upgrade"
 
 # JIRA
 tap "atlassian/homebrew-acli"
+tap "hatchet-dev/hatchet"
 brew "atlassian/homebrew-acli/acli"
 
 # Core Utilities
@@ -113,6 +114,7 @@ cask "claude"                  # Anthropic Claude desktop
 cask "dbeaver-community", greedy: true # Database management
 cask "docker-desktop", greedy: true
 cask "ghostty", greedy: true   # GPU-accelerated terminal
+cask "hatchet-dev/hatchet/hatchet" # Hatchet workflow engine
 cask "helpwire-operator"       # Helpwire operator
 cask "linear-linear"           # Linear project management
 cask "lm-studio"               # Run LLMs locally
