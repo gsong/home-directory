@@ -6,6 +6,7 @@
         "id": "cc-auth-status",
         "type": "custom-command",
         "color": "",
+        "preserveColors": true,
         "commandPath": "cc-auth-status.mjs"
       },
       {
@@ -89,12 +90,8 @@
   "globalBold": false,
   "powerline": {
     "enabled": false,
-    "separators": [
-      ""
-    ],
-    "separatorInvertBackground": [
-      false
-    ],
+    "separators": [""],
+    "separatorInvertBackground": [false],
     "startCaps": [],
     "endCaps": [],
     "autoAlign": false
