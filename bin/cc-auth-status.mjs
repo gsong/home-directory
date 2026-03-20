@@ -25,6 +25,31 @@ function debug(...args) {
   if (flags.debug) console.error(...args);
 }
 
+const ANSI_COLORS = {
+  black: 30,
+  red: 31,
+  green: 32,
+  yellow: 33,
+  blue: 34,
+  magenta: 35,
+  cyan: 36,
+  white: 37,
+  brightBlack: 90,
+  brightRed: 91,
+  brightGreen: 92,
+  brightYellow: 93,
+  brightBlue: 94,
+  brightMagenta: 95,
+  brightCyan: 96,
+  brightWhite: 97,
+};
+
+function colorize(text, colorName) {
+  const code = ANSI_COLORS[colorName];
+  if (code == null) return text;
+  return `\x1b[${code}m${text}\x1b[0m`;
+}
+
 function readCache() {
   try {
     const cache = JSON.parse(readFileSync(CACHE_FILE, "utf8"));
