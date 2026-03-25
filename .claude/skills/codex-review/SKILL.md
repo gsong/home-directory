@@ -1,7 +1,7 @@
 ---
 name: codex-review
 description: Code review a pull request using parallel Codex agents. Use when the user asks for a Codex code review, wants a GPT-based review, or invokes /codex-review.
-allowed-tools: Bash(gh pr view:*), Bash(gh pr diff:*), Bash(gh pr list:*), Bash(codex exec:*), Bash(git log:*), Bash(git blame:*), Bash(git rev-parse:*)
+allowed-tools: Bash(gh pr view:*), Bash(gh pr diff:*), Bash(codex exec:*), Bash(git rev-parse:*)
 disable-model-invocation: false
 ---
 
@@ -15,115 +15,101 @@ Review a pull request using OpenAI's Codex CLI via parallel agents.
 - **Optional flags:**
   - `--model <model>` — Codex model (default: `gpt-5.4`)
   - `--effort <level>` — Reasoning effort: low, medium, high, xhigh (default: `medium`)
-  - `--threshold <number>` — Confidence display threshold tier boundaries (default: 80/50)
+  - `--threshold <number>` — Confidence display threshold (default: `50`)
 
 ## Process
 
 Follow these steps precisely:
 
-### Step 1: Eligibility Check
+### Step 1: Eligibility & Context Gathering
 
-Use a Haiku agent to check if the pull request:
+Run these directly (no subagents):
 
-- Is closed — if so, stop
-- Is trivial (< 5 lines changed) — if so, stop
-- Already has a Codex review comment from a previous run (look for "Generated with Codex Review" in comments) — if so, stop
+1. `gh pr view <number> --json state,additions,deletions,title,body,author` — check eligibility:
+   - If closed → stop
+   - If < 5 lines changed → stop
+   - Drafts ARE allowed
+2. `gh pr diff <number>` — save the full diff
+3. Glob for CLAUDE.md files: check project root + directories containing modified files. Collect **file paths only** (not contents — Codex will read them itself).
+4. Extract the list of modified file paths from the diff.
 
-Drafts ARE allowed. Proceed with drafts.
+### Step 2: Parallel Codex Review
 
-### Step 2: CLAUDE.md Discovery
+Launch **2 parallel agents** (using the Agent tool). Each agent:
 
-Use a Haiku agent to find:
+1. Constructs a Codex prompt using the template below
+2. Runs: `codex exec -m <model> -c model_reasoning_effort="<effort>" -s read-only --ephemeral "<prompt>"`
+3. Parses the Codex output into structured JSON findings
+4. Returns the findings
 
-- The root CLAUDE.md file (if one exists)
-- Any CLAUDE.md files in directories whose files the PR modified
+**Codex prompt template:**
 
-Return the file paths (not contents) of all discovered CLAUDE.md files.
-
-### Step 3: PR Summary
-
-Use a Haiku agent to:
-
-- Run `gh pr view <number>` for PR metadata
-- Run `gh pr diff <number>` for the full diff
-- Return a concise summary of the change
-
-### Step 4: Parallel Codex Review
-
-Launch 5 parallel agents (using the Agent tool). Each agent:
-
-1. Gathers the context it needs (diff, CLAUDE.md contents, git history, etc.)
-2. Constructs a specialized review prompt
-3. Runs: `codex exec -m <model> -c model_reasoning_effort="<effort>" -s read-only --ephemeral "<prompt>"`
-4. Parses the Codex output into structured findings: `{file, line_range, category, description}`
-5. Returns the structured findings
-
-**Agent prompts must include:**
+All agent prompts follow this structure. Only embed context that Codex cannot access itself — Codex has read-only access to all project files and can run read-only commands like `git log` and `git blame`.
 
 ```
-You are reviewing PR #<number> in <repo>.
+You are reviewing PR #<number> (<title>) in <repo>.
+Author: <author>
 
 ## Your Role
-<agent-specific role below>
-
-## PR Summary
-<from Step 3>
-
-## CLAUDE.md Rules
-<from Step 2 — include full contents of discovered CLAUDE.md files, or "None found">
+<agent-specific role — see below>
 
 ## PR Diff
 <full diff from gh pr diff>
 
+## Modified Files
+<list of file paths extracted from diff>
+
+## Project Rules
+<if CLAUDE.md files found>
+The following CLAUDE.md files contain project rules. Read them yourself:
+<list of file paths>
+<else>
+No CLAUDE.md files found.
+<endif>
+
 ## Instructions
-- Only flag issues in user-modified lines
-- For each issue, return on its own line: FILE: <path> | LINES: <start>-<end> | CATEGORY: <category> | DESCRIPTION: <description>
-- Do NOT flag: pre-existing issues, linter-catchable issues, pedantic nitpicks, formatting issues, type errors, import issues
-- Do NOT flag general code quality issues unless explicitly required in CLAUDE.md
-- Do NOT flag changes in functionality that are likely intentional
-- If no issues found, say "No issues found"
+- You have read-only access to all project files. Read any file you need for context.
+- Only flag issues in lines modified by this PR.
+- Assign each issue a confidence score (0-100):
+  - 0: False positive, pre-existing issue, or doesn't hold up to scrutiny
+  - 25: Might be real but could be false positive. Stylistic issues not in CLAUDE.md.
+  - 50: Verified real but possibly a nitpick or rare in practice
+  - 75: Very likely real, impacts functionality or explicitly required in CLAUDE.md
+  - 100: Confirmed, will happen frequently, evidence directly supports it
+- For CLAUDE.md issues: read the file and verify the rule actually exists before flagging.
+- Return each issue as a JSON object on its own line:
+  {"file": "<path>", "lines": "<start>-<end>", "category": "<cat>", "confidence": <0-100>, "description": "<desc>"}
+- If no issues: return {"no_issues": true}
+
+## What NOT to flag
+- Pre-existing issues not introduced in this PR
+- Issues a linter, typechecker, or compiler would catch
+- Pedantic nitpicks a senior engineer wouldn't mention
+- Formatting, import ordering, or type annotation issues
+- Intentional functionality changes
+- General code quality unless explicitly required in CLAUDE.md
+- Issues called out in CLAUDE.md but silenced in code (e.g. lint-ignore comments)
 ```
 
-**The 5 agent roles:**
+**The 2 agent roles:**
 
-- **Agent #1 — CLAUDE.md Compliance:** "Audit the changes for compliance with the CLAUDE.md rules. Only flag violations that are specifically and directly called out in CLAUDE.md. CLAUDE.md is guidance for Claude writing code, so not all instructions apply during review."
-- **Agent #2 — Shallow Bug Scan:** "Read the file changes and do a shallow scan for obvious bugs. Focus ONLY on the diff, do not read extra context. Focus on large bugs, avoid small issues and nitpicks. Ignore likely false positives."
-- **Agent #3 — Git History Context:** "You are given git blame and git log output for the modified files. Identify any bugs in the PR changes in light of that historical context — reverted patterns, repeated mistakes, etc." (The agent must run `git log` and `git blame` on affected files before constructing the Codex prompt.)
-- **Agent #4 — Previous PR Comments:** "You are given comments from previous PRs that touched these files. Check if any feedback from those PRs also applies to the current changes." (The agent must run `gh pr list` to find previous PRs on affected files and fetch their comments.)
-- **Agent #5 — Code Comments Compliance:** "Read code comments in the modified files and make sure the PR changes comply with any guidance in those comments. Flag cases where comments are now stale or inaccurate due to the changes."
+- **Agent A — CLAUDE.md + Code Comments Compliance:** "Audit the changes for compliance with the CLAUDE.md rules listed below. Read each CLAUDE.md file yourself and only flag violations that are specifically and directly called out. CLAUDE.md is guidance for writing code — not all rules apply during review. Also check that code comments in the modified files are still accurate after the changes. Flag cases where comments are now stale or misleading."
 
-### Step 5: Confidence Scoring
+- **Agent B — Bug Scan + Git History:** "Scan the diff for bugs — focus on obvious issues with real impact, not nitpicks. Also run `git log` and `git blame` on the modified files to check for historical context: reverted patterns, repeated mistakes, or regressions. Ignore likely false positives."
 
-For each issue found in Step 4, launch a parallel Haiku agent that:
-
-- Takes the PR diff, the issue description, and the list of CLAUDE.md files (with contents)
-- Returns a confidence score 0-100
-
-Give each scoring agent this rubric verbatim:
-
-> Score each issue on a scale from 0-100:
->
-> - **0:** Not confident at all. False positive that doesn't stand up to light scrutiny, or a pre-existing issue.
-> - **25:** Somewhat confident. Might be real, but may be a false positive. If stylistic, not explicitly called out in CLAUDE.md.
-> - **50:** Moderately confident. Verified as real, but might be a nitpick or rare in practice. Not very important relative to the rest of the PR.
-> - **75:** Highly confident. Double-checked and very likely a real issue that will be hit in practice. The existing approach is insufficient. Directly impacts functionality or is directly mentioned in CLAUDE.md.
-> - **100:** Absolutely certain. Confirmed real, will happen frequently. Evidence directly confirms this.
->
-> For issues flagged due to CLAUDE.md, double-check that CLAUDE.md actually calls out the issue specifically.
-
-### Step 6: Output Results
+### Step 3: Output Results
 
 **Terminal output:**
 
-Display results grouped by confidence tier:
+Display results grouped by confidence tier, filtered by `--threshold`:
 
 ```
 ## Codex Code Review — PR #<number>
 
 ### Summary
-<PR summary from Step 3>
+<PR title + brief description>
 
-### Issues Found (N total)
+### Issues Found (N total, M shown above threshold)
 
 **High Confidence (80+)**
 
@@ -133,9 +119,8 @@ Display results grouped by confidence tier:
 
 2. [<category>] <file>:<lines> — <description> (confidence: <score>)
 
-**Low Confidence (<50)**
-
-3. [<category>] <file>:<lines> — <description> (confidence: <score>)
+**Below Threshold**
+N issues hidden (below confidence <threshold>). See full report.
 
 ### No Issues From
 - <list agents that found nothing>
@@ -151,7 +136,7 @@ No issues found. Checked for bugs and CLAUDE.md compliance using Codex.
 
 **Markdown report:**
 
-Write the same content to `ai-swap/codex-review-pr-<number>.md` using the Write tool. Create the `ai-swap/` directory if it doesn't exist.
+Write the full report (all findings regardless of threshold) to `ai-swap/codex-review-pr-<number>.md` using the Write tool.
 
 ## Notes
 
@@ -159,18 +144,6 @@ Write the same content to `ai-swap/codex-review-pr-<number>.md` using the Write 
 - Do not check build signal or attempt to build/typecheck
 - All Codex invocations use `--ephemeral` to avoid persisting sessions
 - All Codex invocations use `-s read-only` sandbox mode
+- **Do NOT pre-read source files or CLAUDE.md contents to embed in the Codex prompt.** Codex runs in `read-only` sandbox mode and can read files itself. Only embed the PR diff (from GitHub, which Codex cannot access) and tell Codex to read everything else.
 - Shell-escape prompts properly when passing to `codex exec`
 - Make a todo list first to track progress through the steps
-
-## False Positives Guide
-
-Share this with all review and scoring agents:
-
-- Pre-existing issues not introduced in this PR
-- Something that looks like a bug but is not
-- Pedantic nitpicks a senior engineer wouldn't call out
-- Issues a linter, typechecker, or compiler would catch
-- General code quality issues, unless explicitly required in CLAUDE.md
-- Issues called out in CLAUDE.md but silenced in code (e.g. lint ignore comments)
-- Changes in functionality that are likely intentional
-- Real issues on lines the user did not modify
