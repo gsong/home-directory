@@ -376,7 +376,7 @@ function getIndicatorForBurnRate(utilization, resetsAt, periodDurationMs) {
   const timeElapsedPercent = (timeElapsed / periodDurationMs) * 100;
 
   // Edge case: too early in the period to judge (< 10% time OR < 15% usage)
-  if (timeElapsedPercent < 10 || utilization < 15) {
+  if (timeElapsedPercent < 10 && utilization < 15) {
     return INDICATORS.SAFE;
   }
 
