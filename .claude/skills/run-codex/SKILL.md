@@ -13,11 +13,6 @@ Run OpenAI's Codex CLI in headless mode (`codex exec`) from within Claude Code.
 
 Use `AskUserQuestion` to collect:
 
-**Model** — ask which model to use:
-
-- `gpt-5.4` — latest frontier agentic coding model (Recommended)
-- `gpt-5.3-codex` — previous Codex model
-
 **Reasoning effort** — ask the level:
 
 - `low` — fast responses
@@ -35,12 +30,24 @@ Use `AskUserQuestion` to collect:
 
 Use `AskUserQuestion` with a free-form text field to ask what task/prompt to send to Codex. The question should mention the current working directory so the user has context.
 
-### 3. Execute
+### 3. Build the full prompt with context
+
+**Codex can only access project files in the working directory.** It has no access to external tools, MCP servers, or APIs (Linear, Slack, GitHub issues, Jira, etc.). You MUST inline all relevant external context into the prompt itself.
+
+Before executing, gather and embed any context Codex will need:
+
+- **External issue/ticket content**: If the task references a Linear issue, GitHub issue, Jira ticket, etc., fetch the full description, comments, and acceptance criteria yourself, then include them verbatim (or a thorough summary) in the prompt.
+- **Conversation context**: If the user discussed requirements, constraints, or decisions earlier in the conversation, summarize the key points in the prompt.
+- **API responses / tool output**: If you retrieved data from MCP servers, web searches, or other tools that Codex needs to reason about, paste the relevant content into the prompt.
+
+The prompt Codex receives should be **self-contained** — it should make sense to someone who can only read the prompt text and the project source code, with no other context.
+
+### 4. Execute
 
 Run via Bash:
 
 ```
-codex exec -m <model> -c model_reasoning_effort="<level>" -s <sandbox> --ephemeral "<prompt>"
+codex exec -m gpt-5.4 -c model_reasoning_effort="<level>" -s <sandbox> --ephemeral "<prompt>"
 ```
 
 Key flags:
@@ -50,7 +57,7 @@ Key flags:
 - `--ephemeral` prevents session persistence to disk
 - The prompt should be shell-escaped properly
 
-### 4. Interpret results
+### 5. Interpret results
 
 Use the `Agent` tool to analyze the Codex output in context. The subagent should:
 
