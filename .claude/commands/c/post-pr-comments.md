@@ -6,7 +6,7 @@ Post code-level review comments to GitHub PR #$ARGUMENTS as a pending review.
 
 ## Step 1: Load Findings
 
-1. Read `ai-swap/pr-review-$ARGUMENTS.json`
+1. Read `ai-swap/pr-review-$ARGUMENTS/findings.json`
    - If the file doesn't exist, tell the user: "No findings file found. Run `/c:pr-review $ARGUMENTS` first." and stop.
 2. Parse the JSON and report: "{N} findings loaded for PR #{pr} in {repo}"
 
