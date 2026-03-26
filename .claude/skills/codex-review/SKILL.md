@@ -14,7 +14,7 @@ Review a pull request using OpenAI's Codex CLI via parallel agents.
 - **Required:** PR number (first positional argument)
 - **Optional flags:**
   - `--model <model>` — Codex model (default: `gpt-5.4`)
-  - `--effort <level>` — Reasoning effort: low, medium, high, xhigh (default: `medium`)
+  - `--effort <level>` — Reasoning effort: low, medium, high, xhigh (default: `high`)
   - `--threshold <number>` — Confidence display threshold (default: `50`)
 
 ## Process
@@ -136,7 +136,7 @@ No issues found. Checked for bugs and CLAUDE.md compliance using Codex.
 
 **Markdown report:**
 
-Write the full report (all findings regardless of threshold) to `ai-swap/codex-review-pr-<number>.md` using the Write tool.
+Write the full report (all findings regardless of threshold) to `ai-swap/pr-review-<number>/codex-review.md` using the Write tool.
 
 ## Notes
 

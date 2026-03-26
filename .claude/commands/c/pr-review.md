@@ -2,7 +2,7 @@
 
 Perform a comprehensive code review for PR #$ARGUMENTS
 
-**All output goes to `ai-swap/pr-review-$ARGUMENTS.md` and `ai-swap/pr-review-$ARGUMENTS.json` - never post comments to GitHub directly.**
+**All output goes to `ai-swap/pr-review-$ARGUMENTS/` - never post comments to GitHub directly.**
 
 ## Phase 1: Setup
 
@@ -37,7 +37,7 @@ This must run after the initial reviews complete.
 1. Read the findings returned by all three agents
 2. Deduplicate issues (same issue from multiple agents = one item)
 3. Categorize by severity and actionability
-4. Write the consolidated report to `ai-swap/pr-review-$ARGUMENTS.md`
+4. Write the consolidated report to `ai-swap/pr-review-$ARGUMENTS/review.md`
 
 ## Output Format
 
@@ -85,7 +85,7 @@ After writing the markdown report, also produce a machine-readable JSON file for
    - Set `severity` to `must-fix`, `should-fix`, or `nit` based on the finding's categorization
    - Set `side` to `LEFT` only if the comment targets a deleted line; otherwise omit (defaults to `RIGHT`)
    - Validate `body` is under 65536 characters
-5. Write the JSON to `ai-swap/pr-review-$ARGUMENTS.json`:
+5. Write the JSON to `ai-swap/pr-review-$ARGUMENTS/findings.json`:
 
 ```json
 {

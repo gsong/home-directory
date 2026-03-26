@@ -4,16 +4,15 @@ Investigate and triage code review findings for $ARGUMENTS.
 
 ## Input Parsing
 
-Parse `$ARGUMENTS` as space-separated file paths. Classify each by extension:
+`$ARGUMENTS` is a PR number. The review directory is `ai-swap/pr-review-$ARGUMENTS/`.
 
-- `.md` files → review markdown files
-- `.json` file → findings JSON file (target for edits)
-
-**Validation:**
-
-1. If no `.json` file is found, stop with: "Error: No JSON findings file provided. Usage: `/c:triage-review review1.md [review2.md ...] findings.json`"
-2. If no `.md` file is found, stop with: "Error: No review markdown file provided. Usage: `/c:triage-review review1.md [review2.md ...] findings.json`"
-3. If more than one `.json` file is found, stop with: "Error: Exactly one JSON file required, got {N}."
+1. List files in the directory. Classify by extension:
+   - `.md` files → review markdown files
+   - `.json` file → findings JSON file (target for edits); expect `findings.json`
+2. If the directory doesn't exist, stop with: "Error: Directory `ai-swap/pr-review-$ARGUMENTS/` not found. Run `/c:pr-review $ARGUMENTS` first."
+3. If no `.json` file is found, stop with: "Error: No JSON findings file in `ai-swap/pr-review-$ARGUMENTS/`."
+4. If no `.md` file is found, stop with: "Error: No review markdown files in `ai-swap/pr-review-$ARGUMENTS/`."
+5. If more than one `.json` file is found, stop with: "Error: Exactly one JSON file required, got {N}."
 
 Read the JSON file and validate its structure: it must be an object with `pr` (number), `repo` (string), `head_sha` (string), and `findings` (array). Each finding in the array should have at least `path`, `line`, `body`, and `severity` fields. If any of these are missing or the wrong type, use AskUserQuestion to warn the user and ask whether to proceed anyway.
 
