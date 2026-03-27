@@ -186,8 +186,8 @@
   "alwaysThinkingEnabled": true,
   "autoUpdatesChannel": "latest",
   "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754086408110
-  },
-  "skipAutoPermissionPrompt": true
+  }
 }

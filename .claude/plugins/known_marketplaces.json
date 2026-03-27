@@ -5,7 +5,7 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "/Users/george/.claude/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "2026-03-25T15:28:52.644Z"
+    "lastUpdated": "2026-03-26T21:36:22.618Z"
   },
   "ast-grep-marketplace": {
     "source": {
@@ -13,7 +13,7 @@
       "repo": "ast-grep/claude-skill"
     },
     "installLocation": "/Users/george/.claude/plugins/marketplaces/ast-grep-marketplace",
-    "lastUpdated": "2026-03-26T01:16:37.658Z",
+    "lastUpdated": "2026-03-27T23:38:23.364Z",
     "autoUpdate": true
   }
 }
