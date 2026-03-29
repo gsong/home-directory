@@ -181,7 +181,20 @@
     "code-simplifier@claude-plugins-official": true,
     "claude-code-setup@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
-    "slack@claude-plugins-official": true
+    "slack@claude-plugins-official": true,
+    "codex-tools@gsong-marketplace": true,
+    "docs-memory@gsong-marketplace": true,
+    "git-workflow@gsong-marketplace": true,
+    "utilities@gsong-marketplace": true
+  },
+  "extraKnownMarketplaces": {
+    "gsong-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "gsong/claude-marketplace"
+      },
+      "autoUpdate": true
+    }
   },
   "alwaysThinkingEnabled": true,
   "autoUpdatesChannel": "latest",

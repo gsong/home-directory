@@ -99,6 +99,46 @@
         "lastUpdated": "2026-03-16T00:42:55.205Z",
         "gitCommitSha": "5a4ffe5ef353c1893eb0f1762a9071bebeeb7fde"
       }
+    ],
+    "codex-tools@gsong-marketplace": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/gsong-marketplace/codex-tools/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-29T01:37:47.733Z",
+        "lastUpdated": "2026-03-29T01:37:47.733Z",
+        "gitCommitSha": "498f4091341759ecdfe5ecf8438cb0147f194c01"
+      }
+    ],
+    "docs-memory@gsong-marketplace": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/gsong-marketplace/docs-memory/1.1.0",
+        "version": "1.1.0",
+        "installedAt": "2026-03-29T01:54:28.318Z",
+        "lastUpdated": "2026-03-29T02:13:58.884Z",
+        "gitCommitSha": "498f4091341759ecdfe5ecf8438cb0147f194c01"
+      }
+    ],
+    "git-workflow@gsong-marketplace": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/gsong-marketplace/git-workflow/1.1.0",
+        "version": "1.1.0",
+        "installedAt": "2026-03-29T01:54:28.329Z",
+        "lastUpdated": "2026-03-29T02:13:58.885Z",
+        "gitCommitSha": "498f4091341759ecdfe5ecf8438cb0147f194c01"
+      }
+    ],
+    "utilities@gsong-marketplace": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/gsong-marketplace/utilities/1.1.0",
+        "version": "1.1.0",
+        "installedAt": "2026-03-29T01:54:28.336Z",
+        "lastUpdated": "2026-03-29T02:13:58.884Z",
+        "gitCommitSha": "498f4091341759ecdfe5ecf8438cb0147f194c01"
+      }
     ]
   }
 }
