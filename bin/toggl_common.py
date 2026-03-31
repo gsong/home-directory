@@ -20,60 +20,39 @@ def get_cache_dir() -> Path:
     return cache_dir
 
 
-def get_project_cache_path() -> Path:
-    """Get the path to the project cache file."""
-    return get_cache_dir() / "projects.json"
+def _load_cache(name: str) -> Dict[str, str]:
+    """Load a JSON cache file by name."""
+    cache_path = get_cache_dir() / f"{name}.json"
+    try:
+        with open(cache_path, "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError, IOError):
+        return {}
 
 
-def get_client_cache_path() -> Path:
-    """Get the path to the client cache file."""
-    return get_cache_dir() / "clients.json"
+def _save_cache(name: str, cache: Dict[str, str]) -> None:
+    """Save a JSON cache file by name."""
+    try:
+        with open(get_cache_dir() / f"{name}.json", "w") as f:
+            json.dump(cache, f, indent=2)
+    except IOError:
+        pass
 
 
 def load_project_cache() -> Dict[str, str]:
-    """Load project ID to name mapping from cache."""
-    cache_path = get_project_cache_path()
-    if cache_path.exists():
-        try:
-            with open(cache_path, "r") as f:
-                return json.load(f)
-        except (json.JSONDecodeError, IOError):
-            return {}
-    return {}
+    return _load_cache("projects")
 
 
 def save_project_cache(cache: Dict[str, str]) -> None:
-    """Save project ID to name mapping to cache."""
-    cache_path = get_project_cache_path()
-    try:
-        with open(cache_path, "w") as f:
-            json.dump(cache, f, indent=2)
-    except IOError:
-        # Silently fail if we can't write cache
-        pass
+    _save_cache("projects", cache)
 
 
 def load_client_cache() -> Dict[str, str]:
-    """Load client ID to name mapping from cache."""
-    cache_path = get_client_cache_path()
-    if cache_path.exists():
-        try:
-            with open(cache_path, "r") as f:
-                return json.load(f)
-        except (json.JSONDecodeError, IOError):
-            return {}
-    return {}
+    return _load_cache("clients")
 
 
 def save_client_cache(cache: Dict[str, str]) -> None:
-    """Save client ID to name mapping to cache."""
-    cache_path = get_client_cache_path()
-    try:
-        with open(cache_path, "w") as f:
-            json.dump(cache, f, indent=2)
-    except IOError:
-        # Silently fail if we can't write cache
-        pass
+    _save_cache("clients", cache)
 
 
 def get_workspace_id(api_token: str) -> Optional[int]:
@@ -89,9 +68,10 @@ def get_workspace_id(api_token: str) -> Optional[int]:
     return user_data.get("default_workspace_id")
 
 
-def fetch_clients(api_token: str) -> Dict[str, str]:
+def fetch_clients(api_token: str, workspace_id: Optional[int] = None) -> Dict[str, str]:
     """Fetch all clients from Toggl API and return ID to name mapping."""
-    workspace_id = get_workspace_id(api_token)
+    if not workspace_id:
+        workspace_id = get_workspace_id(api_token)
     if not workspace_id:
         return {}
 
@@ -108,9 +88,10 @@ def fetch_clients(api_token: str) -> Dict[str, str]:
     return {str(c["id"]): c["name"] for c in clients if "id" in c and "name" in c}
 
 
-def fetch_projects(api_token: str) -> Dict[str, str]:
+def fetch_projects(api_token: str, workspace_id: Optional[int] = None) -> Dict[str, str]:
     """Fetch all projects from Toggl API and return ID to name mapping."""
-    workspace_id = get_workspace_id(api_token)
+    if not workspace_id:
+        workspace_id = get_workspace_id(api_token)
     if not workspace_id:
         return {}
 
@@ -128,7 +109,7 @@ def fetch_projects(api_token: str) -> Dict[str, str]:
 
 
 def fetch_projects_with_clients(
-    api_token: str,
+    api_token: str, workspace_id: Optional[int] = None
 ) -> tuple[Dict[str, str], Dict[str, str]]:
     """
     Fetch all projects and return both name and client mappings.
@@ -136,7 +117,8 @@ def fetch_projects_with_clients(
     Returns:
         Tuple of (project_id→name, project_id→client_id)
     """
-    workspace_id = get_workspace_id(api_token)
+    if not workspace_id:
+        workspace_id = get_workspace_id(api_token)
     if not workspace_id:
         return {}, {}
 

@@ -47,7 +47,7 @@
 
 import { execSync } from "child_process";
 import { homedir } from "os";
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
 
 // Configuration
@@ -131,24 +131,11 @@ function validateUsageData(data) {
 }
 
 /**
- * Ensures cache directory exists
- */
-function ensureCacheDir() {
-  if (!existsSync(CACHE_DIR)) {
-    mkdirSync(CACHE_DIR, { recursive: true });
-  }
-}
-
-/**
  * Reads cached usage data if valid
  * @returns {Object|null} Cached usage data or null if expired/missing
  */
 function readCache() {
   try {
-    if (!existsSync(CACHE_FILE)) {
-      return null;
-    }
-
     const cacheData = JSON.parse(readFileSync(CACHE_FILE, "utf-8"));
     const now = Date.now();
 
@@ -174,7 +161,7 @@ function readCache() {
  */
 function writeCache(data) {
   try {
-    ensureCacheDir();
+    mkdirSync(CACHE_DIR, { recursive: true });
     const cacheData = {
       timestamp: Date.now(),
       data: data,
@@ -525,59 +512,42 @@ if (!cache.valid) {
   writeCache(usageData);
 }
 
-// Step 5: Build 5-hour segment
-const fiveHourData = usageData.five_hour;
-let fiveHourDisplay = "\u2013";
+// Build display segment for a usage period
+function buildSegmentDisplay(periodData, periodDurationMs, formatTimeFn) {
+  if (!periodData || !periodData.resets_at) return "\u2013";
 
-if (fiveHourData && fiveHourData.resets_at) {
-  const endTimeStr = formatTime(fiveHourData.resets_at);
+  const timeStr = formatTimeFn(periodData.resets_at);
   const indicator = getIndicatorForBurnRate(
-    fiveHourData.utilization,
-    fiveHourData.resets_at,
-    PERIOD_DURATION.FIVE_HOUR,
+    periodData.utilization,
+    periodData.resets_at,
+    periodDurationMs,
   );
 
-  fiveHourDisplay = `${indicator}${endTimeStr}`;
   if (indicator === INDICATORS.DANGER) {
     const msUntilExhausted = calculateTimeUntilExhausted(
-      fiveHourData.utilization,
-      fiveHourData.resets_at,
-      PERIOD_DURATION.FIVE_HOUR,
+      periodData.utilization,
+      periodData.resets_at,
+      periodDurationMs,
     );
     if (msUntilExhausted !== null) {
-      const exhaustionTime = formatMsRemaining(msUntilExhausted);
-      fiveHourDisplay = `${indicator}${exhaustionTime}/${endTimeStr}`;
+      return `${indicator}${formatMsRemaining(msUntilExhausted)}/${timeStr}`;
     }
   }
+
+  return `${indicator}${timeStr}`;
 }
 
-// Step 6: Build 7-day segment
-let sevenDayDisplay = "\u2013";
+const fiveHourDisplay = buildSegmentDisplay(
+  usageData.five_hour,
+  PERIOD_DURATION.FIVE_HOUR,
+  formatTime,
+);
+const sevenDayDisplay = buildSegmentDisplay(
+  usageData.seven_day,
+  PERIOD_DURATION.SEVEN_DAY,
+  formatTimeRemaining,
+);
 
-if (usageData.seven_day && usageData.seven_day.resets_at) {
-  const sevenDayIndicator = getIndicatorForBurnRate(
-    usageData.seven_day.utilization,
-    usageData.seven_day.resets_at,
-    PERIOD_DURATION.SEVEN_DAY,
-  );
-  const sevenDayRemaining = formatTimeRemaining(usageData.seven_day.resets_at);
-
-  sevenDayDisplay = `${sevenDayIndicator}${sevenDayRemaining}`;
-
-  if (sevenDayIndicator === INDICATORS.DANGER) {
-    const msUntilExhausted = calculateTimeUntilExhausted(
-      usageData.seven_day.utilization,
-      usageData.seven_day.resets_at,
-      PERIOD_DURATION.SEVEN_DAY,
-    );
-    if (msUntilExhausted !== null) {
-      const exhaustionTime = formatMsRemaining(msUntilExhausted);
-      sevenDayDisplay = `${sevenDayIndicator}${exhaustionTime}/${sevenDayRemaining}`;
-    }
-  }
-}
-
-// Step 7: Output both segments
 console.log(`${fiveHourDisplay} ${sevenDayDisplay}`);
 
 // Debug: show additional info with burn rate analysis

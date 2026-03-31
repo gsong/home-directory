@@ -22,44 +22,47 @@ const isInTmux = () => {
   return !!process.env.TMUX;
 };
 
-const isActiveTmuxPane = () => {
-  if (!isInTmux()) {
-    return false;
-  }
-
-  try {
-    const tmuxPane = process.env.TMUX_PANE;
-    if (!tmuxPane) {
-      return false;
+const isActiveTmuxPane = (() => {
+  let cached;
+  return () => {
+    if (cached !== undefined) return cached;
+    if (!isInTmux()) return (cached = false);
+    try {
+      const tmuxPane = process.env.TMUX_PANE;
+      if (!tmuxPane) return (cached = false);
+      const result = execSync(
+        `tmux display-message -pt "${tmuxPane}" '#{pane_active} #{window_active}'`,
+        {
+          encoding: "utf8",
+          stdio: ["pipe", "pipe", "ignore"],
+        },
+      ).trim();
+      // Both pane and window must be active
+      return (cached = result === "1 1");
+    } catch (error) {
+      return (cached = false);
     }
-    const result = execSync(
-      `tmux display-message -pt "${tmuxPane}" '#{pane_active} #{window_active}'`,
-      {
-        encoding: "utf8",
-        stdio: ["pipe", "pipe", "ignore"],
-      },
-    ).trim();
-    // Both pane and window must be active
-    return result === "1 1";
-  } catch (error) {
-    return false;
-  }
-};
+  };
+})();
 
-const isGhosttyFrontmost = () => {
-  try {
-    const result = execSync(
-      `osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true'`,
-      {
-        encoding: "utf8",
-        stdio: ["pipe", "pipe", "ignore"],
-      },
-    ).trim();
-    return result === "ghostty";
-  } catch (error) {
-    return false;
-  }
-};
+const isGhosttyFrontmost = (() => {
+  let cached;
+  return () => {
+    if (cached !== undefined) return cached;
+    try {
+      const result = execSync(
+        `osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true'`,
+        {
+          encoding: "utf8",
+          stdio: ["pipe", "pipe", "ignore"],
+        },
+      ).trim();
+      return (cached = result === "ghostty");
+    } catch (error) {
+      return (cached = false);
+    }
+  };
+})();
 
 /**
  * Notification Decision Logic:
