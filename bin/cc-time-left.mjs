@@ -520,38 +520,34 @@ if (!cache.valid) {
   writeCache(usageData);
 }
 
-// Step 5: Extract 5-hour block reset time
+// Step 5: Build 5-hour segment
 const fiveHourData = usageData.five_hour;
+let fiveHourDisplay = "\u2013";
 
-if (!fiveHourData || !fiveHourData.resets_at) {
-  console.log("No active block");
-  process.exit(0);
-}
-
-// Step 6: Format and display the end time with visual indicator (burn rate based)
-const endTimeStr = formatTime(fiveHourData.resets_at);
-const indicator = getIndicatorForBurnRate(
-  fiveHourData.utilization,
-  fiveHourData.resets_at,
-  PERIOD_DURATION.FIVE_HOUR,
-);
-
-// Add projection when in danger
-let fiveHourDisplay = `${indicator}${endTimeStr}`;
-if (indicator === INDICATORS.DANGER) {
-  const msUntilExhausted = calculateTimeUntilExhausted(
+if (fiveHourData && fiveHourData.resets_at) {
+  const endTimeStr = formatTime(fiveHourData.resets_at);
+  const indicator = getIndicatorForBurnRate(
     fiveHourData.utilization,
     fiveHourData.resets_at,
     PERIOD_DURATION.FIVE_HOUR,
   );
-  if (msUntilExhausted !== null) {
-    const exhaustionTime = formatMsRemaining(msUntilExhausted);
-    fiveHourDisplay = `${indicator}${exhaustionTime}/${endTimeStr}`;
+
+  fiveHourDisplay = `${indicator}${endTimeStr}`;
+  if (indicator === INDICATORS.DANGER) {
+    const msUntilExhausted = calculateTimeUntilExhausted(
+      fiveHourData.utilization,
+      fiveHourData.resets_at,
+      PERIOD_DURATION.FIVE_HOUR,
+    );
+    if (msUntilExhausted !== null) {
+      const exhaustionTime = formatMsRemaining(msUntilExhausted);
+      fiveHourDisplay = `${indicator}${exhaustionTime}/${endTimeStr}`;
+    }
   }
 }
 
-// Step 7: Add 7-day quota indicator if available
-let output = fiveHourDisplay;
+// Step 6: Build 7-day segment
+let sevenDayDisplay = "\u2013";
 
 if (usageData.seven_day && usageData.seven_day.resets_at) {
   const sevenDayIndicator = getIndicatorForBurnRate(
@@ -561,9 +557,8 @@ if (usageData.seven_day && usageData.seven_day.resets_at) {
   );
   const sevenDayRemaining = formatTimeRemaining(usageData.seven_day.resets_at);
 
-  let sevenDayDisplay = `${sevenDayIndicator}${sevenDayRemaining}`;
+  sevenDayDisplay = `${sevenDayIndicator}${sevenDayRemaining}`;
 
-  // Add projection for 7-day when in danger
   if (sevenDayIndicator === INDICATORS.DANGER) {
     const msUntilExhausted = calculateTimeUntilExhausted(
       usageData.seven_day.utilization,
@@ -575,11 +570,10 @@ if (usageData.seven_day && usageData.seven_day.resets_at) {
       sevenDayDisplay = `${sevenDayIndicator}${exhaustionTime}/${sevenDayRemaining}`;
     }
   }
-
-  output += ` ${sevenDayDisplay}`;
 }
 
-console.log(output);
+// Step 7: Output both segments
+console.log(`${fiveHourDisplay} ${sevenDayDisplay}`);
 
 // Debug: show additional info with burn rate analysis
 if (flags.debug) {
