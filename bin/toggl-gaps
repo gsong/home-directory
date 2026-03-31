@@ -127,8 +127,8 @@ def main(date_arg: Optional[str], token: Optional[str]):
         else:
             click.echo(f"▶️  Currently tracking: {description}")
 
-    # Find gaps
-    gaps = find_gaps(entries, local_tz)
+    # Find gaps (pass already-sorted entries)
+    gaps = find_gaps(sorted_entries, local_tz)
 
     if gaps:
         click.echo(f"\n⚠️  Found {len(gaps)} gap(s):\n")
