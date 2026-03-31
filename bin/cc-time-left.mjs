@@ -108,6 +108,7 @@ Options:
 
 Output format:
   [5hr indicator][reset time] [7day indicator][time remaining]
+  Uses – as placeholder when a period has no active data.
 
   Indicators:
     🟢 Safe - on track or below quota
