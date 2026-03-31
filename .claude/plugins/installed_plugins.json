@@ -159,6 +159,17 @@
         "lastUpdated": "2026-03-29T23:56:53.754Z",
         "gitCommitSha": "7a9907b4938bec9c00b773241228372123176a03"
       }
+    ],
+    "ai-docs@gsong-marketplace": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/george/src/costmine/woody",
+        "installPath": "/Users/george/.claude/plugins/cache/gsong-marketplace/ai-docs/2.0.0",
+        "version": "2.0.0",
+        "installedAt": "2026-03-30T03:47:53.527Z",
+        "lastUpdated": "2026-03-30T03:57:01.190Z",
+        "gitCommitSha": "e7e3ffc62c00a306a245ddf8aaba81d875b393e2"
+      }
     ]
   }
 }
