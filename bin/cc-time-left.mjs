@@ -406,30 +406,34 @@ function analyzeBurnRate(usageData) {
   // 5-hour block analysis
   const now = Date.now();
   const fiveHourData = usageData.five_hour;
-  const fiveHourResetTime = new Date(fiveHourData.resets_at).getTime();
-  const fiveHourStartTime = fiveHourResetTime - PERIOD_DURATION.FIVE_HOUR;
-  const fiveHourElapsed =
-    ((now - fiveHourStartTime) / PERIOD_DURATION.FIVE_HOUR) * 100;
-  const fiveHourBurnRatio = fiveHourData.utilization / fiveHourElapsed;
 
-  let fiveHourMsg =
-    `5-hour block: ${fiveHourData.utilization.toFixed(1)}% used, ${fiveHourElapsed.toFixed(1)}% elapsed, ` +
-    `burn ratio: ${fiveHourBurnRatio.toFixed(2)}x, resets at ${fiveHourData.resets_at}`;
+  if (fiveHourData && fiveHourData.resets_at) {
+    const fiveHourResetTime = new Date(fiveHourData.resets_at).getTime();
+    const fiveHourStartTime = fiveHourResetTime - PERIOD_DURATION.FIVE_HOUR;
+    const fiveHourElapsed =
+      ((now - fiveHourStartTime) / PERIOD_DURATION.FIVE_HOUR) * 100;
+    const fiveHourBurnRatio = fiveHourData.utilization / fiveHourElapsed;
 
-  // Add exhaustion projection if burning too fast
-  if (fiveHourBurnRatio >= 1.3) {
-    const msUntilExhausted = calculateTimeUntilExhausted(
-      fiveHourData.utilization,
-      fiveHourData.resets_at,
-      PERIOD_DURATION.FIVE_HOUR,
-    );
-    if (msUntilExhausted !== null) {
-      const exhaustionTime = formatMsRemaining(msUntilExhausted);
-      fiveHourMsg += ` → projected exhaustion in ${exhaustionTime}`;
+    let fiveHourMsg =
+      `5-hour block: ${fiveHourData.utilization.toFixed(1)}% used, ${fiveHourElapsed.toFixed(1)}% elapsed, ` +
+      `burn ratio: ${fiveHourBurnRatio.toFixed(2)}x, resets at ${fiveHourData.resets_at}`;
+
+    if (fiveHourBurnRatio >= 1.3) {
+      const msUntilExhausted = calculateTimeUntilExhausted(
+        fiveHourData.utilization,
+        fiveHourData.resets_at,
+        PERIOD_DURATION.FIVE_HOUR,
+      );
+      if (msUntilExhausted !== null) {
+        const exhaustionTime = formatMsRemaining(msUntilExhausted);
+        fiveHourMsg += ` → projected exhaustion in ${exhaustionTime}`;
+      }
     }
-  }
 
-  debug(fiveHourMsg);
+    debug(fiveHourMsg);
+  } else {
+    debug("5-hour block: no active block");
+  }
 
   // 7-day usage analysis
   if (usageData.seven_day) {
