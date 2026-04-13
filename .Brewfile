@@ -69,7 +69,7 @@ brew "wdiff"                   # Word-diff between text files
 cask "qlimagesize"             # Display image size and resolution
 cask "qlmarkdown"              # Preview Markdown files
 cask "qlstephen"               # Preview plain text files without extension
-cask "qlvideo"                 # Preview video thumbnails
+cask "quicklook-video"         # Preview video thumbnails
 cask "quicklook-json"          # Preview JSON files
 
 # GUI Applications
@@ -121,6 +121,7 @@ cask "lm-studio"               # Run LLMs locally
 cask "ngrok"                   # Secure tunnels to localhost
 cask "p4v", greedy: true       # Perforce visual client
 cask "rapidapi"                # API testing client
+cask "android-studio"          # Android IDE
 cask "sourcetree", greedy: true # Git GUI
 
 # File & System Management
