@@ -183,17 +183,33 @@
     "claude-md-management@claude-plugins-official": true,
     "slack@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
+    "codex@openai-codex": true,
     "codex-tools@gsong-marketplace": true,
-    "utilities@gsong-marketplace": true,
+    "git-tools@gsong-marketplace": true,
     "gh-tools@gsong-marketplace": true,
-    "git-tools@gsong-marketplace": true
+    "utilities@gsong-marketplace": true
   },
   "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      },
+      "autoUpdate": true
+    },
+    "costmine-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "GlacierRIG/ai-plugins"
+      },
+      "autoUpdate": true
+    },
     "gsong-marketplace": {
       "source": {
         "source": "directory",
         "path": "/Users/george/src/gsong/claude-marketplace"
-      }
+      },
+      "autoUpdate": true
     }
   },
   "alwaysThinkingEnabled": true,
