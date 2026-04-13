@@ -45,6 +45,7 @@
 
 ## Tools
 
+- Use `/opt/homebrew/bin/mise` for mise commands (`/opt/homebrew/bin` is not on the Bash tool PATH). Use `eval "$(/opt/homebrew/bin/mise env)"` to refresh PATH after installing new tools.
 - Use `/bin/ls` for file listing
 - **CRITICAL: Use `ast-grep` skill for structural code search** - invoke via Skill tool when exploring codebases, finding patterns, locating functions/classes, or understanding code structure. Prefer over Grep/Glob for semantic code queries.
 - **CRITICAL: Use mermaid v10.2.3 syntax - NON-NEGOTIABLE**
@@ -58,7 +59,7 @@
 
 ## Skills
 
-- Use date-calculator skill for date/datetime calculations
+- Use `/gs:utilities:date` skill for date/datetime calculations
 
 ## Python Scripts
 

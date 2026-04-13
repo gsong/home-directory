@@ -10,5 +10,9 @@
   "c43c1267-e799-489e-ac09-9811bedf8204": {
     "label": "Sahaj",
     "color": "brightMagenta"
+  },
+  "3f983e31-0095-4517-98fa-556e75b41c62": {
+    "label": "CI",
+    "color": "brightYellow"
   }
 }
