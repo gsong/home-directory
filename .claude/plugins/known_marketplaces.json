@@ -5,7 +5,7 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "/Users/george/.claude/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "2026-03-30T13:47:33.847Z"
+    "lastUpdated": "2026-04-13T14:58:08.840Z"
   },
   "ast-grep-marketplace": {
     "source": {
@@ -13,7 +13,25 @@
       "repo": "ast-grep/claude-skill"
     },
     "installLocation": "/Users/george/.claude/plugins/marketplaces/ast-grep-marketplace",
-    "lastUpdated": "2026-03-31T04:14:10.012Z",
+    "lastUpdated": "2026-04-13T15:00:07.359Z",
+    "autoUpdate": true
+  },
+  "openai-codex": {
+    "source": {
+      "source": "github",
+      "repo": "openai/codex-plugin-cc"
+    },
+    "installLocation": "/Users/george/.claude/plugins/marketplaces/openai-codex",
+    "lastUpdated": "2026-04-13T15:03:13.685Z",
+    "autoUpdate": true
+  },
+  "costmine-marketplace": {
+    "source": {
+      "source": "github",
+      "repo": "GlacierRIG/ai-plugins"
+    },
+    "installLocation": "/Users/george/.claude/plugins/marketplaces/costmine-marketplace",
+    "lastUpdated": "2026-04-13T15:03:11.869Z",
     "autoUpdate": true
   },
   "gsong-marketplace": {
@@ -22,7 +40,7 @@
       "path": "/Users/george/src/gsong/claude-marketplace"
     },
     "installLocation": "/Users/george/src/gsong/claude-marketplace",
-    "lastUpdated": "2026-03-30T03:59:54.099Z",
+    "lastUpdated": "2026-04-13T14:58:10.804Z",
     "autoUpdate": true
   }
 }
