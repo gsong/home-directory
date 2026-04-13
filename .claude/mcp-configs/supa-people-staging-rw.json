@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "supa-staging-rw": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=opuowkvorbulnydbujfo&read_only=false"
+    }
+  }
+}

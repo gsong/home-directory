@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "supabase-staging-ro": {
+    "supa-staging-ro": {
       "type": "http",
       "url": "https://mcp.supabase.com/mcp?project_ref=opuowkvorbulnydbujfo&read_only=true"
     }

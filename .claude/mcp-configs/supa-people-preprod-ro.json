@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "supa-preprod-ro": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=xndcnovxxnqkilquqnew&read_only=true"
+    }
+  }
+}
