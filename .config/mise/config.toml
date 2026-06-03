@@ -1,6 +1,9 @@
 [settings]
-experimental = true
 idiomatic_version_file_enable_tools = []
+minimum_release_age = "7d"
+
+[settings.python]
+uv_venv_auto = "create|source"
 
 [env]
 CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR = "true"
@@ -10,15 +13,12 @@ ast-grep = "latest"
 aws-cli = { version = "latest", symlink_bins = "true" }
 bun = "latest"
 direnv = "latest"
-dive = "latest"
-dotnet = "latest"
 eza = "latest"
 gemini-cli = "latest"
 hadolint = "latest"
 lazydocker = "latest"
 lua = "5.1"
 node = "lts"
-pnpm = "latest"
 prettier = "latest"
 python = ["3.14", "3.13", "3.12", "3.11", "3.10"]
 ruby = "3"
@@ -28,7 +28,7 @@ shellcheck = "latest"
 tree-sitter = "latest"
 zizmor = "latest"
 "gem:teamocil" = "latest"
-"npm:@auth0/auth0-mcp-server" = "latest"
+"npm:@auth0/auth0-mcp-server" = "0.1.0-beta.12"
 "npm:@browsermcp/mcp" = "latest"
 "npm:@gsong/ccmcp" = "latest"
 "npm:@mariozechner/claude-trace" = "latest"
@@ -46,7 +46,7 @@ zizmor = "latest"
 "npm:tldr" = "latest"
 "pipx:crawl4ai" = "latest"
 "pipx:files-to-prompt" = "latest"
-"pipx:markitdown" = { version = "latest", extras = "all" }
+"pipx:markitdown" = { version = "latest", extras = "all", uvx_args = "--prerelease=allow" }
 "pipx:speedtest-cli" = "latest"
 "pipx:sqlfluff" = "latest"
 "pipx:titlecase" = "latest"
@@ -59,3 +59,4 @@ uv = "latest"
 "npm:agent-browser" = "latest"
 "npm:typescript-language-server" = "latest"
 "npm:pyright" = "latest"
+pnpm = "latest"
