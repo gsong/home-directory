@@ -6,6 +6,10 @@ tap "atlassian/homebrew-acli"
 tap "hatchet-dev/hatchet"
 brew "atlassian/homebrew-acli/acli"
 
+# Auth0
+tap "auth0/auth0-cli"
+brew "auth0/auth0-cli/auth0"       # Auth0 command-line interface
+
 # Core Utilities
 brew "bash"                    # Modern Bash shell
 brew "gnu-sed"                 # GNU sed (gsed)
@@ -116,7 +120,7 @@ cask "docker-desktop", greedy: true
 cask "ghostty", greedy: true   # GPU-accelerated terminal
 cask "hatchet-dev/hatchet/hatchet" # Hatchet workflow engine
 cask "helpwire-operator"       # Helpwire operator
-cask "linear-linear"           # Linear project management
+cask "linear"                  # Linear.app
 cask "lm-studio"               # Run LLMs locally
 cask "ngrok"                   # Secure tunnels to localhost
 cask "p4v", greedy: true       # Perforce visual client
