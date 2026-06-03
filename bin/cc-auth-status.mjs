@@ -7,7 +7,6 @@ import { homedir } from "os";
 
 const CONFIG_FILE = join(
   homedir(),
-  ".home-directory",
   ".config",
   "cc-auth-status",
   "accounts.json",
