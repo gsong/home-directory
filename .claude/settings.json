@@ -187,7 +187,8 @@
     "codex-tools@gsong-marketplace": true,
     "git-tools@gsong-marketplace": true,
     "gh-tools@gsong-marketplace": true,
-    "utilities@gsong-marketplace": true
+    "utilities@gsong-marketplace": true,
+    "security-guidance@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -213,8 +214,12 @@
     }
   },
   "alwaysThinkingEnabled": true,
+  "effortLevel": "xhigh",
   "autoUpdatesChannel": "latest",
   "skipDangerousModePermissionPrompt": true,
+  "preferredNotifChannel": "ghostty",
+  "todoFeatureEnabled": false,
+  "teammateMode": "in-process",
   "skipAutoPermissionPrompt": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754086408110
