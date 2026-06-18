@@ -1,13 +1,13 @@
 # Taps
-tap "buo/cask-upgrade"
+tap "buo/cask-upgrade", trusted: true
 
 # JIRA
-tap "atlassian/homebrew-acli"
-tap "hatchet-dev/hatchet"
+tap "atlassian/homebrew-acli", trusted: true
+tap "hatchet-dev/hatchet", trusted: true
 brew "atlassian/homebrew-acli/acli"
 
 # Auth0
-tap "auth0/auth0-cli"
+tap "auth0/auth0-cli", trusted: true
 brew "auth0/auth0-cli/auth0"       # Auth0 command-line interface
 
 # Core Utilities
