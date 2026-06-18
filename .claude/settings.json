@@ -188,7 +188,8 @@
     "git-tools@gsong-marketplace": true,
     "gh-tools@gsong-marketplace": true,
     "utilities@gsong-marketplace": true,
-    "security-guidance@claude-plugins-official": true
+    "security-guidance@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -214,7 +215,7 @@
     }
   },
   "alwaysThinkingEnabled": true,
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
   "autoUpdatesChannel": "latest",
   "skipDangerousModePermissionPrompt": true,
   "preferredNotifChannel": "ghostty",
