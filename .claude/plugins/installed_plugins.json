@@ -7,7 +7,7 @@
         "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/frontend-design/unknown",
         "version": "unknown",
         "installedAt": "2026-01-13T19:44:07.991Z",
-        "lastUpdated": "2026-05-06T16:38:49.520Z",
+        "lastUpdated": "2026-06-18T16:21:50.669Z",
         "gitCommitSha": "4fee769bf4ec2f271f46c908f44e1cdf6add897c"
       }
     ],
@@ -27,7 +27,7 @@
         "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/feature-dev/unknown",
         "version": "unknown",
         "installedAt": "2026-01-13T19:46:21.001Z",
-        "lastUpdated": "2026-05-06T16:38:49.519Z",
+        "lastUpdated": "2026-06-18T16:21:50.670Z",
         "gitCommitSha": "4fee769bf4ec2f271f46c908f44e1cdf6add897c"
       }
     ],
@@ -37,7 +37,7 @@
         "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/code-review/unknown",
         "version": "unknown",
         "installedAt": "2026-01-14T01:40:19.846Z",
-        "lastUpdated": "2026-05-06T16:38:49.521Z"
+        "lastUpdated": "2026-06-18T16:21:50.670Z"
       }
     ],
     "typescript-lsp@claude-plugins-official": [
@@ -53,10 +53,10 @@
     "superpowers@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0",
-        "version": "5.1.0",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/superpowers/6.0.2",
+        "version": "6.0.2",
         "installedAt": "2026-01-18T01:08:38.861Z",
-        "lastUpdated": "2026-05-04T22:32:41.254Z",
+        "lastUpdated": "2026-06-17T14:51:53.937Z",
         "gitCommitSha": "a08f088968d0789a44a4f5f5f7d8d6bbe46a0b44"
       }
     ],
@@ -183,20 +183,20 @@
       {
         "scope": "local",
         "projectPath": "/Users/george/src/sahaj/everybody-db",
-        "installPath": "/Users/george/.claude/plugins/cache/gsong-marketplace/repo-maintenance/2.1.1",
-        "version": "2.1.1",
+        "installPath": "/Users/george/.claude/plugins/cache/gsong-marketplace/repo-maintenance/2.2.0",
+        "version": "2.2.0",
         "installedAt": "2026-04-04T06:39:51.506Z",
-        "lastUpdated": "2026-05-04T13:34:08.776Z",
-        "gitCommitSha": "30390ff3214979d4fc7d1e582cdaf02c11883893"
+        "lastUpdated": "2026-06-02T22:57:58.016Z",
+        "gitCommitSha": "26110b6cc9eaca3e993b24b82271a7ad86ca741b"
       },
       {
         "scope": "project",
         "projectPath": "/Users/george/src/gsong/claude-marketplace",
-        "installPath": "/Users/george/.claude/plugins/cache/gsong-marketplace/repo-maintenance/2.1.0",
-        "version": "2.1.0",
+        "installPath": "/Users/george/.claude/plugins/cache/gsong-marketplace/repo-maintenance/2.1.1",
+        "version": "2.1.1",
         "installedAt": "2026-04-10T17:59:30.127Z",
-        "lastUpdated": "2026-05-02T23:48:57.559Z",
-        "gitCommitSha": "98a857037925132110d2665a0c701e2eff9702f4"
+        "lastUpdated": "2026-05-22T05:38:09.914Z",
+        "gitCommitSha": "fff969a4cbe039f04672641e59fd18bafd7d89c0"
       },
       {
         "scope": "local",
@@ -206,6 +206,42 @@
         "installedAt": "2026-05-01T14:19:52.120Z",
         "lastUpdated": "2026-05-01T14:19:52.120Z",
         "gitCommitSha": "04226f87ecc8d0f3e7237e801613ac93fe751502"
+      },
+      {
+        "scope": "project",
+        "projectPath": "/Users/george/src/gsong/ccmcp",
+        "installPath": "/Users/george/.claude/plugins/cache/gsong-marketplace/repo-maintenance/2.2.0",
+        "version": "2.2.0",
+        "installedAt": "2026-05-21T18:54:34.502Z",
+        "lastUpdated": "2026-06-14T22:36:13.532Z",
+        "gitCommitSha": "26110b6cc9eaca3e993b24b82271a7ad86ca741b"
+      },
+      {
+        "scope": "project",
+        "projectPath": "/Users/george/src/costmine/parse-dev-study",
+        "installPath": "/Users/george/.claude/plugins/cache/gsong-marketplace/repo-maintenance/2.2.0",
+        "version": "2.2.0",
+        "installedAt": "2026-06-15T03:40:41.301Z",
+        "lastUpdated": "2026-06-15T03:40:41.301Z",
+        "gitCommitSha": "26110b6cc9eaca3e993b24b82271a7ad86ca741b"
+      }
+    ],
+    "security-guidance@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/security-guidance/2.0.6",
+        "version": "2.0.6",
+        "installedAt": "2026-06-03T15:53:42.568Z",
+        "lastUpdated": "2026-06-12T23:28:33.740Z"
+      }
+    ],
+    "pr-review-toolkit@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/pr-review-toolkit/unknown",
+        "version": "unknown",
+        "installedAt": "2026-06-14T22:42:22.314Z",
+        "lastUpdated": "2026-06-18T16:21:50.670Z"
       }
     ]
   }
