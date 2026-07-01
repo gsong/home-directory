@@ -125,7 +125,6 @@ cask "lm-studio"               # Run LLMs locally
 cask "ngrok"                   # Secure tunnels to localhost
 cask "p4v", greedy: true       # Perforce visual client
 cask "rapidapi"                # API testing client
-cask "android-studio"          # Android IDE
 cask "sourcetree", greedy: true # Git GUI
 
 # File & System Management
