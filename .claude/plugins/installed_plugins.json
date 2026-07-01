@@ -7,7 +7,7 @@
         "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/frontend-design/unknown",
         "version": "unknown",
         "installedAt": "2026-01-13T19:44:07.991Z",
-        "lastUpdated": "2026-06-18T16:21:50.669Z",
+        "lastUpdated": "2026-07-01T20:01:23.205Z",
         "gitCommitSha": "4fee769bf4ec2f271f46c908f44e1cdf6add897c"
       }
     ],
@@ -27,7 +27,7 @@
         "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/feature-dev/unknown",
         "version": "unknown",
         "installedAt": "2026-01-13T19:46:21.001Z",
-        "lastUpdated": "2026-06-18T16:21:50.670Z",
+        "lastUpdated": "2026-07-01T20:01:23.206Z",
         "gitCommitSha": "4fee769bf4ec2f271f46c908f44e1cdf6add897c"
       }
     ],
@@ -37,7 +37,7 @@
         "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/code-review/unknown",
         "version": "unknown",
         "installedAt": "2026-01-14T01:40:19.846Z",
-        "lastUpdated": "2026-06-18T16:21:50.670Z"
+        "lastUpdated": "2026-07-01T20:01:23.205Z"
       }
     ],
     "typescript-lsp@claude-plugins-official": [
@@ -53,10 +53,10 @@
     "superpowers@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/superpowers/6.0.2",
-        "version": "6.0.2",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/superpowers/6.1.0",
+        "version": "6.1.0",
         "installedAt": "2026-01-18T01:08:38.861Z",
-        "lastUpdated": "2026-06-17T14:51:53.937Z",
+        "lastUpdated": "2026-07-01T16:41:45.336Z",
         "gitCommitSha": "a08f088968d0789a44a4f5f5f7d8d6bbe46a0b44"
       }
     ],
@@ -93,10 +93,10 @@
     "slack@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/slack/1.0.0",
-        "version": "1.0.0",
+        "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/slack/1.1.0",
+        "version": "1.1.0",
         "installedAt": "2026-03-16T00:42:55.205Z",
-        "lastUpdated": "2026-03-16T00:42:55.205Z",
+        "lastUpdated": "2026-06-23T00:39:21.805Z",
         "gitCommitSha": "5a4ffe5ef353c1893eb0f1762a9071bebeeb7fde"
       }
     ],
@@ -112,11 +112,11 @@
     "codex@openai-codex": [
       {
         "scope": "user",
-        "installPath": "/Users/george/.claude/plugins/cache/openai-codex/codex/1.0.4",
-        "version": "1.0.4",
+        "installPath": "/Users/george/.claude/plugins/cache/openai-codex/codex/1.0.5",
+        "version": "1.0.5",
         "installedAt": "2026-03-31T14:20:33.490Z",
-        "lastUpdated": "2026-04-19T01:57:14.327Z",
-        "gitCommitSha": "9cb4fe4099195b2587c402117a3efce6ab5aac78"
+        "lastUpdated": "2026-06-23T19:40:30.015Z",
+        "gitCommitSha": "80c31f99570876c3ef40327838b0a2ca1ae2cd9c"
       }
     ],
     "codex-tools@gsong-marketplace": [
@@ -241,7 +241,7 @@
         "installPath": "/Users/george/.claude/plugins/cache/claude-plugins-official/pr-review-toolkit/unknown",
         "version": "unknown",
         "installedAt": "2026-06-14T22:42:22.314Z",
-        "lastUpdated": "2026-06-18T16:21:50.670Z"
+        "lastUpdated": "2026-07-01T20:01:23.205Z"
       }
     ]
   }
