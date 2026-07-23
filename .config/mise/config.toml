@@ -13,8 +13,10 @@ ast-grep = "latest"
 aws-cli = { version = "latest", symlink_bins = "true" }
 bun = "latest"
 direnv = "latest"
-eza = "latest"
-gemini-cli = "latest"
+# Pinned: npm's @google/gemini-cli carries junk versions (0.0.88…0.0.899…)
+# that defeat mise's "latest" sort. github backend is unsigned (SIGKILL on
+# macOS) and brew is deprecated, so pin the official npm backend and bump manually.
+gemini-cli = "0.51.0"
 hadolint = "latest"
 lazydocker = "latest"
 lua = "5.1"
@@ -58,4 +60,4 @@ uv = "latest"
 "npm:typescript-language-server" = "latest"
 "npm:pyright" = "latest"
 pnpm = "latest"
-codex = "latest"
+"aqua:openai/codex" = "latest"
