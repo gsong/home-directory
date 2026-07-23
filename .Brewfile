@@ -39,6 +39,7 @@ brew "swig"                    # Interface compiler
 # Shell & Terminal Enhancements
 brew "autojump"                # Smart directory navigation
 brew "bash-completion@2"       # Bash completion scripts
+brew "eza"                     # Modern ls replacement
 brew "fd"                      # Modern find replacement
 brew "fzf"                     # Command-line fuzzy finder
 brew "m-cli"                   # macOS command-line tools
@@ -70,7 +71,6 @@ brew "trash"                   # Move files to trash
 brew "wdiff"                   # Word-diff between text files
 
 # Quick Look Plugins
-cask "qlimagesize"             # Display image size and resolution
 cask "qlmarkdown"              # Preview Markdown files
 cask "qlstephen"               # Preview plain text files without extension
 cask "quicklook-video"         # Preview video thumbnails
