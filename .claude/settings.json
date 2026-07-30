@@ -141,6 +141,7 @@
   "fileCheckpointingEnabled": true,
   "todoFeatureEnabled": false,
   "teammateMode": "in-process",
+  "remoteControlAtStartup": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754086408110
   }
