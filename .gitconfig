@@ -102,3 +102,11 @@
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
+
+# Work identity for everything under ~/src/costmine
+[includeIf "gitdir:~/src/costmine/"]
+	path = ~/.config/git/costmine
+
+# Work identity for everything under ~/src/sahaj
+[includeIf "gitdir:~/src/sahaj/"]
+	path = ~/.config/git/sahaj
