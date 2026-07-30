@@ -1,7 +1,6 @@
 # Core Git settings
 [core]
   autocrlf = input
-	excludesfile = /Users/george/.gitignore_global
   whitespace = trailing-space,space-before-tab
   editor = vimr -s --wait
   pager = delta
