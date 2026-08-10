@@ -1,9 +1,0 @@
-name: "main"
-windows:
-  - name: assistant
-    root: ~/assistant/
-    layout: even-vertical
-    panes:
-      - commands:
-          - claude
-        focus: true
