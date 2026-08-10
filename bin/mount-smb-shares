@@ -1,0 +1,63 @@
+#!/bin/bash
+# Mount the buffalo SMB shares whenever the NAS is on the current network.
+# Driven by local.mount-smb-shares.plist: at login, on wake, and on network changes.
+# Credentials come from the login keychain, so nothing secret lives here.
+
+set -uo pipefail
+
+# Use the mDNS name, not the bare NetBIOS name "buffalo". NetBIOS resolution is
+# unreliable and reports its failures as a misleading "No route to host", which
+# makes an otherwise healthy mount fail at random.
+HOST=buffalo.local
+ACCOUNT=george
+SHARES=(buffy india)
+
+log() { /usr/bin/logger -t mount-smb-shares "mount-smb-shares: $*"; }
+
+# Resolving is the reachability test: away from home the mDNS name does not
+# resolve, so this exits quietly. ping is only being used as a resolver here: it
+# prints the address before waiting for a reply, so this still works if the NAS
+# ignores ICMP, and it returns the moment the name resolves (~15ms warm) instead
+# of always waiting out the full mDNS timeout the way dscacheutil did.
+#
+# -t5 is a deadline covering resolution as well, so it has to be generous enough
+# for a COLD lookup. -t1 was not: after a reboot there is no cached record, the
+# query needs a full multicast round trip, and login-time load (avg ~20) starves
+# the process. On 2026-08-07 that failed silently at boot and, with the 5 minute
+# retry interval, left the shares unmounted for 8 minutes. Do not shorten this.
+ip=$(/sbin/ping -c1 -t5 "$HOST" 2>/dev/null |
+  /usr/bin/awk -F'[()]' 'NR == 1 { print $2; exit }')
+if [ -z "$ip" ]; then
+  log "$HOST did not resolve; not on the home network"
+  exit 0
+fi
+
+# Confirm SMB is actually accepting connections before trying to mount, because
+# a failed `mount volume` puts a modal dialog on screen. Checking the resolved
+# address keeps this instant.
+if ! /usr/bin/nc -z -G 2 -w 2 "$ip" 445 >/dev/null 2>&1; then
+  log "$HOST ($ip) is not accepting SMB connections"
+  exit 0
+fi
+
+for share in "${SHARES[@]}"; do
+  # Match on the mount source rather than the mountpoint so a share already
+  # mounted somewhere is never mounted a second time as <share>-1. Accept either
+  # hostname, since an older mount may predate the switch to mDNS.
+  existing=$(/sbin/mount | /usr/bin/awk \
+    -v pat="^//$ACCOUNT@(buffalo|$HOST)/$share\$" '$1 ~ pat { print $3 }')
+  if [ -n "$existing" ]; then
+    [ "$existing" = "/Volumes/$share" ] ||
+      log "$share already mounted at $existing, expected /Volumes/$share"
+    continue
+  fi
+
+  # `mount volume` goes through NetFS exactly as Finder does: it creates and
+  # later cleans up the /Volumes mountpoint itself, needs no root, and produces
+  # a browsable mount that shows up in the Finder sidebar.
+  if /usr/bin/osascript -e "mount volume \"smb://$ACCOUNT@$HOST/$share\"" >/dev/null 2>&1; then
+    log "mounted $share"
+  else
+    log "failed to mount $share"
+  fi
+done

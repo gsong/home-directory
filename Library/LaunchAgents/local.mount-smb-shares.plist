@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>local.mount-smb-shares</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/george/bin/mount-smb-shares</string>
+	</array>
+
+	<!-- Fires at login, which is also when the login keychain unlocks. -->
+	<key>RunAtLoad</key>
+	<true/>
+
+	<!-- Polls every 5 minutes, which also covers waking up and arriving home.
+	     Deliberately NOT LaunchEvents/com.apple.notifyd.matching: those events
+	     are delivered over the XPC event stream and must be consumed with
+	     xpc_set_event_stream_handler(), which a shell script cannot do. The
+	     event is then never dequeued, so launchd relaunches the job every time
+	     it exits, forever, at its ~10s minimum interval. That produced 8177
+	     pointless runs in 23 hours with zero real network changes. -->
+	<key>StartInterval</key>
+	<integer>300</integer>
+
+	<key>ProcessType</key>
+	<string>Background</string>
+</dict>
+</plist>
