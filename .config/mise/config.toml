@@ -16,7 +16,7 @@ direnv = "latest"
 # Pinned: npm's @google/gemini-cli carries junk versions (0.0.88…0.0.899…)
 # that defeat mise's "latest" sort. github backend is unsigned (SIGKILL on
 # macOS) and brew is deprecated, so pin the official npm backend and bump manually.
-gemini-cli = "0.51.0"
+gemini-cli = "0.53.0"
 hadolint = "latest"
 lazydocker = "latest"
 lua = "5.1"
@@ -30,13 +30,26 @@ svgo = "latest"
 tree-sitter = "latest"
 zizmor = "latest"
 "gem:teamocil" = "latest"
-"npm:@auth0/auth0-mcp-server" = "0.1.0-beta.12"
+# Pinned: prerelease-only package, so "latest" won't resolve it. Note the
+# `beta` dist-tag is stale (0.1.0-beta.5); track the `latest` tag and bump manually.
+# trust_policy_excludes: transitive jose@4.15.9 (via auth0@^4.37.0) trips
+# no-downgrade — provenance exists through 4.15.4 but stopped at 4.15.5 when the
+# v4 line went to maintenance backports. Verified benign: same sole maintainer
+# (panva), current v5/v6 lines still carry provenance, upstream tag v4.15.9
+# (de7eb9e6001d) exists, published 2024-07-03, and it was already installed
+# under beta.12 — so this is not new exposure. Scoped to the exact version.
+"npm:@auth0/auth0-mcp-server" = { version = "0.1.0-beta.17", trust_policy_excludes = ["jose@4.15.9"] }
 "npm:@browsermcp/mcp" = "latest"
 "npm:@gsong/ccmcp" = "latest"
 "npm:@mariozechner/claude-trace" = "latest"
 "npm:@mermaid-js/mermaid-cli" = "latest"
 "npm:@netlify/mcp" = "latest"
-"npm:@perplexity-ai/mcp-server" = "latest"
+# Pinned: versions were published out of semver order — 0.13.0/0.14.0 landed
+# 2025-10-29/30, then the project reset to 0.2.3 and ran 0.3.x…0.9.0 through
+# 2026-03-23. mise's "latest" is semver-max, so it pinned 0.14.0 (Oct 2025) for
+# nine months while reporting "up to date". 1.x also renames the bin
+# mcp-server -> perplexity-mcp. Pin explicitly and bump manually.
+"npm:@perplexity-ai/mcp-server" = "1.2.0"
 "npm:@upstash/context7-mcp" = "latest"
 "npm:ccstatusline" = "latest"
 "npm:ccusage" = "latest"
