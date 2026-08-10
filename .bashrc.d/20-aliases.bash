@@ -32,4 +32,3 @@ alias ccd='ccmcp --allow-dangerously-skip-permissions'
 alias ios-simulator="open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/"
 alias npx='pnpm dlx'
 alias pdfcombine='"/System/Library/Automator/Combine PDF Pages.action/Contents/Resources/join.py"'
-alias speedtest='speedtest --secure'

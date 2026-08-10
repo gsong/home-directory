@@ -10,6 +10,10 @@ brew "atlassian/homebrew-acli/acli"
 tap "auth0/auth0-cli", trusted: true
 brew "auth0/auth0-cli/auth0"       # Auth0 command-line interface
 
+# Ookla Speedtest
+tap "teamookla/speedtest", trusted: true
+brew "teamookla/speedtest/speedtest" # Official Ookla Speedtest CLI
+
 # Core Utilities
 brew "bash"                    # Modern Bash shell
 brew "gnu-sed"                 # GNU sed (gsed)

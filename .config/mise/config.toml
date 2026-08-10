@@ -48,7 +48,6 @@ zizmor = "latest"
 "pipx:crawl4ai" = "latest"
 "pipx:files-to-prompt" = "latest"
 "pipx:markitdown" = { version = "latest", extras = "all", uvx_args = "--prerelease=allow" }
-"pipx:speedtest-cli" = "latest"
 "pipx:sqlfluff" = "latest"
 "pipx:titlecase" = "latest"
 "npm:@playwright/cli" = "latest"
