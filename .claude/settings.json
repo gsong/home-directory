@@ -6,6 +6,7 @@
     "ENABLE_TOOL_SEARCH": "auto:0"
   },
   "includeCoAuthoredBy": false,
+  "outputStyle": "Plain Technical",
   "permissions": {
     "allow": [
       "Bash(git:*)",

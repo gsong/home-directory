@@ -3,7 +3,6 @@
 ## Command Usage
 
 - Use `rm -f` (not `rm`) to avoid prompts
-- Disable sandbox (`dangerouslyDisableSandbox: true`) for `git` and `gh` commands
 
 ## File Management
 
@@ -12,18 +11,13 @@
 
 ## Communication
 
-- Challenge assumptions, suggest alternatives
-- Keep explanations concise, no flattery
+- Register, response shape, and confidence marking live in the `Plain Technical` output style (`~/.claude/output-styles/plain-technical.md`), not here
 - **CRITICAL**: ALWAYS use the `AskUserQuestion` tool when asking questions, soliciting feedback, or needing user input. NEVER put questions as inline text. This applies to ALL workflows including brainstorming.
 
 ## Brainstorming & Planning
 
-- When using the superpowers brainstorming skill, write **both the spec and the plan** to an appropriately named subdirectory under `ai-swap/` (e.g., `ai-swap/add-user-auth/spec.md`, `ai-swap/add-user-auth/plan.md`). Name the subdirectory after the specific task being brainstormed.
-- **CRITICAL**: NEVER commit `ai-swap/` to git. It is gitignored and must stay local only.
-
-## Code Reviews
-
-- **CRITICAL**: NEVER post PR comments (via `gh` or any other tool) unless explicitly instructed to do so. Review output should stay local in the conversation.
+- When brainstorming or planning, write **both the spec and the plan** to a subdirectory of `ai-swap/` named after the task (e.g. `ai-swap/add-user-auth/spec.md`, `ai-swap/add-user-auth/plan.md`)
+- `ai-swap/` is gitignored and stays local. A hook blocks `git add`/`commit` of it.
 
 ## Package Management
 
@@ -45,17 +39,15 @@
 
 ## Tools
 
-- Use `/opt/homebrew/bin/mise` for mise commands (`/opt/homebrew/bin` is not on the Bash tool PATH). Use `eval "$(/opt/homebrew/bin/mise env)"` to refresh PATH after installing new tools.
-- Use `/bin/ls` for file listing
-- **CRITICAL: Use `ast-grep` skill for structural code search** - invoke via Skill tool when exploring codebases, finding patterns, locating functions/classes, or understanding code structure. Prefer over Grep/Glob for semantic code queries.
-- **CRITICAL: Use mermaid v10.2.3 syntax - NON-NEGOTIABLE**
+- Use `eval "$(mise env)"` to refresh PATH after installing new tools
+- Use `/bin/ls` for file listing (`ls` is aliased to `eza`)
+- Use the `ast-grep` skill for structural code search - invoke via Skill tool when exploring codebases, finding patterns, or locating functions/classes. Prefer over Grep/Glob for semantic code queries.
+- Use mermaid v10.2.3 syntax - nvim's markdown previewer does not render later versions
 
 ## Subagents
 
-- **STRONGLY PREFER subagents** - use for speed and efficiency
-- Parallelize whenever possible
-- **CRITICAL**: Check .claude/CLAUDE.md for MANDATORY subagent usage
-- When docs-lookup skill exists: use before code changes (hook auto-prompts this)
+- **Prefer subagents** for searches spanning many files, and for work that can run concurrently
+- Launch independent subagents in a single message so they run in parallel
 
 ## Skills
 
