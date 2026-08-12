@@ -39,12 +39,27 @@
     "defaultMode": "auto"
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/bash-guard.sh"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
           {
             "type": "command",
             "command": "cc-notify.mjs"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/ask-via-tool.sh"
           }
         ]
       }
