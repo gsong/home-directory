@@ -1,14 +1,33 @@
 {
-  "root": false,
+  // Do not set "root": false. This file is the root config for the dotfiles
+  // repo and, through the $HOME/biome.jsonc symlink, for loose scripts under
+  // $HOME. "root": false marks a config as nested inside a parent project;
+  // with no root config above, Biome discards this file without a warning and
+  // silently falls back to its defaults, including tab indentation.
   "$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
-    "useIgnoreFile": true
+    // Must stay false. $HOME is not a git repo, so Biome cannot find an ignore
+    // file there and refuses to run at all. The excludes below take over the
+    // job by hand.
+    "useIgnoreFile": false
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**"]
+    "includes": [
+      "**",
+      "!**/node_modules",
+      // Vendored submodule; not ours to format
+      "!.tmux/plugins",
+      // Machine-local, git-ignored
+      "!**/settings.local.json",
+      // Written by Claude Code and LazyVim, which undo any reformatting
+      "!.claude/plugins/*.json",
+      "!.config/nvim/lazyvim.json",
+      // Local scratch space for specs and plans
+      "!ai-swap"
+    ]
   },
   "formatter": {
     "enabled": true,
