@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Runs every test in the repo. Extra arguments go to node, so `run-tests
+# --watch` works.
+#
+# The globs are spelled out because node --test skips dot directories when it
+# discovers tests on its own, which hides everything under .claude. They are
+# quoted so node expands them, not the shell, which skips dotfiles too.
+set -euo pipefail
+
+# Resolve through the ~/bin symlink stow creates, so the repo is found no
+# matter which directory this runs from.
+repo=$(cd -P "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)
+cd "$repo"
+
+exec node --test "$@" '.claude/**/*.test.mjs' 'bin/**/*.test.mjs'
