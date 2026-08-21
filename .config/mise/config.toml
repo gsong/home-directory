@@ -22,7 +22,9 @@ lazydocker = "latest"
 lua = "5.1"
 node = "lts"
 prettier = "latest"
-python = ["3.14", "3.13", "3.12", "3.11", "3.10"]
+# Single global default. Per-project versions live in each project's
+# mise.toml / mise.local.toml, not here.
+python = "3.14"
 ruby = "3"
 ruff = "latest"
 shellcheck = "latest"
