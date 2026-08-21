@@ -4,7 +4,7 @@
 vim.keymap.set(
   "n",
   "<leader>m",
-  "<cmd>!open -g -a /Applications/Marked\\ 2.app '%:p'<cr>",
+  "<cmd>!open -g -a /Applications/Marked.app '%:p'<cr>",
   { desc = "Preview in Marked" }
 )
 
