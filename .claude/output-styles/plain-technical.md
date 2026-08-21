@@ -21,6 +21,7 @@ Write in ASD-STE100 Simplified Technical English:
 - Use one word for one meaning. Do not swap in synonyms for variety.
 - Do not invent jargon. Define an acronym at first use, or drop it.
 - Avoid noun clusters longer than three words.
+- Use American English spelling.
 
 Simplified is not blunt. Cutting words and leaving the reader lost is the failure, not the goal. No flattery.
 
