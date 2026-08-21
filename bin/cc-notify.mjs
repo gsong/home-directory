@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { execSync } from "child_process";
-import { basename } from "path";
-import { parseArgs as nodeParseArgs } from "util";
+import { execSync } from "node:child_process";
+import { basename } from "node:path";
+import { parseArgs as nodeParseArgs } from "node:util";
 
 /**
  * Send macOS notification for Claude Code events
@@ -25,44 +25,54 @@ const isInTmux = () => {
 const isActiveTmuxPane = (() => {
   let cached;
   return () => {
-    if (cached !== undefined) return cached;
-    if (!isInTmux()) return (cached = false);
-    try {
-      const tmuxPane = process.env.TMUX_PANE;
-      if (!tmuxPane) return (cached = false);
-      const result = execSync(
-        `tmux display-message -pt "${tmuxPane}" '#{pane_active} #{window_active}'`,
-        {
-          encoding: "utf8",
-          stdio: ["pipe", "pipe", "ignore"],
-        },
-      ).trim();
-      // Both pane and window must be active
-      return (cached = result === "1 1");
-    } catch (error) {
-      return (cached = false);
-    }
+    if (cached === undefined) cached = computeIsActiveTmuxPane();
+    return cached;
   };
 })();
+
+function computeIsActiveTmuxPane() {
+  if (!isInTmux()) return false;
+
+  const tmuxPane = process.env.TMUX_PANE;
+  if (!tmuxPane) return false;
+
+  try {
+    const result = execSync(
+      `tmux display-message -pt "${tmuxPane}" '#{pane_active} #{window_active}'`,
+      {
+        encoding: "utf8",
+        stdio: ["pipe", "pipe", "ignore"],
+      },
+    ).trim();
+    // Both pane and window must be active
+    return result === "1 1";
+  } catch {
+    return false;
+  }
+}
 
 const isGhosttyFrontmost = (() => {
   let cached;
   return () => {
-    if (cached !== undefined) return cached;
-    try {
-      const result = execSync(
-        `osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true'`,
-        {
-          encoding: "utf8",
-          stdio: ["pipe", "pipe", "ignore"],
-        },
-      ).trim();
-      return (cached = result === "ghostty");
-    } catch (error) {
-      return (cached = false);
-    }
+    if (cached === undefined) cached = computeIsGhosttyFrontmost();
+    return cached;
   };
 })();
+
+function computeIsGhosttyFrontmost() {
+  try {
+    const result = execSync(
+      `osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true'`,
+      {
+        encoding: "utf8",
+        stdio: ["pipe", "pipe", "ignore"],
+      },
+    ).trim();
+    return result === "ghostty";
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Notification Decision Logic:
@@ -195,7 +205,7 @@ const main = async () => {
     if (stdinData.trim()) {
       eventData = JSON.parse(stdinData);
     }
-  } catch (error) {
+  } catch {
     // Not JSON or no stdin, fall back to CLI args
   }
 
@@ -216,7 +226,7 @@ const main = async () => {
         const [paneActive, windowActive] = status.split(" ");
         console.log("  pane_active:", paneActive);
         console.log("  window_active:", windowActive);
-      } catch (e) {}
+      } catch {}
     }
     console.log("  isInTmux:", inTmux);
     console.log("  isActiveTmuxPane:", activePane);
@@ -229,7 +239,7 @@ const main = async () => {
   let title, subtitle, message, sound, force;
 
   // If we have event data with hook_event_name, use that
-  if (eventData && eventData.hook_event_name) {
+  if (eventData?.hook_event_name) {
     const config = getNotificationConfig(eventData);
     title = config.title;
     subtitle = config.subtitle;
