@@ -33,4 +33,4 @@ dependencies
 
 ai-swap
 
-cc-time-left\.test
+.+\.test     # test dirs live beside their subject; never link them
