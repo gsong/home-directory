@@ -1,0 +1,6 @@
+# Claude Code rewrites these on every plugin or marketplace update, and it
+# writes them as real files in ~/.claude rather than through the stow symlink.
+# Tracking them produced a permanent diff and a stow conflict on every restow.
+# They are machine-local state, not configuration.
+.claude/plugins/installed_plugins.json
+.claude/plugins/known_marketplaces.json

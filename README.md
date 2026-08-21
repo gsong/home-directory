@@ -23,4 +23,13 @@ Shell (bash), git, tmux, and editor configs.
 5. Start a new shell (so `.bashrc.d` sets `HOMEBREW_BUNDLE_FILE`), then run
    `bin/brew-install`.
 
+## Tests
+
+`bin/run-tests` runs everything. Arguments pass through to node, so
+`bin/run-tests --watch` works.
+
+Call it rather than `node --test`. Bare `node --test` skips dot directories
+when it looks for tests, so it silently misses every test under `.claude` and
+still reports a green suite. The runner names those paths.
+
 Inspired by <https://knowler.dev/blog/maintaining-dotfiles>.
