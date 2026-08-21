@@ -3,14 +3,38 @@
 /**
  * Claude Code Usage API - Time Left Calculator
  *
- * This script queries the Anthropic API to get the exact end time of the current
- * 5-hour usage block for Claude Code when using a Claude subscription (OAuth).
+ * Prints a compact statusline showing how much of each Claude Code usage window is
+ * spent and when it resets. Consumed by ccstatusline, so horizontal width is scarce.
+ *
+ * Output:
+ *   [5-hour segment] [7-day segment] [Fable segment, only when Fable has a live window]
+ *   e.g. "🟢8pm 🟢5h 🟩5", or "🟢8pm 🟢5h" on a day Fable is untouched.
+ *   Uses – as a placeholder when the 5-hour or 7-day window has no data.
+ *
+ *   The two pace segments use circles 🟢 🟡 🔴 and mean "usage versus time elapsed".
+ *   The Fable segment uses squares 🟩 🟨 🟥 plus ⛔ and means "distance to the Fable cap".
+ *   Different shapes because they answer different questions.
  *
  * Caching:
  * - Results are cached for 5 minutes in ~/.cache/cc-time-left/usage-data.json
  * - Multiple script instances share the same cache
  * - Use --force-refresh to bypass cache and fetch fresh data
- * - Use --debug to see cache hit/miss information
+ * - Use --debug to see cache hit/miss information and per-window burn rates
+ * - 5 minutes is deliberate for the Fable segment too. Fable percent moves far too
+ *   slowly to cross an indicator band inside one cache window.
+ * - The TTL is free to change: the byte-identical guarantee on the two pace segments
+ *   covers the rendered string for a given response, not how often it is refetched.
+ *
+ * Testing:
+ *   node --test bin/cc-time-left.test/*.test.mjs
+ *
+ *   Name the files, not the directory: `node --test bin/cc-time-left.test/` fails,
+ *   because Node reads a path ending in .test as a module to load rather than a
+ *   directory to walk.
+ *
+ *   Importing this module runs nothing: all I/O lives in main(), called only under
+ *   import.meta.main. Tests import render() and analyze() and pass a fixture plus a
+ *   pinned `now`. Requires Node 24.2+ for import.meta.main.
  *
  * API Details:
  * - Endpoint: https://api.anthropic.com/api/oauth/usage
@@ -21,22 +45,50 @@
  *   - User-Agent: claude-code/2.0.25
  *   - anthropic-beta: oauth-2025-04-20 (CRITICAL - enables OAuth on this endpoint)
  *
- * API Response Structure:
+ * The endpoint is undocumented and unversioned. It appears in no Anthropic documentation;
+ * the authority of last resort is the Claude Code binary's bundled JS. Expect the shape
+ * below to drift.
+ *
+ * API Response Structure (the fields this script reads):
  * {
+ *   // Flat keys. Primary source for the two pace segments.
  *   "five_hour": {
- *     "utilization": <number 0-100>,      // Percentage of 5-hour limit used
- *     "resets_at": "<ISO 8601 timestamp>" // When current block ends
+ *     "utilization": <number 0-100>,        // Percentage of 5-hour limit used
+ *     "resets_at": "<ISO 8601>" | null      // null when there is no active block
  *   },
- *   "seven_day": {
- *     "utilization": <number 0-100>,      // Percentage of 7-day limit used
- *     "resets_at": "<ISO 8601 timestamp>" // When 7-day window resets
- *   },
- *   "seven_day_oauth_apps": null,         // OAuth apps usage (if applicable)
- *   "seven_day_opus": {
- *     "utilization": <number 0-100>,      // Opus-specific usage
- *     "resets_at": "<ISO 8601 timestamp>" // Opus limit reset time (null if unlimited)
- *   }
+ *   "seven_day": { ...same shape... },       // may be absent entirely
+ *   "seven_day_opus": null,                  // per-model flat keys went permanently
+ *   "seven_day_sonnet": null,                // null around 2026-07-02; do not rely on them
+ *
+ *   // Self-describing array. Authoritative source for per-model (scoped) limits.
+ *   "limits": [
+ *     {
+ *       "kind": "session" | "weekly_all" | "weekly_scoped",   // open-ended, expect new values
+ *       "percent": <number, may be fractional, may exceed 100>,
+ *       "resets_at": "<ISO 8601>" | null,
+ *       "scope": {
+ *         "model": {
+ *           "id": null,                      // always null in practice
+ *           "display_name": "Fable"          // prefixed names like "Claude 3.5 Fable" occur
+ *         },
+ *         "surface": null
+ *       },
+ *       "group": "weekly",                   // ignored
+ *       "severity": "normal",                // ignored: boundaries are unknowable
+ *       "is_active": <boolean>               // ignored: Anthropic's own client does not read it
+ *     }
+ *   ]
  * }
+ *
+ * Reading rules established by research:
+ * - `limits` may be absent, empty, or hold several weekly_scoped entries.
+ * - Match a scoped model by case-insensitive substring on scope.model.display_name.
+ * - A hollow entry (percent 0 with resets_at null) means "no window", not "0% used".
+ * - weekly_scoped.percent is a share of that model's own allowance, so the cap is 100.
+ *   It is not a component of the weekly total, and needs no conversion.
+ *
+ * Also present and deliberately unused: extra_usage, spend (credit overflow),
+ * member_dashboard_available, and a set of opaque code-named keys.
  *
  * Keychain Storage:
  * - Service: "Claude Code-credentials"
@@ -69,12 +121,33 @@ const PERIOD_DURATION = {
 const CACHE_DIR = join(homedir(), ".cache", "cc-time-left");
 const CACHE_FILE = join(CACHE_DIR, "usage-data.json");
 
-// Visual indicators
+// Visual indicators for the two pace segments: usage versus time elapsed
 const INDICATORS = {
   SAFE: "🟢",
   WARNING: "🟡",
   DANGER: "🔴",
 };
+
+// Visual indicators for the Fable segment: distance to the Fable cap.
+// Squares, not circles, so a budget reading is not mistaken for a pace reading.
+// Same rendered width, so the distinction costs no characters.
+const FABLE_INDICATORS = {
+  SAFE: "🟩",
+  WARNING: "🟨",
+  DANGER: "🟥",
+  CAPPED: "⛔",
+};
+
+// Fable indicator bands, as floored percent used of the Fable allowance
+const FABLE_THRESHOLD = {
+  WARNING: 60,
+  DANGER: 85,
+  CAP: 100,
+};
+
+// Matched case-insensitively as a substring: prefixed names like
+// "Claude 3.5 Fable" have been seen in the wild
+const FABLE_MODEL_NAME = "fable";
 
 // Parse command-line flags
 const flags = {
@@ -82,6 +155,103 @@ const flags = {
   forceRefresh: process.argv.includes("--force-refresh"),
   help: process.argv.includes("--help") || process.argv.includes("-h"),
 };
+
+/**
+ * Renders the statusline for a usage response
+ * @param {Object} usageData - Usage data from the API, already validated
+ * @param {number} now - Current time in epoch milliseconds
+ * @returns {string} The statusline, segments joined by a single space
+ */
+export function render(usageData, now) {
+  const fiveHourDisplay = buildSegmentDisplay(
+    usageData.five_hour,
+    PERIOD_DURATION.FIVE_HOUR,
+    formatTime,
+    now,
+  );
+  const sevenDayDisplay = buildSegmentDisplay(
+    usageData.seven_day,
+    PERIOD_DURATION.SEVEN_DAY,
+    formatTimeRemaining,
+    now,
+  );
+
+  // Empty when Fable has no live window. Join non-empty segments rather than
+  // interpolating a possibly empty slot, which would leave a trailing space.
+  const fableDisplay = buildFableDisplay(usageData);
+
+  return [fiveHourDisplay, sevenDayDisplay, fableDisplay]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/**
+ * Builds detailed burn rate information, one line per usage window
+ * @param {Object} usageData - Usage data from the API
+ * @param {number} now - Current time in epoch milliseconds
+ * @returns {string[]} Lines for --debug output
+ */
+export function analyze(usageData, now) {
+  const lines = ["\n--- Usage Summary ---"];
+
+  // 5-hour block analysis
+  const fiveHourData = usageData.five_hour;
+
+  if (fiveHourData && fiveHourData.resets_at) {
+    lines.push(
+      buildBurnRateLine(
+        "5-hour block",
+        fiveHourData.utilization,
+        fiveHourData.resets_at,
+        PERIOD_DURATION.FIVE_HOUR,
+        now,
+      ),
+    );
+  } else {
+    lines.push("5-hour block: no active block");
+  }
+
+  // 7-day usage analysis
+  if (usageData.seven_day) {
+    lines.push(
+      buildBurnRateLine(
+        "7-day usage",
+        usageData.seven_day.utilization,
+        usageData.seven_day.resets_at,
+        PERIOD_DURATION.SEVEN_DAY,
+        now,
+      ),
+    );
+  }
+
+  // Fable weekly usage. Shares the 7-day window to the millisecond, so the
+  // elapsed fraction uses the same divisor. Pace lives here and not on the
+  // statusline: the segment deliberately shows distance to the cap instead.
+  const fableLimit = findScopedLimit(usageData, FABLE_MODEL_NAME);
+
+  if (fableLimit && hasLiveWindow(fableLimit)) {
+    lines.push(
+      buildBurnRateLine(
+        "Fable weekly",
+        fableLimit.percent,
+        fableLimit.resets_at,
+        PERIOD_DURATION.SEVEN_DAY,
+        now,
+      ),
+    );
+  } else {
+    lines.push("Fable weekly: no active window");
+  }
+
+  // Opus usage
+  if (usageData.seven_day_opus) {
+    lines.push(
+      `7-day Opus: ${usageData.seven_day_opus.utilization}% used, resets at ${usageData.seven_day_opus.resets_at || "unlimited"}`,
+    );
+  }
+
+  return lines;
+}
 
 /**
  * Debug logging helper
@@ -107,13 +277,21 @@ Options:
   --help, -h        Show this help message
 
 Output format:
-  [5hr indicator][reset time] [7day indicator][time remaining]
-  Uses – as placeholder when a period has no active data.
+  [5hr indicator][reset time] [7day indicator][time remaining] [Fable indicator][% used]
+  e.g. "🟢8pm 🟢5h 🟩5"
+  Uses – as placeholder when the 5hr or 7day period has no active data.
+  The Fable segment is omitted entirely when Fable has no active window.
 
-  Indicators:
+  Pace indicators (circles) - quota used versus time elapsed:
     🟢 Safe - on track or below quota
     🟡 Warning - using quota faster than time
-    🔴 Danger - likely to exceed quota`);
+    🔴 Danger - likely to exceed quota
+
+  Fable indicators (squares) - percent of the Fable allowance spent:
+    🟩 0-59   plenty left
+    🟨 60-84  slow down or switch model
+    🟥 85-99  stop soon
+    ⛔ 100    at the cap, Fable requests are rejected`);
   process.exit(0);
 }
 
@@ -265,10 +443,10 @@ function formatTime(isoTimestamp) {
 /**
  * Calculates time remaining until timestamp and formats as "Xd" or "Xh"
  * @param {string} isoTimestamp - ISO 8601 timestamp
+ * @param {number} now - Current time in epoch milliseconds
  * @returns {string} Formatted time remaining (e.g., "2d", "6h")
  */
-function formatTimeRemaining(isoTimestamp) {
-  const now = Date.now();
+function formatTimeRemaining(isoTimestamp, now) {
   const resetTime = new Date(isoTimestamp).getTime();
   const msRemaining = resetTime - now;
 
@@ -318,10 +496,15 @@ function formatMsRemaining(msRemaining) {
  * @param {number} utilization - Percentage used (0-100)
  * @param {string} resetsAt - ISO 8601 timestamp when period resets
  * @param {number} periodDurationMs - Total period duration in milliseconds
+ * @param {number} now - Current time in epoch milliseconds
  * @returns {number|null} Milliseconds until exhaustion, or null if not applicable
  */
-function calculateTimeUntilExhausted(utilization, resetsAt, periodDurationMs) {
-  const now = Date.now();
+function calculateTimeUntilExhausted(
+  utilization,
+  resetsAt,
+  periodDurationMs,
+  now,
+) {
   const resetTime = new Date(resetsAt).getTime();
   const startTime = resetTime - periodDurationMs;
   const timeElapsed = now - startTime;
@@ -352,10 +535,10 @@ function calculateTimeUntilExhausted(utilization, resetsAt, periodDurationMs) {
  * @param {number} utilization - Percentage of limit used (0-100)
  * @param {string} resetsAt - ISO 8601 timestamp when period resets
  * @param {number} periodDurationMs - Total period duration in milliseconds
+ * @param {number} now - Current time in epoch milliseconds
  * @returns {string} Emoji indicator
  */
-function getIndicatorForBurnRate(utilization, resetsAt, periodDurationMs) {
-  const now = Date.now();
+function getIndicatorForBurnRate(utilization, resetsAt, periodDurationMs, now) {
   const resetTime = new Date(resetsAt).getTime();
   const startTime = resetTime - periodDurationMs;
   const timeElapsed = now - startTime;
@@ -385,78 +568,164 @@ function getIndicatorForBurnRate(utilization, resetsAt, periodDurationMs) {
 }
 
 /**
- * Analyzes and logs detailed burn rate information for debugging
- * @param {Object} usageData - Full usage data from API
+ * Builds one --debug line: percent used, percent elapsed, burn ratio, reset time,
+ * plus a projected-exhaustion tail once the ratio reaches the danger threshold
+ * @param {string} label - Window name for the line prefix
+ * @param {number} utilization - Percentage of limit used
+ * @param {string} resetsAt - ISO 8601 timestamp when the window resets
+ * @param {number} periodDurationMs - Total period duration in milliseconds
+ * @param {number} now - Current time in epoch milliseconds
+ * @returns {string} The debug line
  */
-function analyzeBurnRate(usageData) {
-  debug("\n--- Usage Summary ---");
+function buildBurnRateLine(
+  label,
+  utilization,
+  resetsAt,
+  periodDurationMs,
+  now,
+) {
+  const resetTime = new Date(resetsAt).getTime();
+  const startTime = resetTime - periodDurationMs;
+  const elapsedPercent = ((now - startTime) / periodDurationMs) * 100;
+  const burnRatio = utilization / elapsedPercent;
 
-  // 5-hour block analysis
-  const now = Date.now();
-  const fiveHourData = usageData.five_hour;
+  let line =
+    `${label}: ${utilization.toFixed(1)}% used, ${elapsedPercent.toFixed(1)}% elapsed, ` +
+    `burn ratio: ${burnRatio.toFixed(2)}x, resets at ${resetsAt}`;
 
-  if (fiveHourData && fiveHourData.resets_at) {
-    const fiveHourResetTime = new Date(fiveHourData.resets_at).getTime();
-    const fiveHourStartTime = fiveHourResetTime - PERIOD_DURATION.FIVE_HOUR;
-    const fiveHourElapsed =
-      ((now - fiveHourStartTime) / PERIOD_DURATION.FIVE_HOUR) * 100;
-    const fiveHourBurnRatio = fiveHourData.utilization / fiveHourElapsed;
-
-    let fiveHourMsg =
-      `5-hour block: ${fiveHourData.utilization.toFixed(1)}% used, ${fiveHourElapsed.toFixed(1)}% elapsed, ` +
-      `burn ratio: ${fiveHourBurnRatio.toFixed(2)}x, resets at ${fiveHourData.resets_at}`;
-
-    if (fiveHourBurnRatio >= 1.3) {
-      const msUntilExhausted = calculateTimeUntilExhausted(
-        fiveHourData.utilization,
-        fiveHourData.resets_at,
-        PERIOD_DURATION.FIVE_HOUR,
-      );
-      if (msUntilExhausted !== null) {
-        const exhaustionTime = formatMsRemaining(msUntilExhausted);
-        fiveHourMsg += ` → projected exhaustion in ${exhaustionTime}`;
-      }
-    }
-
-    debug(fiveHourMsg);
-  } else {
-    debug("5-hour block: no active block");
-  }
-
-  // 7-day usage analysis
-  if (usageData.seven_day) {
-    const sevenDayResetTime = new Date(usageData.seven_day.resets_at).getTime();
-    const sevenDayStartTime = sevenDayResetTime - PERIOD_DURATION.SEVEN_DAY;
-    const sevenDayElapsed =
-      ((now - sevenDayStartTime) / PERIOD_DURATION.SEVEN_DAY) * 100;
-    const sevenDayBurnRatio = usageData.seven_day.utilization / sevenDayElapsed;
-
-    let sevenDayMsg =
-      `7-day usage: ${usageData.seven_day.utilization.toFixed(1)}% used, ${sevenDayElapsed.toFixed(1)}% elapsed, ` +
-      `burn ratio: ${sevenDayBurnRatio.toFixed(2)}x, resets at ${usageData.seven_day.resets_at}`;
-
-    // Add exhaustion projection if burning too fast
-    if (sevenDayBurnRatio >= 1.3) {
-      const msUntilExhausted = calculateTimeUntilExhausted(
-        usageData.seven_day.utilization,
-        usageData.seven_day.resets_at,
-        PERIOD_DURATION.SEVEN_DAY,
-      );
-      if (msUntilExhausted !== null) {
-        const exhaustionTime = formatMsRemaining(msUntilExhausted);
-        sevenDayMsg += ` → projected exhaustion in ${exhaustionTime}`;
-      }
-    }
-
-    debug(sevenDayMsg);
-  }
-
-  // Opus usage
-  if (usageData.seven_day_opus) {
-    debug(
-      `7-day Opus: ${usageData.seven_day_opus.utilization}% used, resets at ${usageData.seven_day_opus.resets_at || "unlimited"}`,
+  if (burnRatio >= 1.3) {
+    const msUntilExhausted = calculateTimeUntilExhausted(
+      utilization,
+      resetsAt,
+      periodDurationMs,
+      now,
     );
+    if (msUntilExhausted !== null) {
+      line += ` → projected exhaustion in ${formatMsRemaining(msUntilExhausted)}`;
+    }
   }
+
+  return line;
+}
+
+/**
+ * Builds the display segment for a pace-based usage period
+ * @param {Object} periodData - Flat usage key, e.g. usageData.five_hour
+ * @param {number} periodDurationMs - Total period duration in milliseconds
+ * @param {Function} formatTimeFn - Formats the reset timestamp for display
+ * @param {number} now - Current time in epoch milliseconds
+ * @returns {string} The segment, or – when the period has no window
+ */
+function buildSegmentDisplay(periodData, periodDurationMs, formatTimeFn, now) {
+  if (!periodData || !periodData.resets_at) return "–";
+
+  const timeStr = formatTimeFn(periodData.resets_at, now);
+  const indicator = getIndicatorForBurnRate(
+    periodData.utilization,
+    periodData.resets_at,
+    periodDurationMs,
+    now,
+  );
+
+  if (indicator === INDICATORS.DANGER) {
+    const msUntilExhausted = calculateTimeUntilExhausted(
+      periodData.utilization,
+      periodData.resets_at,
+      periodDurationMs,
+      now,
+    );
+    if (msUntilExhausted !== null) {
+      return `${indicator}${formatMsRemaining(msUntilExhausted)}/${timeStr}`;
+    }
+  }
+
+  return `${indicator}${timeStr}`;
+}
+
+/**
+ * Builds the Fable segment: indicator plus floored percent used, no unit.
+ * Fable shares the weekly reset time that the 7-day segment already prints,
+ * so repeating it here would only spend width.
+ * @param {Object} usageData - Usage data from the API
+ * @returns {string} The segment, or "" when nothing has been spent on Fable
+ */
+function buildFableDisplay(usageData) {
+  const limit = findScopedLimit(usageData, FABLE_MODEL_NAME);
+
+  if (!limit) return "";
+
+  const percentUsed = flooredPercentUsed(limit.percent);
+
+  // Nothing spent, nothing shown. Zero width cost on days Fable is untouched.
+  // This covers the hollow entry (no window at all) and a live window that is
+  // genuinely still at zero, which read the same on a statusline.
+  if (percentUsed === 0) return "";
+
+  return `${getIndicatorForBudget(percentUsed)}${percentUsed}`;
+}
+
+/**
+ * Finds the weekly_scoped limit whose model display name contains the given
+ * name. The API may list the same model twice, narrowed by scope.surface, so a
+ * live window beats a hollow entry regardless of array order; with no live
+ * window the first match still wins. Never reads scope.model.id, which is
+ * always null.
+ * @param {Object} usageData - Usage data from the API
+ * @param {string} modelName - Lowercase substring to match, e.g. "fable"
+ * @returns {Object|null} The matching limits[] entry, or null
+ */
+function findScopedLimit(usageData, modelName) {
+  const limits = Array.isArray(usageData?.limits) ? usageData.limits : [];
+
+  const matches = limits.filter((limit) => {
+    if (limit?.kind !== "weekly_scoped") return false;
+    const displayName = limit?.scope?.model?.display_name;
+    return (
+      typeof displayName === "string" &&
+      displayName.toLowerCase().includes(modelName)
+    );
+  });
+
+  return matches.find(hasLiveWindow) ?? matches[0] ?? null;
+}
+
+/**
+ * Tells a live window from a hollow entry. Zero percent with no reset time
+ * means "no window", not "0% used".
+ * @param {Object} limit - A limits[] entry
+ * @returns {boolean} True when the entry describes a real window
+ */
+function hasLiveWindow(limit) {
+  return !(!limit.percent && !limit.resets_at);
+}
+
+/**
+ * Clamps a scoped percent into 0-100 and floors it for display, matching what
+ * the first-party client does. The server may send fractions, and may report
+ * past the cap when usage has overflowed.
+ * @param {number} percent - Raw percent from a limits[] entry
+ * @returns {number} Integer 0-100
+ */
+function flooredPercentUsed(percent) {
+  const bounded = Math.min(
+    Math.max(typeof percent === "number" ? percent : 0, 0),
+    FABLE_THRESHOLD.CAP,
+  );
+
+  return Math.floor(bounded);
+}
+
+/**
+ * Gets the Fable indicator from distance to the cap. No time component: Fable
+ * is a budget you choose to spend, not a clock you race.
+ * @param {number} percentUsed - Floored percent used, 0-100
+ * @returns {string} Emoji indicator
+ */
+function getIndicatorForBudget(percentUsed) {
+  if (percentUsed >= FABLE_THRESHOLD.CAP) return FABLE_INDICATORS.CAPPED;
+  if (percentUsed >= FABLE_THRESHOLD.DANGER) return FABLE_INDICATORS.DANGER;
+  if (percentUsed >= FABLE_THRESHOLD.WARNING) return FABLE_INDICATORS.WARNING;
+  return FABLE_INDICATORS.SAFE;
 }
 
 /**
@@ -473,84 +742,60 @@ function getCachedData() {
   return { valid: !!data, data };
 }
 
-// Main execution
-if (flags.help) {
-  showHelp();
-}
-
-// Step 1: Try to get cached data
-const cache = getCachedData();
-let usageData = cache.data;
-
-// Step 2: If no valid cache, fetch from API
-if (!cache.valid) {
-  const accessToken = getOAuthTokenFromKeychain();
-
-  if (!accessToken) {
-    console.error("Error: No OAuth token found in keychain.");
-    console.error("Please ensure you're logged into Claude Code.");
-    process.exit(1);
+/**
+ * Entry point. All I/O lives here so importing this module runs nothing.
+ */
+async function main() {
+  if (flags.help) {
+    showHelp();
   }
 
-  debug("OAuth token found, fetching usage data...");
+  // Step 1: Try to get cached data
+  const cache = getCachedData();
+  let usageData = cache.data;
 
-  usageData = await fetchUsageData(accessToken);
+  // Step 2: If no valid cache, fetch from API
+  if (!cache.valid) {
+    const accessToken = getOAuthTokenFromKeychain();
 
-  if (!usageData) {
-    console.error("Error: Failed to fetch usage data from API.");
-    console.error("Please check your network connection and try again.");
-    process.exit(1);
+    if (!accessToken) {
+      console.error("Error: No OAuth token found in keychain.");
+      console.error("Please ensure you're logged into Claude Code.");
+      process.exit(1);
+    }
+
+    debug("OAuth token found, fetching usage data...");
+
+    usageData = await fetchUsageData(accessToken);
+
+    if (!usageData) {
+      console.error("Error: Failed to fetch usage data from API.");
+      console.error("Please check your network connection and try again.");
+      process.exit(1);
+    }
+
+    // Step 3: Validate API response
+    if (!validateUsageData(usageData)) {
+      console.error("Error: Invalid usage data received from API.");
+      process.exit(1);
+    }
+
+    // Step 4: Cache the fresh data
+    writeCache(usageData);
   }
 
-  // Step 3: Validate API response
-  if (!validateUsageData(usageData)) {
-    console.error("Error: Invalid usage data received from API.");
-    process.exit(1);
-  }
+  const now = Date.now();
 
-  // Step 4: Cache the fresh data
-  writeCache(usageData);
-}
+  console.log(render(usageData, now));
 
-// Build display segment for a usage period
-function buildSegmentDisplay(periodData, periodDurationMs, formatTimeFn) {
-  if (!periodData || !periodData.resets_at) return "\u2013";
-
-  const timeStr = formatTimeFn(periodData.resets_at);
-  const indicator = getIndicatorForBurnRate(
-    periodData.utilization,
-    periodData.resets_at,
-    periodDurationMs,
-  );
-
-  if (indicator === INDICATORS.DANGER) {
-    const msUntilExhausted = calculateTimeUntilExhausted(
-      periodData.utilization,
-      periodData.resets_at,
-      periodDurationMs,
-    );
-    if (msUntilExhausted !== null) {
-      return `${indicator}${formatMsRemaining(msUntilExhausted)}/${timeStr}`;
+  // Debug: show additional info with burn rate analysis
+  if (flags.debug) {
+    for (const line of analyze(usageData, now)) {
+      console.error(line);
     }
   }
-
-  return `${indicator}${timeStr}`;
 }
 
-const fiveHourDisplay = buildSegmentDisplay(
-  usageData.five_hour,
-  PERIOD_DURATION.FIVE_HOUR,
-  formatTime,
-);
-const sevenDayDisplay = buildSegmentDisplay(
-  usageData.seven_day,
-  PERIOD_DURATION.SEVEN_DAY,
-  formatTimeRemaining,
-);
-
-console.log(`${fiveHourDisplay} ${sevenDayDisplay}`);
-
-// Debug: show additional info with burn rate analysis
-if (flags.debug) {
-  analyzeBurnRate(usageData);
+if (import.meta.main) {
+  await main();
 }
