@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { basename } from "node:path";
 import { parseArgs as nodeParseArgs } from "node:util";
 
@@ -37,18 +37,27 @@ function computeIsActiveTmuxPane() {
   if (!tmuxPane) return false;
 
   try {
-    const result = execSync(
-      `tmux display-message -pt "${tmuxPane}" '#{pane_active} #{window_active}'`,
-      {
-        encoding: "utf8",
-        stdio: ["pipe", "pipe", "ignore"],
-      },
-    ).trim();
     // Both pane and window must be active
-    return result === "1 1";
+    return readTmuxPaneStatus(tmuxPane) === "1 1";
   } catch {
     return false;
   }
+}
+
+/**
+ * Asks tmux whether a pane and its window are active. Returns the raw reply,
+ * "<pane_active> <window_active>", so the debug path can print the two halves.
+ * Throws if tmux is missing or the pane is gone; every caller handles that.
+ */
+function readTmuxPaneStatus(tmuxPane) {
+  return execFileSync(
+    "tmux",
+    ["display-message", "-pt", tmuxPane, "#{pane_active} #{window_active}"],
+    {
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "ignore"],
+    },
+  ).trim();
 }
 
 const isGhosttyFrontmost = (() => {
@@ -61,8 +70,12 @@ const isGhosttyFrontmost = (() => {
 
 function computeIsGhosttyFrontmost() {
   try {
-    const result = execSync(
-      `osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true'`,
+    const result = execFileSync(
+      "osascript",
+      [
+        "-e",
+        'tell application "System Events" to get name of first application process whose frontmost is true',
+      ],
       {
         encoding: "utf8",
         stdio: ["pipe", "pipe", "ignore"],
@@ -130,6 +143,8 @@ const sendNotification = ({
     return;
   }
 
+  // Escapes for the AppleScript string literal, not for a shell. Still needed:
+  // execFileSync keeps the shell out, but osascript parses this text as code.
   const escapeAppleScript = (str) => {
     return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
   };
@@ -137,10 +152,7 @@ const sendNotification = ({
   const appleScript = `display notification "${escapeAppleScript(message)}" with title "${escapeAppleScript(title)}" subtitle "${escapeAppleScript(subtitle)}" sound name "${sound}"`;
 
   try {
-    execSync(`osascript -e '${appleScript.replace(/'/g, "'\\''")}'`, {
-      stdio: "ignore",
-      shell: true,
-    });
+    execFileSync("osascript", ["-e", appleScript], { stdio: "ignore" });
   } catch (error) {
     console.error("Failed to send notification:", error.message);
   }
@@ -219,10 +231,7 @@ const main = async () => {
     console.log("  TMUX_PANE:", process.env.TMUX_PANE);
     if (inTmux && process.env.TMUX_PANE) {
       try {
-        const status = execSync(
-          `tmux display-message -pt "${process.env.TMUX_PANE}" '#{pane_active} #{window_active}'`,
-          { encoding: "utf8", stdio: ["pipe", "pipe", "ignore"] },
-        ).trim();
+        const status = readTmuxPaneStatus(process.env.TMUX_PANE);
         const [paneActive, windowActive] = status.split(" ");
         console.log("  pane_active:", paneActive);
         console.log("  window_active:", windowActive);
