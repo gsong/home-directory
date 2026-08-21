@@ -30,15 +30,17 @@ svgo = "latest"
 tree-sitter = "latest"
 zizmor = "latest"
 "gem:teamocil" = "latest"
-# Pinned: prerelease-only package, so "latest" won't resolve it. Note the
-# `beta` dist-tag is stale (0.1.0-beta.5); track the `latest` tag and bump manually.
+# Pinned: prerelease-only package, so "latest" won't resolve it — every `mise up`
+# warns "no latest version found" for this entry; that warning is expected, not a
+# failure. Note the `beta` dist-tag is stale (0.1.0-beta.5); track the `latest`
+# tag and bump manually. Last checked 2026-08-19: latest = 0.1.0-beta.19.
 # trust_policy_excludes: transitive jose@4.15.9 (via auth0@^4.37.0) trips
 # no-downgrade — provenance exists through 4.15.4 but stopped at 4.15.5 when the
 # v4 line went to maintenance backports. Verified benign: same sole maintainer
 # (panva), current v5/v6 lines still carry provenance, upstream tag v4.15.9
 # (de7eb9e6001d) exists, published 2024-07-03, and it was already installed
 # under beta.12 — so this is not new exposure. Scoped to the exact version.
-"npm:@auth0/auth0-mcp-server" = { version = "0.1.0-beta.17", trust_policy_excludes = ["jose@4.15.9"] }
+"npm:@auth0/auth0-mcp-server" = { version = "0.1.0-beta.19", trust_policy_excludes = ["jose@4.15.9"] }
 "npm:@browsermcp/mcp" = "latest"
 "npm:@gsong/ccmcp" = "latest"
 "npm:@mariozechner/claude-trace" = "latest"
