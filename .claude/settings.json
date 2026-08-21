@@ -22,7 +22,6 @@
       "Bash(mkdir:*)",
       "Bash(mv:*)",
       "Bash(cp:*)",
-      "Bash(chmod:*)",
       "Bash(test:*)",
       "Bash(cd:*)",
       "Bash(echo:*)",
