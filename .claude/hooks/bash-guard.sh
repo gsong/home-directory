@@ -26,9 +26,21 @@ if [[ -n $push_seg ]]; then
 fi
 
 # ai-swap/ holds local-only specs and plans. It must never enter git history.
-if [[ $cmd =~ git[[:space:]]+(add|commit|stash) ]] && [[ $cmd == *ai-swap* ]]; then
-  deny "ai-swap/ is local-only and must not be committed. Remove it from this command."
-fi
+# Only text in command position counts. Split the command on shell separators,
+# then look at segments that actually start with git, so the path named inside
+# a quoted string, a heredoc, or a trailing comment does not trip the guard.
+# A quoted path argument still trips it: quotes are deliberately not stripped.
+folded=${cmd//$'\\\n'/ }
+while IFS= read -r seg; do
+  seg=${seg%%[[:space:]]#*}
+  # Peel leading env assignments and wrappers so they do not hide the verb.
+  while [[ $seg =~ ^[[:space:]]*([A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*|sudo|command|nohup|time|env)[[:space:]]+ ]]; do
+    seg=${seg#"${BASH_REMATCH[0]}"}
+  done
+  [[ $seg =~ ^[[:space:]]*git[[:space:]]+(add|commit|stash)([[:space:]]|$) ]] || continue
+  [[ $seg == *ai-swap* ]] &&
+    deny "ai-swap/ is local-only and must not be committed. Remove it from this command."
+done < <(printf '%s\n' "$folded" | tr ';|&()`' '\n\n\n\n\n\n\n')
 
 # Preference, not a prohibition: git-filter-repo is the better tool, but
 # filter-branch is occasionally the right one. Prompt rather than block.
