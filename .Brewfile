@@ -78,7 +78,6 @@ brew "wdiff"                   # Word-diff between text files
 cask "qlmarkdown"              # Preview Markdown files
 cask "qlstephen"               # Preview plain text files without extension
 cask "quicklook-video"         # Preview video thumbnails
-cask "quicklook-json"          # Preview JSON files
 
 # GUI Applications
 
@@ -88,7 +87,6 @@ cask "1password-cli", greedy: true
 cask "alfred", greedy: true    # Application launcher and productivity
 cask "bartender", greedy: true   # Menu bar management
 cask "betterdisplay", greedy: true # Display management
-cask "cheatsheet"              # Display active app shortcuts
 cask "focusatwill"             # Focus music
 cask "keepingyouawake"         # Prevent sleep
 cask "keyboardcleantool"       # Disable keyboard for cleaning
@@ -103,7 +101,7 @@ cask "soundsource", greedy: true # Audio routing
 cask "arc", greedy: true        # Innovative web browser
 cask "firefox"                 # Mozilla Firefox browser
 cask "google-chrome"           # Google Chrome browser
-cask "ungoogled-chromium", args: { no_quarantine: true } # Open-source Chrome (for prisma-erd-generator)
+cask "ungoogled-chromium"      # Open-source Chrome (for prisma-erd-generator); Homebrew 6 no longer quarantines casks, so no args needed
 
 # Communication
 cask "discord"
@@ -142,7 +140,7 @@ cask "google-drive"
 cask "istat-menus", greedy: true # System statistics
 cask "micro-snitch"            # Monitor camera/microphone usage
 cask "pearcleaner"             # Advanced app cleaner
-cask "sloth"                   # Display open files/sockets
+cask "homebrew/cask/sloth"     # Display open files/sockets (bare "sloth" now resolves to the sloth-cli formula)
 cask "the-unarchiver"          # Archive extraction
 
 # Media & Notes
@@ -154,7 +152,6 @@ cask "notion"                  # All-in-one workspace
 cask "screenflow"              # Screen recording
 cask "shottr"                  # Screenshot tool
 cask "taskpaper"               # Plain text task management
-cask "adobe-acrobat-reader"    # PDF viewer
 cask "vlc"                     # Media player
 
 # Fonts
