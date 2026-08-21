@@ -3,10 +3,10 @@
 // so there is no drift between the captured golden and these expectations.
 process.env.TZ = "America/Los_Angeles";
 
-import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { dirname, join } from "node:path";
+import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
 import { render } from "../cc-time-left.mjs";
@@ -50,17 +50,33 @@ test("golden: the two pace segments survive byte-identically", () => {
 const STATES = [
   ["01-golden", "🟢8pm 🟢5h 🟩5", "Fable at 5, is_active false and ignored"],
   ["02-no-fable-entry", "🟢8pm 🟢5h", "no weekly_scoped Fable entry"],
-  ["03-fable-hollow", "🟢8pm 🟢5h", "hollow entry means no window, not 0% used"],
+  [
+    "03-fable-hollow",
+    "🟢8pm 🟢5h",
+    "hollow entry means no window, not 0% used",
+  ],
   ["04-fable-below-cap", "🟢8pm 🟢5h 🟩30", "green band"],
   ["05-fable-at-cap", "🟢8pm 🟢5h ⛔100", "at the cap"],
   ["06-fable-past-cap", "🟢8pm 🟢5h ⛔100", "past the cap, clamped to 100"],
   ["07-limits-key-absent", "🟢8pm 🟢5h", "limits key absent entirely"],
-  ["08-fable-prefixed-name", "🟢8pm 🟢5h 🟩5", "matched by substring, not equality"],
-  ["09-two-scoped-models", "🟢8pm 🟢5h 🟩5", "Opus listed first is skipped, not rendered"],
+  [
+    "08-fable-prefixed-name",
+    "🟢8pm 🟢5h 🟩5",
+    "matched by substring, not equality",
+  ],
+  [
+    "09-two-scoped-models",
+    "🟢8pm 🟢5h 🟩5",
+    "Opus listed first is skipped, not rendered",
+  ],
   ["10-limits-empty", "🟢8pm 🟢5h", "limits is an empty array"],
   ["11-five-hour-no-window", "– 🟢5h 🟩5", "flat five_hour has no window"],
   ["12-seven-day-absent", "🟢8pm – 🟩5", "flat seven_day key absent"],
-  ["13-two-fable-entries", "🟢8pm 🟢5h 🟩30", "hollow Fable entry first, live one wins"],
+  [
+    "13-two-fable-entries",
+    "🟢8pm 🟢5h 🟩30",
+    "hollow Fable entry first, live one wins",
+  ],
 ];
 
 for (const [name, expected, why] of STATES) {
@@ -95,9 +111,17 @@ const BANDS = [
   [84, "🟨84", "yellow ceiling"],
   [85, "🟥85", "red floor"],
   [99, "🟥99", "red ceiling"],
-  [99.6, "🟥99", "floored, not rounded: 99.6 stays red rather than tripping the cap"],
+  [
+    99.6,
+    "🟥99",
+    "floored, not rounded: 99.6 stays red rather than tripping the cap",
+  ],
   [100, "⛔100", "cap is exact, not early"],
-  [137, "⛔100", "overflow clamps; the display cannot distinguish 100 from 137"],
+  [
+    137,
+    "⛔100",
+    "overflow clamps; the display cannot distinguish 100 from 137",
+  ],
   [0.4, "", "floors to zero, so nothing is shown"],
   [-5, "", "negative clamps to zero and shows nothing"],
 ];
@@ -117,7 +141,14 @@ test("the absent case leaves no trailing space", () => {
 });
 
 test("a malformed limits value does not throw", () => {
-  for (const limits of [null, "nonsense", 42, [null], [{}], [{ kind: "weekly_scoped" }]]) {
+  for (const limits of [
+    null,
+    "nonsense",
+    42,
+    [null],
+    [{}],
+    [{ kind: "weekly_scoped" }],
+  ]) {
     const data = { ...loadFixture("01-golden"), limits };
 
     assert.equal(render(data, PINNED_NOW), "🟢8pm 🟢5h");

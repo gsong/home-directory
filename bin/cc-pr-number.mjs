@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { execSync } from "child_process";
-import { readFileSync, writeFileSync, mkdirSync } from "fs";
-import { join } from "path";
-import { homedir } from "os";
+import { execSync } from "node:child_process";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 
 const CACHE_DIR = join(homedir(), ".cache", "cc-pr-number");
 const CACHE_FILE = join(CACHE_DIR, "cache.json");

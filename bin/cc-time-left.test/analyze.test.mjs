@@ -2,10 +2,10 @@
 // lines carry reset timestamps and elapsed fractions read against a local clock.
 process.env.TZ = "America/Los_Angeles";
 
-import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { dirname, join } from "node:path";
+import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
 import { analyze } from "../cc-time-left.mjs";
@@ -68,8 +68,7 @@ test("a fast Fable burn gets the projected-exhaustion tail", () => {
   // PINNED_NOW sits 97% through the weekly window, where 30% used is a slow burn.
   // Judge the tail from a tenth of the way in, where it is a 3x burn instead.
   const sevenDayMs = 7 * 24 * 60 * 60 * 1000;
-  const tenthOfWindow =
-    new Date(fable.resets_at).getTime() - sevenDayMs * 0.9;
+  const tenthOfWindow = new Date(fable.resets_at).getTime() - sevenDayMs * 0.9;
 
   assert.match(
     lineFor(analyze(data, tenthOfWindow), "Fable weekly"),
@@ -78,7 +77,10 @@ test("a fast Fable burn gets the projected-exhaustion tail", () => {
 });
 
 test("no exhaustion tail while Fable is burning slower than the clock", () => {
-  const fable = lineFor(analyze(loadFixture("01-golden"), PINNED_NOW), "Fable weekly");
+  const fable = lineFor(
+    analyze(loadFixture("01-golden"), PINNED_NOW),
+    "Fable weekly",
+  );
 
   assert.ok(!fable.includes("projected exhaustion"));
 });
@@ -87,7 +89,10 @@ test("the Fable line reports raw percent, not the clamped display value", () => 
   // The statusline clamps to 100 because the indicator has nowhere to put the
   // overflow. Debug has the width, so it should not hide it.
   assert.match(
-    lineFor(analyze(loadFixture("06-fable-past-cap"), PINNED_NOW), "Fable weekly"),
+    lineFor(
+      analyze(loadFixture("06-fable-past-cap"), PINNED_NOW),
+      "Fable weekly",
+    ),
     /^Fable weekly: 137\.0% used,/,
   );
 });
@@ -103,7 +108,10 @@ for (const [name, why] of NO_WINDOW) {
   test(`${name}: says so rather than going silent (${why})`, () => {
     const lines = analyze(loadFixture(name), PINNED_NOW);
 
-    assert.equal(lineFor(lines, "Fable weekly"), "Fable weekly: no active window");
+    assert.equal(
+      lineFor(lines, "Fable weekly"),
+      "Fable weekly: no active window",
+    );
   });
 }
 
@@ -127,7 +135,10 @@ test("12: omits the 7-day line when the flat key is absent", () => {
   const lines = analyze(loadFixture("12-seven-day-absent"), PINNED_NOW);
 
   assert.equal(lineFor(lines, "7-day usage"), undefined);
-  assert.ok(lineFor(lines, "Fable weekly"), "Fable is unaffected by the flat key");
+  assert.ok(
+    lineFor(lines, "Fable weekly"),
+    "Fable is unaffected by the flat key",
+  );
 });
 
 test("every fixture analyzes without throwing", () => {

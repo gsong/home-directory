@@ -97,10 +97,10 @@
  * - Data: JSON with claudeAiOauth.accessToken
  */
 
-import { execSync } from "child_process";
-import { homedir } from "os";
-import { readFileSync, writeFileSync, mkdirSync } from "fs";
-import { join } from "path";
+import { execSync } from "node:child_process";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 
 // Configuration
 const CONFIG = {
@@ -197,7 +197,7 @@ export function analyze(usageData, now) {
   // 5-hour block analysis
   const fiveHourData = usageData.five_hour;
 
-  if (fiveHourData && fiveHourData.resets_at) {
+  if (fiveHourData?.resets_at) {
     lines.push(
       buildBurnRateLine(
         "5-hour block",
@@ -617,7 +617,7 @@ function buildBurnRateLine(
  * @returns {string} The segment, or – when the period has no window
  */
 function buildSegmentDisplay(periodData, periodDurationMs, formatTimeFn, now) {
-  if (!periodData || !periodData.resets_at) return "–";
+  if (!periodData?.resets_at) return "–";
 
   const timeStr = formatTimeFn(periodData.resets_at, now);
   const indicator = getIndicatorForBurnRate(
