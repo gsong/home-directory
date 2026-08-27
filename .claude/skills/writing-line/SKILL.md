@@ -53,7 +53,7 @@ Put the candidates to the user with AskUserQuestion. Do not pick for them.
 
 Skip this stage for `technical` and `comms`.
 
-## 4. Agree the outline
+## 4. Agree the outline — `technical` and `mixed`
 
 Write the full spine before any prose exists: every section, and one line
 saying what each one does. Include the evidence each claim will rest on.
@@ -61,6 +61,10 @@ saying what each one does. Include the evidence each claim will rest on.
 Put it to the user. Wait for approval. Do not start prose until you have it.
 
 An outline is cheap to change. A draft is not.
+
+Skip this stage for `comms`. A Slack message has no spine to agree, and the
+gate costs more than the message is worth. `comms` gets the voice gate and the
+three exit passes, nothing else.
 
 ## 5. Draft
 
