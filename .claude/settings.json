@@ -59,6 +59,10 @@
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/ask-via-tool.sh"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/writing-promote.sh"
           }
         ]
       }
@@ -79,15 +83,23 @@
         "hooks": [
           {
             "type": "command",
-            "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); prettier --write --ignore-unknown \"$(realpath \"$file\")\""
+            "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); case \"$file\" in */ai-swap/drafts/*) exit 0 ;; esac; prettier --write --ignore-unknown \"$(realpath \"$file\")\""
           },
           {
             "type": "command",
-            "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); if [[ \"$file\" == *.sql ]]; then sqlfluff fix \"$(realpath \"$file\")\"; fi"
+            "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); case \"$file\" in */ai-swap/drafts/*) exit 0 ;; esac; if [[ \"$file\" == *.sql ]]; then sqlfluff fix \"$(realpath \"$file\")\"; fi"
           },
           {
             "type": "command",
-            "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); if [[ \"$file\" == *.py ]]; then ruff check --fix \"$(realpath \"$file\")\"; fi"
+            "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); case \"$file\" in */ai-swap/drafts/*) exit 0 ;; esac; if [[ \"$file\" == *.py ]]; then ruff check --fix \"$(realpath \"$file\")\"; fi"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/writing-gate.sh"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/writing-capture.sh"
           }
         ]
       }
