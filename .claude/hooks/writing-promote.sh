@@ -56,9 +56,11 @@ sub stem {
     return $w;
 }
 
+# Keyed on the pattern, not on the turn. A turn that carries two complaints
+# must stay available for the second one after the first is raised.
 my %surfaced;
 if (open my $sf, '<', $surfaced_path) {
-    while (my $id = <$sf>) { chomp $id; $surfaced{$id} = 1 if length $id }
+    while (my $key = <$sf>) { chomp $key; $surfaced{$key} = 1 if length $key }
     close $sf;
 }
 
@@ -72,7 +74,6 @@ while (my $line = <$lf>) {
     next unless defined $id and length $id;
     next unless defined $profile and length $profile;
     next unless defined $why and $why =~ /\S/;
-    next if $surfaced{$id};
     my $key = "$profile\t$id";
     next if exists $turn_reason{$key};
     $turn_reason{$key}  = $why;
@@ -97,6 +98,7 @@ my $THRESHOLD = 3;
 my ($best_profile, $best_word, $best_keys);
 for my $profile (sort keys %cluster) {
     for my $word (sort keys %{ $cluster{$profile} }) {
+        next if $surfaced{"$profile\t$word"};
         my $keys = $cluster{$profile}{$word};
         next if @$keys < $THRESHOLD;
         next if $best_keys and @$keys <= @$best_keys;
@@ -108,7 +110,7 @@ exit 0 unless $best_keys;
 # Mark before speaking. If anything downstream fails, the worst case is a
 # pattern that never gets asked about, not one that is asked about forever.
 open my $sf, '>>', $surfaced_path or exit 0;
-for my $key (@$best_keys) { my (undef, $id) = split /\t/, $key; print $sf "$id\n" }
+print $sf "$best_profile\t$best_word\n";
 close $sf;
 
 my $n = scalar @$best_keys;

@@ -9,7 +9,7 @@ Thin on purpose. It grows from corrections the promotion hook surfaces.
 ```rules
 maxwords	22	sentence runs over 22 words; split it
 re	^(Great|Certainly|Sure|Of course|Absolutely|I'd be happy)	preamble; lead with the outcome
-density	—	3	em dashes are frequent here; most of them want a period or a comma
+density	—	4	4	em dashes are frequent here; most of them want a period or a comma
 re	(?<![\d-])\d+\s*[-—]\s*\d+(?![\d-])	number range with a hyphen or em dash; use an en dash (–)
 re	\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*[-—]\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)	date range with a hyphen or em dash; use an en dash (–)
 re	\b[Dd]elve	"delve"; say "look at"

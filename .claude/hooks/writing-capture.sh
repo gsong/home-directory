@@ -28,15 +28,30 @@ mkdir -p "$snapshots" || exit 0
 # other. The hash keeps the key flat and safe as a filename.
 key=$(printf '%s' "$file" | shasum -a 256 | cut -c1-40)
 snapshot=$snapshots/$key
+snapshot_turn=$snapshots/$key.turn
+
+prompt_id=$(jq -r '.prompt_id // empty' <<<"$payload" 2>/dev/null)
+session_id=$(jq -r '.session_id // empty' <<<"$payload" 2>/dev/null)
 
 # The first write of a draft has nothing to compare against. Logging it would
 # record the whole draft as a correction.
 if [[ ! -f $snapshot ]]; then
   cp "$file" "$snapshot" 2>/dev/null
+  printf '%s' "$prompt_id" >"$snapshot_turn" 2>/dev/null
   exit 0
 fi
 
 cmp -s "$snapshot" "$file" && exit 0
+
+# Claude often writes a draft in two or three calls. Those later calls answer
+# the same instruction as the first, so logging them records the topic request
+# as a correction, and its words then cluster into a candidate voice rule.
+# Only the first change of a turn is a correction. The snapshot still moves
+# forward, so the next turn's diff starts from what the user actually read.
+if [[ -f $snapshot_turn && $(cat "$snapshot_turn" 2>/dev/null) == "$prompt_id" ]]; then
+  cp "$file" "$snapshot" 2>/dev/null
+  exit 0
+fi
 
 # The removed and added lines, not the whole file. A correction is a few lines,
 # and an unbounded field makes the log unreadable.
@@ -49,8 +64,6 @@ rewrite=$(sed -n 's/^> //p' <<<"$diff_out")
 # the same words. Records of type "user" also carry tool results and injected
 # context, which are not the user speaking.
 transcript=$(jq -r '.transcript_path // empty' <<<"$payload" 2>/dev/null)
-prompt_id=$(jq -r '.prompt_id // empty' <<<"$payload" 2>/dev/null)
-session_id=$(jq -r '.session_id // empty' <<<"$payload" 2>/dev/null)
 
 reason=""
 if [[ -n $transcript && -f $transcript && -n $prompt_id ]]; then
@@ -69,7 +82,12 @@ fi
 
 # Two tool calls in one turn can land together. A directory is the one lock
 # primitive that is atomic everywhere and needs no flock binary.
+# A run killed between mkdir and its trap leaves the lock behind, and every
+# later edit then pays the full retry budget before giving up.
 lock=$state/.lock
+if [[ -d $lock ]] && [[ -z $(find "$lock" -maxdepth 0 -mmin -1 2>/dev/null) ]]; then
+  rmdir "$lock" 2>/dev/null
+fi
 for _ in 1 2 3 4 5 6 7 8 9 10; do
   if mkdir "$lock" 2>/dev/null; then
     trap 'rmdir "$lock" 2>/dev/null' EXIT
@@ -92,4 +110,5 @@ jq -cn \
   >>"$state/corrections.jsonl"
 
 cp "$file" "$snapshot" 2>/dev/null
+printf '%s' "$prompt_id" >"$snapshot_turn" 2>/dev/null
 exit 0

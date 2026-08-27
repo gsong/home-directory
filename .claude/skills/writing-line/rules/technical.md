@@ -5,14 +5,15 @@ Docs and engineering explainers. Seeded from `output-styles/plain-technical.md`.
 ## Greppable
 
 The gate reads the block below. Each line is three tab-separated fields.
-`re` takes an extended regular expression. `maxwords` takes a number. The third
-field is the message the gate reports. Lines starting with `#` are comments.
+The kind comes first and the message last. `re` takes one regular expression.
+`maxwords` takes one number. `density` takes a regular expression, a floor
+count, and a rate per thousand words: it reports only when both are exceeded. Lines starting with `#` are comments.
 Fenced code blocks and front matter in the draft are never checked.
 
 ```rules
 # Register — one idea per sentence
 maxwords	20	sentence runs over 20 words; split it
-density	—	3	em dashes are frequent here; most of them want a period or a comma
+density	—	4	4	em dashes are frequent here; most of them want a period or a comma
 re	(?<![\d-])\d+\s*[-—]\s*\d+(?![\d-])	number range with a hyphen or em dash; use an en dash (–)
 re	\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*[-—]\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)	date range with a hyphen or em dash; use an en dash (–)
 re	;	semicolon; use two sentences

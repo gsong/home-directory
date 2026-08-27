@@ -113,6 +113,26 @@ test("edits sharing a prompt id count once", () => {
   assert.equal(promote(log), null);
 });
 
+// A turn can carry two complaints. Marking the whole turn as spent means the
+// second pattern can never be raised, however often it recurs.
+test("a second pattern in the same turns can still surface", () => {
+  const dir = state([
+    correction("stop hedging, the dashes are everywhere"),
+    correction("hedging again, and dashes in line two"),
+    correction("no hedging, fewer dashes please"),
+  ]);
+  const first = promote(dir);
+  assert.ok(first, "expected a first pattern");
+  const second = promote(dir);
+  assert.ok(second, "the second pattern was consumed with the first");
+
+  const words = [first, second].map(
+    (r) => (r.reason.match(/in common is "([^"]+)"/) ?? [])[1],
+  );
+  assert.deepEqual(words.slice().sort(), ["dash", "hedg"]);
+  assert.equal(promote(dir), null, "a third run must be quiet");
+});
+
 // Asking twice about the same pattern is worse than never asking.
 test("a surfaced pattern does not come back", () => {
   const dir = state(HEDGING);

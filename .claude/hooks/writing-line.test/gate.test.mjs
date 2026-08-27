@@ -27,7 +27,7 @@ writeFileSync(
     "# a comment line is skipped",
     "maxwords\t8\ttoo long",
     "re\tbanned\tthe word banned",
-    "density\t—\t3\ttoo many em dashes",
+    "density\t—\t4\t4\ttoo many em dashes",
     "```",
     "",
   ].join("\n"),
@@ -184,6 +184,27 @@ test("density: a high rate is reported once, with the count", () => {
   assert.match(out, /draft: too many em dashes \(12 in \d+ words\)/);
 });
 
+// Counting in list context returns capture groups instead of matches, which
+// silently inflates or deflates the rate.
+test("density: a rule with a capture group still counts matches", () => {
+  const rules = mkdtempSync(join(tmpdir(), "wl-rules-cap-"));
+  writeFileSync(
+    join(rules, "technical.md"),
+    // Two groups per match, so a list-context count reports double.
+    [
+      "## Greppable",
+      "",
+      "```rules",
+      "density\t(f)(oo)\t2\t2\ttoo many",
+      "```",
+      "",
+    ].join("\n"),
+  );
+  const body = `${Array.from({ length: 6 }, () => "foo here").join("\n")}\n${padding(20)}`;
+  const out = onWrite(draft("technical", body), rules);
+  assert.match(out, /too many \(6 in \d+ words\)/);
+});
+
 test("density: a short draft is never rated", () => {
   const dashes = Array.from({ length: 8 }, () => "a — b").join("\n");
   assert.equal(onWrite(draft("technical", dashes)), null);
@@ -230,6 +251,133 @@ test("shipped rules: a single em dash is not reported", () => {
     SHIPPED_RULES,
   );
   assert.equal(out, null);
+});
+
+// The rules files hold multi-byte characters. Read as bytes, a character class
+// like [-—] matches one byte of the em dash rather than the character, so the
+// rule silently never fires.
+test("utf-8: an em dash range is caught, like a hyphen range", () => {
+  const out = onWrite(
+    draft("technical", "the window is 10—20 items wide\n"),
+    SHIPPED_RULES,
+  );
+  assert.match(out ?? "", /line 1: number range/);
+});
+
+test("utf-8: an em dash date range is caught", () => {
+  const out = onWrite(
+    draft("technical", "the window is Mon—Fri each week\n"),
+    SHIPPED_RULES,
+  );
+  assert.match(out ?? "", /line 1: date range/);
+});
+
+// A bare --- is a thematic break, not front matter. Reading to the end of the
+// file looking for a close blanks the whole draft and disables the gate.
+test("front matter: an unterminated --- does not blank the draft", () => {
+  const body = [
+    "---",
+    "We should utilize the delve landscape here.",
+    "This is important to note.",
+  ].join("\n");
+  const out = onWrite(draft("technical", body), SHIPPED_RULES);
+  assert.match(out ?? "", /line 2: "utilize"/);
+});
+
+test("front matter: a block closed with ... does not blank the draft", () => {
+  const body = ["---", "title: x", "...", "We should utilize this.", ""].join(
+    "\n",
+  );
+  const out = onWrite(draft("technical", body), SHIPPED_RULES);
+  assert.match(out ?? "", /line 4: "utilize"/);
+});
+
+// The technical profile is the one that names flags and code most often. A
+// semicolon inside `a = 1; b = 2` is code, not a run-on sentence.
+test("inline code: a span in backticks is not checked", () => {
+  const out = onWrite(
+    draft("technical", "Run `node --test` and set `a = 1; b = 2` in place.\n"),
+    SHIPPED_RULES,
+  );
+  assert.equal(out, null);
+});
+
+test("inline code: prose around a span is still checked", () => {
+  const out = onWrite(
+    draft("technical", "We should utilize `a = 1; b = 2` here.\n"),
+    SHIPPED_RULES,
+  );
+  assert.match(out ?? "", /line 1: "utilize"/);
+  assert.doesNotMatch(out ?? "", /semicolon/);
+});
+
+// One number cannot serve as both a floor and a rate. Overloading it exempts
+// long drafts: 15 em dashes in 5,000 words scored exactly at the limit.
+test("density: a long draft is not exempt from the rate", () => {
+  const rules = mkdtempSync(join(tmpdir(), "wl-rules-rate-"));
+  writeFileSync(
+    join(rules, "technical.md"),
+    [
+      "## Greppable",
+      "",
+      "```rules",
+      "density\t—\t4\t4\ttoo many",
+      "```",
+      "",
+    ].join("\n"),
+  );
+  // 500 words, 5 marks: 10 per thousand, well over the rate.
+  const body = `${Array.from({ length: 5 }, () => "a — b").join("\n")}\n${padding(50)}`;
+  assert.match(
+    onWrite(draft("technical", body), rules) ?? "",
+    /too many \(5 in \d+ words\)/,
+  );
+});
+
+test("density: the floor still exempts a handful of marks", () => {
+  const rules = mkdtempSync(join(tmpdir(), "wl-rules-floor-"));
+  writeFileSync(
+    join(rules, "technical.md"),
+    [
+      "## Greppable",
+      "",
+      "```rules",
+      "density\t—\t4\t4\ttoo many",
+      "```",
+      "",
+    ].join("\n"),
+  );
+  const body = `${Array.from({ length: 3 }, () => "a — b").join("\n")}\n${padding(20)}`;
+  assert.equal(onWrite(draft("technical", body), rules), null);
+});
+
+// The promotion hook tells Claude to append rules to these files. A rule
+// written with spaces instead of tabs looks present and never fires.
+test("malformed rules: a bad line is reported, not swallowed", () => {
+  const rules = mkdtempSync(join(tmpdir(), "wl-rules-bad-"));
+  writeFileSync(
+    join(rules, "technical.md"),
+    [
+      "## Greppable",
+      "",
+      "```rules",
+      "re banned the word banned",
+      "re\tfine\tthe word fine",
+      "```",
+      "",
+    ].join("\n"),
+  );
+  const out = onWrite(draft("technical", "this is fine\n"), rules);
+  assert.match(
+    out ?? "",
+    /the word fine/,
+    "the well-formed rule must still fire",
+  );
+  assert.match(
+    out ?? "",
+    /rules\/technical\.md.*malformed|malformed.*line 4/i,
+    `no malformed notice: ${out}`,
+  );
 });
 
 test("shipped rules: all three profiles parse", () => {

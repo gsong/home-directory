@@ -9,9 +9,10 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
   existsSync,
-  mkdtempSync,
   mkdirSync,
+  mkdtempSync,
   readFileSync,
+  utimesSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -151,9 +152,9 @@ test("a write that changes nothing logs nothing", () => {
   assert.deepEqual(log(ws), []);
 });
 
-// Every edit in one turn answers the same instruction. Promotion collapses
-// them later, so they must carry the same prompt_id.
-test("two edits in one turn share the prompt id", () => {
+// Every edit in one turn answers the same instruction, so logging each one
+// records the same correction two or three times.
+test("only the first edit of a turn is logged", () => {
   const ws = workspace();
   transcript(ws, "turn-1", "write me a draft");
   capture(ws, { body: "one\n" });
@@ -163,10 +164,67 @@ test("two edits in one turn share the prompt id", () => {
   capture(ws, { body: "three\n", promptId: "turn-2", tool: "Edit" });
 
   const entries = log(ws);
-  assert.equal(entries.length, 2);
+  assert.equal(entries.length, 1);
   assert.equal(entries[0].prompt_id, "turn-2");
-  assert.equal(entries[1].prompt_id, "turn-2");
-  assert.equal(entries[0].reason, entries[1].reason);
+  assert.equal(entries[0].reason, "tighten both paragraphs");
+});
+
+// A drafting turn is not a correction. Claude often writes a new draft in two
+// or three calls, and logging calls 2..n records the topic request as a
+// correction. Those content words then cluster and reach the user as a
+// candidate voice rule.
+test("a draft written in several writes in one turn logs nothing", () => {
+  const ws = workspace();
+  transcript(ws, "turn-1", "write me a design doc about authentication");
+  capture(ws, { body: "# Auth\n" });
+  capture(ws, { body: "# Auth\n\nSection one.\n", tool: "Edit" });
+  capture(ws, {
+    body: "# Auth\n\nSection one.\n\nSection two.\n",
+    tool: "Edit",
+  });
+  assert.deepEqual(log(ws), []);
+});
+
+// A correction in the next turn still lands, because the snapshot then
+// belongs to an earlier turn.
+test("the next turn's first edit is logged", () => {
+  const ws = workspace();
+  transcript(ws, "turn-1", "write me a draft");
+  capture(ws, { body: "one\n" });
+  capture(ws, { body: "one and a half\n", tool: "Edit" });
+
+  transcript(ws, "turn-2", "cut the hedging");
+  capture(ws, { body: "two\n", promptId: "turn-2", tool: "Edit" });
+
+  const entries = log(ws);
+  assert.equal(entries.length, 1);
+  assert.equal(entries[0].reason, "cut the hedging");
+  assert.match(
+    entries[0].original,
+    /one and a half/,
+    "the diff must span the whole previous turn",
+  );
+});
+
+// A lock left behind by a killed run would otherwise cost every later edit a
+// fixed half second of retries.
+test("a stale lock is taken over", () => {
+  const ws = workspace();
+  transcript(ws, "turn-1", "first");
+  capture(ws, { body: "a\n" });
+
+  mkdirSync(join(ws.state, ".lock"));
+  utimesSync(
+    join(ws.state, ".lock"),
+    new Date(Date.now() - 600000),
+    new Date(Date.now() - 600000),
+  );
+
+  transcript(ws, "turn-2", "change it");
+  const started = Date.now();
+  capture(ws, { body: "b\n", promptId: "turn-2" });
+  assert.equal(log(ws).length, 1, "the change was not logged");
+  assert.ok(Date.now() - started < 400, "the stale lock was waited on");
 });
 
 // The transcript holds tool results and injected context under the same
