@@ -26,7 +26,24 @@ profile=${rest%%/*}
 rules=${WRITING_LINE_RULES:-$HOME/.claude/skills/writing-line/rules}/$profile.md
 [[ -f $rules ]] || exit 0
 
-report=$(/usr/bin/perl - "$rules" "$file" <<'PERL'
+# An HTML draft is markup, not prose. Flatten it before scanning: otherwise the
+# scanner measures CSS declarations, counts `&mdash;` as nothing, and cuts every
+# sentence at the source line wrap. The converter puts each block of prose on
+# the line where that block starts, so the numbers below still point into the
+# file the writer edits.
+scan=$file
+converter=${WRITING_LINE_BIN:-$HOME/.claude/skills/writing-line/bin}/html-prose.pl
+if [[ $file == *.html || $file == *.htm ]] && [[ -f $converter ]]; then
+  if tmp=$(mktemp -t writing-line); then
+    trap 'rm -f "$tmp"' EXIT
+    # A converter failure must not silence the gate, so fall back to the raw file.
+    if /usr/bin/perl "$converter" "$file" >"$tmp" 2>/dev/null && [[ -s $tmp ]]; then
+      scan=$tmp
+    fi
+  fi
+fi
+
+report=$(/usr/bin/perl - "$rules" "$scan" <<'PERL'
 use strict;
 use warnings;
 
