@@ -16,8 +16,7 @@
 
 ## Brainstorming & Planning
 
-- When brainstorming or planning, write **both the spec and the plan** to a subdirectory of `ai-swap/` named after the task (e.g. `ai-swap/add-user-auth/spec.md`, `ai-swap/add-user-auth/plan.md`)
-- `ai-swap/` is gitignored and stays local. A hook blocks `git add`/`commit` of it.
+- Write specs, plans, and other AI scratch to `ai-swap/<task>/` when nothing else has chosen a path. A skill or config naming its own destination wins.
 
 ## Package Management
 
