@@ -1,5 +1,6 @@
 # Taps
 tap "buo/cask-upgrade", trusted: true
+tap "cheat2001/tap", trusted: true
 
 # JIRA
 tap "atlassian/homebrew-acli", trusted: true
@@ -87,6 +88,9 @@ cask "1password-cli", greedy: true
 cask "alfred", greedy: true    # Application launcher and productivity
 cask "bartender", greedy: true   # Menu bar management
 cask "betterdisplay", greedy: true # Display management
+# eyebreak: built from source, see
+#   ~/src/gsong/eyebreak/scripts/dev-install.sh
+# cask "cheat2001/tap/eyebreak" # 20-20-20 eye break reminders
 cask "focusatwill"             # Focus music
 cask "keepingyouawake"         # Prevent sleep
 cask "keyboardcleantool"       # Disable keyboard for cleaning
@@ -94,7 +98,6 @@ cask "libreoffice"             # Open-source office suite
 cask "mactracker"              # Apple hardware database
 cask "menuwhere"               # Access menu bar with hotkey
 cask "moom"                    # Window management
-cask "pester"                  # Simple timer/reminder
 cask "soundsource", greedy: true # Audio routing
 
 # Web Browsers
