@@ -2,6 +2,22 @@
 
 Issues and specs for this repo live as markdown files in `ai-swap/`.
 
+## Which `ai-swap` this means
+
+Every path in this file is **relative to the repo root** — the `ai-swap/`
+directory inside this git checkout.
+
+It is **not** `~/ai-swap`. That is a separate, unrelated directory that happens
+to share the name. Resolve every path below against the repo root, never against
+`$HOME`, even though this repo is stowed into `$HOME`.
+
+Two consequences worth knowing:
+
+- `ai-swap/` is gitignored globally (`~/.config/git/ignore`), so tickets are
+  never committed or pushed. They stay on this machine by design.
+- `ai-swap` is listed in `.stow-local-ignore`, so tickets are never symlinked
+  into `$HOME` either.
+
 ## Conventions
 
 - One feature per directory: `ai-swap/<feature-slug>/`
