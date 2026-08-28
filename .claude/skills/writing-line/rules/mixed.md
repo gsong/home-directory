@@ -45,6 +45,10 @@ density	\b(genuinely|actually|really)\b	4	1.5	intensifier repeated; the sentence
 - One idiom per piece, at most. A running seasoning of idiom is what reads
   as flippant.
 - Never tell the reader you are being candid. Be candid.
+- Enumerate with a list, not a long sentence. Three or more parallel items
+  in one sentence is the signal. A sentence flagged for length is often an
+  enumeration that wants to be a list; splitting it in two is the wrong fix.
+  Body prose, not table cells.
 - Vary the sentence length deliberately: a long clause-stacked sentence,
   then a short one that lands. Aim for roughly one sentence in six under
   eight words.

@@ -89,6 +89,23 @@ essay builds to it. **For anything work-facing, lead with the claim.**
 The document as a whole still lands its recommendation at the end. Paragraph
 level and document level differ here.
 
+## Enumerate with a list, not a long sentence
+
+His own words, 2026-08-27: "I like to enumerate using lists rather than put
+lots of stuff in one sentence where it makes sense."
+
+The measured articles agree. Bullets carry parallel enumerable items and sets of
+standalone facts; prose carries reasoning, sequence, and anything needing a
+"because".
+
+Three or more parallel items in one sentence is the signal. A sentence the gate
+flags for length is very often an enumeration that wants to be a list, and
+splitting it into two sentences is the wrong fix.
+
+The judgment in "where it makes sense": a narrow table cell is already a
+scannable unit, so a bullet list inside one adds noise without helping. Convert
+enumerations in body prose, not in table cells.
+
 ## Idiom tolerance
 
 At most one small aside per piece. Across 3,050 words: "Composition FTW",

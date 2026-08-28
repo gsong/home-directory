@@ -32,5 +32,9 @@ re	\b[Uu]tiliz(e|es|ing|ed)\b	"utilize"; say "use"
   When cutting one, reach for a colon first.
 - No semicolons. See `references/george-song-voice.md`.
 - Never tell the reader you are being candid. Be candid.
+- Enumerate with a list, not a long sentence. Three or more parallel items
+  in one sentence is the signal. A sentence flagged for length is often an
+  enumeration that wants to be a list; splitting it in two is the wrong fix.
+  Body prose, not table cells.
 - Use an en dash (–) for a range: 10–20, 2020–2024, Mon–Fri. A hyphen joins
   words; it does not span a range.

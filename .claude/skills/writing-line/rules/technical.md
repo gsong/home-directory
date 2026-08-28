@@ -63,5 +63,9 @@ The gate cannot check these. They load as context when the skill runs.
   sloppiness - it's intentionality." Never use a pair to bracket an aside.
   When cutting one, reach for a colon first.
 - Never tell the reader you are being candid. Be candid.
+- Enumerate with a list, not a long sentence. Three or more parallel items
+  in one sentence is the signal. A sentence flagged for length is often an
+  enumeration that wants to be a list; splitting it in two is the wrong fix.
+  Body prose, not table cells.
 - Use an en dash (–) for a range: 10–20, 2020–2024, Mon–Fri. A hyphen joins
   words; it does not span a range.
