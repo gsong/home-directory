@@ -21,6 +21,8 @@ _darcs
 ^/README.*
 ^/LICENSE.*
 ^/COPYING
+^/CLAUDE.md
+^/docs
 
 ^.aider.chat.history.md
 ^.aider.input.history
