@@ -13,10 +13,10 @@ Fenced code blocks and front matter in the draft are never checked.
 ```rules
 # Register — one idea per sentence
 maxwords	20	sentence runs over 20 words; split it
-density	—	4	4	em dashes are frequent here; most of them want a period or a comma
+density	(?:—|&mdash;)	4	4	em dashes are frequent here; a colon usually does the job, and a pair bracketing an aside is never right
 re	(?<![\d-])\d+\s*[-—]\s*\d+(?![\d-])	number range with a hyphen or em dash; use an en dash (–)
 re	\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*[-—]\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)	date range with a hyphen or em dash; use an en dash (–)
-re	;	semicolon; use two sentences
+re	;	semicolon; use a period or a colon
 re	--	double hyphen; use a period or a comma
 
 # Preamble — the answer starts on line one
@@ -32,10 +32,12 @@ re	\b(furthermore|moreover|additionally),	connective filler; start the sentence
 re	\b(landscape|realm|tapestry|testament to)\b	metaphor; name the thing
 re	[Nn]ot only .* but also	inflated pairing; use one clause
 re	\bin (today's|the modern) (world|landscape)	throat-clearing; cut it
+re	\b([Bb]eing straight|[Tt]o be (honest|blunt|straight)|[Ff]rankly)\b	telling the reader you are being candid; just be candid
 
 # Confidence — verified and inferred must not read alike
 re	\b(arguably|somewhat|fairly|rather) \b	hedge; state it or drop it
 re	\b(basically|essentially|simply put)\b	filler qualifier; cut it
+density	\b(genuinely|actually|really)\b	4	1.5	intensifier repeated; the sentence is stronger without it
 
 # American English
 re	\b(colou?r|behaviour|favour|honour|labour|organis|recognis|analys|prioritis|customis|optimis|apologis|realis|summaris)	British spelling; use American
@@ -57,7 +59,9 @@ The gate cannot check these. They load as context when the skill runs.
 - Avoid noun clusters longer than three words.
 - Use the project's own names for things. Read `CONTEXT.md` if the repo has one.
 - Say plainly what you verified and what you inferred.
-- An em dash is fine where it earns its place. Reach for a period or a
-  comma first, and keep em dashes rare.
+- An em dash joins a clause of restatement or consequence: "This isn't
+  sloppiness - it's intentionality." Never use a pair to bracket an aside.
+  When cutting one, reach for a colon first.
+- Never tell the reader you are being candid. Be candid.
 - Use an en dash (–) for a range: 10–20, 2020–2024, Mon–Fri. A hyphen joins
   words; it does not span a range.
