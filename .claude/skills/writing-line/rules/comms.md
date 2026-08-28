@@ -6,20 +6,14 @@ Thin on purpose. It grows from corrections the promotion hook surfaces.
 
 ## Greppable
 
+`common.md` holds the rules that apply to every profile, and the gate loads it
+alongside this file. The field format is documented there. This block holds only
+what is specific to email and Slack.
+
 ```rules
 maxwords	18	sentence runs over 18 words; split it
 re	^(Great|Certainly|Sure|Of course|Absolutely|I'd be happy|Hope this finds you)	preamble; lead with the ask
 re	\b(just wanted to|quick question|circle back|touch base|reach out)\b	filler opener; state the ask
-density	(?:—|&mdash;)	4	4	em dashes are frequent here; a colon usually does the job, and a pair bracketing an aside is never right
-re	(?<![\d-])\d+\s*[-—]\s*\d+(?![\d-])	number range with a hyphen or em dash; use an en dash (–)
-re	\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*[-—]\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)	date range with a hyphen or em dash; use an en dash (–)
-re	\b[Ll]everag(e|es|ing|ed)\b	"leverage" as a verb; say "use"
-re	\b(seamless|robust|cutting-edge|synerg)	corporate filler; cut it
-re	\b(centre|licence|defence|whilst|amongst)\b	British spelling; use American
-re	;	semicolon; use a period or a colon
-re	\b([Bb]eing straight|[Tt]o be (honest|blunt|straight)|[Ff]rankly)\b	telling the reader you are being candid; just be candid
-re	\b[Dd]elve	"delve"; say "look at"
-re	\b[Uu]tiliz(e|es|ing|ed)\b	"utilize"; say "use"
 ```
 
 ## Judgment

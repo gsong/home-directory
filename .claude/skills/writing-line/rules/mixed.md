@@ -6,20 +6,15 @@ Thin on purpose. It grows from corrections the promotion hook surfaces.
 
 ## Greppable
 
+`common.md` holds the rules that apply to every profile, and the gate loads it
+alongside this file. The field format is documented there. This block holds only
+what is specific to a non-technical or mixed audience.
+
 ```rules
 maxwords	30	sentence runs over 30 words; split it
 re	^(Great|Certainly|Sure|Of course|Absolutely|I'd be happy)	preamble; lead with the outcome
-density	(?:—|&mdash;)	4	4	em dashes are frequent here; a colon usually does the job, and a pair bracketing an aside is never right
-re	(?<![\d-])\d+\s*[-—]\s*\d+(?![\d-])	number range with a hyphen or em dash; use an en dash (–)
-re	\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*[-—]\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)	date range with a hyphen or em dash; use an en dash (–)
-re	\b[Dd]elve	"delve"; say "look at"
-re	\b[Ll]everag(e|es|ing|ed)\b	"leverage" as a verb; say "use"
 re	[Ii]t('s| is) (important|worth) (to note|noting)	filler; state the point
-re	\b(seamless|robust|cutting-edge|game-chang)	marketing adjective; name the property
 re	\b(landscape|realm|tapestry|testament to)\b	metaphor; name the thing
-re	\b(centre|licence|defence|whilst|amongst)\b	British spelling; use American
-re	;	semicolon; there are none in 3,050 words of the reference corpus - use a period or a colon
-re	\b([Bb]eing straight|[Tt]o be (honest|blunt|straight)|[Ff]rankly)\b	telling the reader you are being candid; just be candid
 density	\bwould rather\b	3	1	"would rather" is repeated; vary it or cut it
 density	\b(genuinely|actually|really)\b	4	1.5	intensifier repeated; the sentence is stronger without it
 ```
@@ -60,12 +55,14 @@ density	\b(genuinely|actually|really)\b	4	1.5	intensifier repeated; the sentence
   a sentence wrapped over four source lines is measured as one sentence. Line
   numbers still point into the file on disk. Verified against pandoc on a real
   draft: identical word count, no prose dropped.
-- The em dash density rule matches `&mdash;` as well as the literal character.
-  Belt and braces, since the converter already decodes it.
+- The em dash density rule lives in `common.md` and matches `&mdash;` as well
+  as the literal character. Belt and braces, since the converter already
+  decodes it.
 - `maxwords` was 22 until 2026-08-27. Measurement put the reference median at
   13 words with a real maximum of 37, so 22 flagged sentences that are ordinary
   in the voice being matched. It is now 30, which catches genuine run-ons and
   leaves the top of the natural range alone.
-- The semicolon rule is a bare `;`. It is safe because the converter strips CSS
-  and decodes entities first. On the fallback path, where the converter is
-  missing and the gate reads raw HTML, it will over-report.
+- The semicolon rule lives in `common.md` and is a bare `;`. It is safe because
+  the converter strips CSS and decodes entities first. On the fallback path,
+  where the converter is missing and the gate reads raw HTML, it will
+  over-report.

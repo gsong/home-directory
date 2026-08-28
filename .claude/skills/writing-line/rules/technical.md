@@ -4,44 +4,29 @@ Docs and engineering explainers. Seeded from `output-styles/plain-technical.md`.
 
 ## Greppable
 
-The gate reads the block below. Each line is three tab-separated fields.
-The kind comes first and the message last. `re` takes one regular expression.
-`maxwords` takes one number. `density` takes a regular expression, a floor
-count, and a rate per thousand words: it reports only when both are exceeded. Lines starting with `#` are comments.
-Fenced code blocks and front matter in the draft are never checked.
+`common.md` holds the rules that apply to every profile, and the gate loads it
+alongside this file. The field format is documented there. This block holds only
+what is specific to docs and engineering explainers.
 
 ```rules
 # Register — one idea per sentence
 maxwords	20	sentence runs over 20 words; split it
-density	(?:—|&mdash;)	4	4	em dashes are frequent here; a colon usually does the job, and a pair bracketing an aside is never right
-re	(?<![\d-])\d+\s*[-—]\s*\d+(?![\d-])	number range with a hyphen or em dash; use an en dash (–)
-re	\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*[-—]\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)	date range with a hyphen or em dash; use an en dash (–)
-re	;	semicolon; use a period or a colon
 re	--	double hyphen; use a period or a comma
 
 # Preamble — the answer starts on line one
 re	^(Great|Certainly|Sure|Of course|Absolutely|I'd be happy|Let me start by)	preamble; lead with the outcome
 
 # Banned constructions — AI tells
-re	\b[Dd]elve	"delve"; say "look at"
-re	\b[Ll]everag(e|es|ing|ed)\b	"leverage" as a verb; say "use"
-re	\b[Uu]tiliz(e|es|ing|ed)\b	"utilize"; say "use"
 re	[Ii]t('s| is) (important|worth) (to note|noting)	filler; state the point
-re	\b(seamless|robust|comprehensive|cutting-edge|game-chang)	marketing adjective; name the property
 re	\b(furthermore|moreover|additionally),	connective filler; start the sentence
 re	\b(landscape|realm|tapestry|testament to)\b	metaphor; name the thing
 re	[Nn]ot only .* but also	inflated pairing; use one clause
 re	\bin (today's|the modern) (world|landscape)	throat-clearing; cut it
-re	\b([Bb]eing straight|[Tt]o be (honest|blunt|straight)|[Ff]rankly)\b	telling the reader you are being candid; just be candid
 
 # Confidence — verified and inferred must not read alike
 re	\b(arguably|somewhat|fairly|rather) \b	hedge; state it or drop it
 re	\b(basically|essentially|simply put)\b	filler qualifier; cut it
 density	\b(genuinely|actually|really)\b	4	1.5	intensifier repeated; the sentence is stronger without it
-
-# American English
-re	\b(colou?r|behaviour|favour|honour|labour|organis|recognis|analys|prioritis|customis|optimis|apologis|realis|summaris)	British spelling; use American
-re	\b(centre|licence|defence|whilst|amongst)\b	British spelling; use American
 ```
 
 ## Judgment

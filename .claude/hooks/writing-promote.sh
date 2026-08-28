@@ -127,6 +127,9 @@ Ask the user where this belongs, using the AskUserQuestion tool. The options:
   1. A voice rule for the "$best_profile" profile. Append it to
      ~/.claude/skills/writing-line/rules/$best_profile.md. Put it in the
      Greppable block if one regex can express it, and in Judgment if not.
+     If the rule holds for every profile and not just this one, put the
+     Greppable half in rules/common.md instead. A Judgment bullet always
+     stays in the profile file, even where it repeats another.
   2. A reference entry, if the correction is about a term or a fact rather
      than about voice. Ask whether it holds everywhere or only in this repo,
      then write it to the global references directory or to

@@ -386,3 +386,98 @@ test("shipped rules: all three profiles parse", () => {
     assert.equal(out, null, `${profile} reported on clean prose: ${out}`);
   }
 });
+
+// common.md holds the rules that apply to every profile. The gate loads it
+// alongside the profile file, so a rule written once has to fire everywhere.
+function withCommon(common, profile) {
+  const dir = mkdtempSync(join(tmpdir(), "wl-rules-common-"));
+  const block = (lines) =>
+    ["## Greppable", "", "```rules", ...lines, "```", ""].join("\n");
+  writeFileSync(join(dir, "common.md"), block(common));
+  writeFileSync(join(dir, "technical.md"), block(profile));
+  return dir;
+}
+
+test("common: a rule in common.md fires for a profile that lacks it", () => {
+  const rules = withCommon(
+    ["re\tbanned\tthe word banned"],
+    ["maxwords\t8\ttoo long"],
+  );
+  const out = onWrite(draft("technical", "this one is banned\n"), rules);
+  assert.match(out ?? "", /line 1: the word banned/);
+});
+
+test("common: the profile keeps its own rules alongside", () => {
+  const rules = withCommon(
+    ["re\tbanned\tthe word banned"],
+    ["re\tlocal\tthe word local"],
+  );
+  const out = onWrite(draft("technical", "banned\nlocal\n"), rules);
+  assert.match(out ?? "", /line 1: the word banned/);
+  assert.match(out ?? "", /line 2: the word local/);
+});
+
+// maxwords changes with the audience, so the profile has to win. It is parsed
+// second for exactly this reason.
+test("common: the profile's maxwords overrides one set in common.md", () => {
+  const rules = withCommon(
+    ["maxwords\t3\tcommon limit"],
+    ["maxwords\t8\tprofile limit"],
+  );
+  const nine = "one two three four five six seven eight nine.";
+  const out = onWrite(draft("technical", nine), rules);
+  assert.match(out ?? "", /profile limit/);
+  assert.doesNotMatch(out ?? "", /common limit/);
+});
+
+test("common: a malformed line names the file it came from", () => {
+  const rules = withCommon(
+    ["re banned the word banned"],
+    ["re\tfine\tthe word fine"],
+  );
+  const out = onWrite(draft("technical", "this is fine\n"), rules);
+  assert.match(
+    out ?? "",
+    /the word fine/,
+    "the well-formed rule must still fire",
+  );
+  assert.match(
+    out ?? "",
+    /common\.md line 4/,
+    `no file-qualified notice: ${out}`,
+  );
+});
+
+// A draft under drafts/common/ would otherwise load common.md as both the
+// shared file and the profile file, reporting every violation twice.
+test("common: a profile named common is not loaded twice", () => {
+  const dir = mkdtempSync(join(tmpdir(), "wl-rules-self-"));
+  writeFileSync(
+    join(dir, "common.md"),
+    [
+      "## Greppable",
+      "",
+      "```rules",
+      "re\tbanned\tthe word banned",
+      "```",
+      "",
+    ].join("\n"),
+  );
+  const out = onWrite(draft("common", "this one is banned\n"), dir);
+  const reported = (out?.match(/the word banned/g) ?? []).length;
+  assert.equal(reported, 1, `expected one report, got ${reported}: ${out}`);
+});
+
+test("shipped rules: a common rule fires for every profile", () => {
+  for (const profile of ["technical", "mixed", "comms"]) {
+    const out = onWrite(
+      draft(profile, "We should utilize this.\n"),
+      SHIPPED_RULES,
+    );
+    assert.match(
+      out ?? "",
+      /line 1: "utilize"/,
+      `${profile} did not load common.md`,
+    );
+  }
+});
