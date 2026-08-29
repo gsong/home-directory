@@ -63,6 +63,7 @@ brew "neovim"                  # Hyperextensible Vim-based text editor
 cask "vimr"                    # Neovim GUI for macOS
 
 # Miscellaneous CLI Tools
+brew "b2-tools"                # Backblaze B2 cloud storage CLI
 brew "asciinema"               # Record terminal sessions
 brew "cloc"                    # Count lines of code
 brew "czkawka"                 # Find duplicates, empty folders, similar images
