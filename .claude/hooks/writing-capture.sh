@@ -30,6 +30,12 @@ key=$(printf '%s' "$file" | shasum -a 256 | cut -c1-40)
 snapshot=$snapshots/$key
 snapshot_turn=$snapshots/$key.turn
 
+# Nothing can recover the draft's path from a hash. The Stop hook needs that
+# path to tell a snapshot whose draft is still there from one whose draft was
+# deleted. Written on every call, so a snapshot taken before this existed
+# gains its path the next time the draft is touched.
+printf '%s' "$file" >"$snapshots/$key.path" 2>/dev/null
+
 prompt_id=$(jq -r '.prompt_id // empty' <<<"$payload" 2>/dev/null)
 session_id=$(jq -r '.session_id // empty' <<<"$payload" 2>/dev/null)
 
