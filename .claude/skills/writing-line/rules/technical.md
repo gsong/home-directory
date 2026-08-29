@@ -24,7 +24,7 @@ re	[Nn]ot only .* but also	inflated pairing; use one clause
 re	\bin (today's|the modern) (world|landscape)	throat-clearing; cut it
 
 # Confidence — verified and inferred must not read alike
-re	\b(arguably|somewhat|fairly|rather) \b	hedge; state it or drop it
+re	\b(arguably|somewhat|fairly|rather(?! than\b)) \b	hedge; state it or drop it
 re	\b(basically|essentially|simply put)\b	filler qualifier; cut it
 density	\b(genuinely|actually|really)\b	4	1.5	intensifier repeated; the sentence is stronger without it
 ```
