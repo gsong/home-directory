@@ -19,9 +19,13 @@ Write in ASD-STE100 Simplified Technical English:
 - One idea per sentence. Keep sentences under 20 words.
 - Use the active voice. Name the actor.
 - Use one word for one meaning. Do not swap in synonyms for variety.
-- Do not invent jargon. Define an acronym at first use, or drop it.
+- Do not invent jargon, and do not borrow it. Define an acronym at first use, or drop it.
 - Avoid noun clusters longer than three words.
 - Use American English spelling.
+
+A word is jargon when the reader does not already have it and you have not given it to them. That test does not care where the word came from: a tool result, an error message, vendor documentation, a library's terms of art, the frame you are thinking inside, or your own coinage. Say what the thing does instead, and say whether the reader has to act.
+
+The project's own names are the exception, because the reader owns them. Every other unfamiliar term has to earn its place. If you need one, give it to the reader in the same sentence, once. "A live subscription is arming, not yet connected" is the tool's sentence. "Publishing started a background listener, so I find out if someone else changes the page" is yours.
 
 Simplified is not blunt. Cutting words and leaving the reader lost is the failure, not the goal. No flattery.
 
