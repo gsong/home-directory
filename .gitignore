@@ -4,3 +4,13 @@
 # They are machine-local state, not configuration.
 .claude/plugins/installed_plugins.json
 .claude/plugins/known_marketplaces.json
+
+# Git identities are personal: name, email, and which clients you work for. They
+# live as real files in ~/.config/git and ~/.gitconfig.local, outside this repo,
+# so a copy of this repo carries nobody's identity. Ignore everything here by
+# default and allow files back in one at a time, so an identity file can never
+# be committed by accident — and so this list never has to name a client.
+# See docs/gitconfig-local.example.
+.config/git/*
+!.config/git/ignore
+

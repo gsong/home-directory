@@ -5,9 +5,12 @@
   editor = vimr -s --wait
   pager = delta
 
-[user]
-	name = George Song
-	email = george@gsong.dev
+# Every identity lives outside the repo, so this file names no person, employer,
+# or directory layout. ~/.gitconfig.local holds the default identity and the
+# per-directory work identities. Git ignores a missing include path silently.
+# See docs/gitconfig-local.example for the shape.
+[include]
+	path = ~/.gitconfig.local
 
 [init]
   defaultBranch = main
@@ -102,11 +105,3 @@
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
-
-# Work identity for everything under ~/src/costmine
-[includeIf "gitdir:~/src/costmine/"]
-	path = ~/.config/git/costmine
-
-# Work identity for everything under ~/src/sahaj
-[includeIf "gitdir:~/src/sahaj/"]
-	path = ~/.config/git/sahaj

@@ -1,0 +1,39 @@
+# Template for ~/.gitconfig.local
+#
+# This file is NOT tracked and NOT managed by stow. Recreate it by hand on a new
+# machine. `.gitconfig` includes it, and git ignores a missing include path
+# silently — so a fresh machine has no identity until you write this.
+#
+# Everything personal lives here: the default identity, and one conditional
+# include per client or employer. That keeps names and directory layout out of
+# the tracked `.gitconfig`.
+
+[user]
+	name = Your Name
+	email = you@example.com
+
+# Per-directory identities.
+#
+# `includeIf` matches on the repo's location and only accepts a `path`, so each
+# identity needs its own small file. Point them at real files under
+# ~/.config/git — not at files in this repo, or they end up tracked again.
+#
+# Trailing slash on the gitdir pattern matters: it matches the directory and
+# everything under it.
+#
+# [includeIf "gitdir:~/src/acme/"]
+# 	path = ~/.config/git/acme
+
+# Each of those files holds only what differs from the default:
+#
+#   # ~/.config/git/acme
+#   [user]
+#     email = you@acme.com
+#
+# Order matters. The default [user] above comes first, and a matching
+# `includeIf` below overrides it. Anything the included file leaves out — your
+# name, usually — falls through from the default.
+#
+# Check which identity a repo resolved to:
+#
+#   git config --get user.email
