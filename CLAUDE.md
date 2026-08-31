@@ -14,4 +14,6 @@ The five canonical roles, unchanged: `needs-triage`, `needs-info`, `ready-for-ag
 
 ### Domain docs
 
-Single-context — one `CONTEXT.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+Single-context. `CONTEXT.md` and `docs/adr/` would live at the repo root, but neither
+exists yet. The skills create them lazily; don't create them upfront. See
+`docs/agents/domain.md`.
