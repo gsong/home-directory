@@ -173,5 +173,6 @@
   "remoteControlAtStartup": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754086408110
-  }
+  },
+  "skipDangerousModePermissionPrompt": true
 }
