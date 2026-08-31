@@ -12,4 +12,9 @@ brew cleanup --prune=30
 brew upgrade
 brew cu --force --yes --no-brew-update
 /usr/bin/qlmanage -r
-brew services restart ollama
+# Only restart Ollama if it's actually installed. Bare `brew services restart`
+# on a missing formula exits non-zero, and `set -e` would kill the run here,
+# after every other step already succeeded.
+if brew list --formula ollama >/dev/null 2>&1; then
+	brew services restart ollama
+fi
