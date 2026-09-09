@@ -47,6 +47,13 @@ density	\b(genuinely|actually|really)\b	4	1.5	intensifier repeated; the sentence
 - Vary the sentence length deliberately: a long clause-stacked sentence,
   then a short one that lands. Aim for roughly one sentence in six under
   eight words.
+- A sentence the gate flags for length becomes two complete sentences,
+  never a pile of fragments. "How to tell which part is failing. What
+  belongs at the organization level." reads as a list that lost its stem.
+  Where a bulleted list does not fit the format, a colon and one clause
+  carry the enumeration.
+- Cap consecutive sentences under eight words at two. Three or more in a
+  row reads as staccato, whatever the average says.
 
 ## Notes on the greppable block
 
