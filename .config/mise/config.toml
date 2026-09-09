@@ -7,6 +7,10 @@ uv_venv_auto = "create|source"
 
 [env]
 CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR = "true"
+# Restore aube's default 7-day trust-evidence grace, which
+# mise disables. Matches minimum_release_age = "7d" above:
+# a release that survived a week in the wild is acceptable.
+AUBE_TRUST_POLICY_IGNORE_AFTER = "10080"
 
 [tools]
 ast-grep = "latest"
