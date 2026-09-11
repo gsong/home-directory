@@ -164,6 +164,7 @@
   "effortLevel": "high",
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
   "theme": "auto",
   "preferredNotifChannel": "ghostty",
@@ -173,6 +174,5 @@
   "remoteControlAtStartup": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754086408110
-  },
-  "skipDangerousModePermissionPrompt": true
+  }
 }
