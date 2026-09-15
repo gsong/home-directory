@@ -1,7 +1,0 @@
-{
-  "mcpServers": {
-    "tm": {
-      "command": "task-master-mcp"
-    }
-  }
-}
