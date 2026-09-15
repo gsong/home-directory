@@ -4,7 +4,6 @@ alias l='eza $LS_OPTIONS --no-quotes -l'
 alias ll='eza $LS_OPTIONS --no-quotes -la'
 
 # Search & diff
-alias ag='ag --hidden'
 alias diff=delta
 
 # Process management

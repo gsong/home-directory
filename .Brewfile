@@ -20,7 +20,6 @@ brew "bash"                    # Modern Bash shell
 brew "gnu-sed"                 # GNU sed (gsed)
 brew "openssl"                 # Cryptography and SSL/TLS toolkit
 brew "rsync"                   # Fast file copying tool
-brew "the_silver_searcher"     # ag - fast code searching
 brew "tree"                    # Display directory structure
 brew "wget"                    # Non-interactive network downloader
 
