@@ -77,7 +77,6 @@ brew "wdiff"                   # Word-diff between text files
 
 # Quick Look Plugins
 cask "qlmarkdown"              # Preview Markdown files
-cask "qlstephen"               # Preview plain text files without extension
 cask "quicklook-video"         # Preview video thumbnails
 
 # GUI Applications
@@ -86,7 +85,6 @@ cask "quicklook-video"         # Preview video thumbnails
 cask "1password", greedy: true
 cask "1password-cli", greedy: true
 cask "alfred", greedy: true    # Application launcher and productivity
-cask "bartender", greedy: true   # Menu bar management
 cask "betterdisplay", greedy: true # Display management
 # eyebreak: built from source, see
 #   ~/src/gsong/eyebreak/scripts/dev-install.sh
