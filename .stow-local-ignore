@@ -36,3 +36,7 @@ dependencies
 ai-swap
 
 .+\.test     # test dirs live beside their subject; never link them
+
+# karabiner: the app rewrites karabiner.json by rename, which destroys a
+# file symlink. ~/.config/karabiner is a hand-made directory symlink instead.
+^/\.config/karabiner

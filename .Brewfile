@@ -90,6 +90,7 @@ cask "betterdisplay", greedy: true # Display management
 #   ~/src/gsong/eyebreak/scripts/dev-install.sh
 # cask "cheat2001/tap/eyebreak" # 20-20-20 eye break reminders
 cask "focusatwill"             # Focus music
+cask "karabiner-elements"      # Keyboard remapping (double-tap right cmd for Siri)
 cask "keepingyouawake"         # Prevent sleep
 cask "keyboardcleantool"       # Disable keyboard for cleaning
 cask "libreoffice"             # Open-source office suite

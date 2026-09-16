@@ -14,3 +14,6 @@
 .config/git/*
 !.config/git/ignore
 
+
+# Karabiner writes dated config backups; keep them out of the repo
+.config/karabiner/automatic_backups/

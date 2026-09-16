@@ -43,6 +43,16 @@ Shell (bash), git, tmux, and editor configs.
    write this file. Copy [docs/gitconfig-local.example](docs/gitconfig-local.example)
    and fill it in. Per-client identities go in real files under
    `~/.config/git/`, never in this repo.
+8. Link Karabiner's config directory by hand:
+
+   ```bash
+   ln -s ../.home-directory/.config/karabiner ~/.config/karabiner
+   ```
+
+   `.stow-local-ignore` skips this path, so stow won't do it for you. Karabiner
+   rewrites `karabiner.json` by renaming a temp file over it. That replaces a
+   file symlink with a real file and strands the repo copy without saying so.
+   Linking the directory keeps the rename inside the repo.
 
 ## Tests
 
