@@ -206,25 +206,44 @@ test("the next turn's first edit is logged", () => {
   );
 });
 
-// A lock left behind by a killed run would otherwise cost every later edit a
-// fixed half second of retries.
-test("a stale lock is taken over", () => {
+// Takes a fresh workspace through a first edit and a second one, and returns
+// how long the second took. With staleLock, a lock older than the hook's
+// staleness window sits in the way of that second edit.
+function timeSecondEdit({ staleLock = false } = {}) {
   const ws = workspace();
   transcript(ws, "turn-1", "first");
   capture(ws, { body: "a\n" });
 
-  mkdirSync(join(ws.state, ".lock"));
-  utimesSync(
-    join(ws.state, ".lock"),
-    new Date(Date.now() - 600000),
-    new Date(Date.now() - 600000),
-  );
+  if (staleLock) {
+    const lock = join(ws.state, ".lock");
+    const old = new Date(Date.now() - 600000);
+    mkdirSync(lock);
+    utimesSync(lock, old, old);
+  }
 
   transcript(ws, "turn-2", "change it");
   const started = Date.now();
   capture(ws, { body: "b\n", promptId: "turn-2" });
+  const ms = Date.now() - started;
   assert.equal(log(ws).length, 1, "the change was not logged");
-  assert.ok(Date.now() - started < 400, "the stale lock was waited on");
+  return ms;
+}
+
+// A lock left behind by a killed run would otherwise cost every later edit a
+// fixed half second of retries.
+//
+// The hook spends several hundred milliseconds of its own before it ever
+// reaches the lock, and how many depends on the machine, so an absolute budget
+// here measures the wrong thing. Compare against a run with no lock instead:
+// waiting out the retries would add the whole half second on top.
+test("a stale lock is taken over", () => {
+  const baseline = timeSecondEdit();
+  const stale = timeSecondEdit({ staleLock: true });
+
+  assert.ok(
+    stale - baseline < 250,
+    `the stale lock was waited on: ${stale - baseline}ms over a ${baseline}ms baseline, against a 500ms retry budget`,
+  );
 });
 
 // The transcript holds tool results and injected context under the same
