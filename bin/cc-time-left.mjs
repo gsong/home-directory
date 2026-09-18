@@ -32,9 +32,9 @@
  *   because Node reads a path ending in .test as a module to load rather than a
  *   directory to walk.
  *
- *   Importing this module runs nothing: all I/O lives in main(), called only under
- *   import.meta.main. Tests import render() and analyze() and pass a fixture plus a
- *   pinned `now`. Requires Node 24.2+ for import.meta.main.
+ *   Importing this module runs nothing: all I/O lives in main(), which runs only
+ *   when this file is the entry point. Tests import render() and analyze() and pass
+ *   a fixture plus a pinned `now`. Node 20 or newer.
  *
  * API Details:
  * - Endpoint: https://api.anthropic.com/api/oauth/usage
@@ -98,9 +98,10 @@
  */
 
 import { execSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 // Configuration
 const CONFIG = {
@@ -796,6 +797,16 @@ async function main() {
   }
 }
 
-if (import.meta.main) {
+// Is this file the entry point? `import.meta.main` would say so in one word, but it
+// landed in Node 24.2, and a project pinning an older Node makes it silently
+// undefined: main() never runs, nothing prints, exit 0. Compare real paths instead.
+// realpathSync resolves the ~/bin symlink, which Node has already resolved on its
+// side. Under `node --test`, argv[1] is the test file, so importing still runs
+// nothing.
+const entry = process.argv[1];
+const isEntryPoint =
+  !!entry && realpathSync(entry) === fileURLToPath(import.meta.url);
+
+if (isEntryPoint) {
   await main();
 }
