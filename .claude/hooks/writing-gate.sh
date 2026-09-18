@@ -10,10 +10,19 @@ set -uo pipefail
 
 payload=$(cat)
 
-tool=$(jq -r '.tool_name // empty' <<<"$payload" 2>/dev/null) || exit 0
-case $tool in Write | Edit | MultiEdit) ;; *) exit 0 ;; esac
+# Starting jq costs far more than the parse: the jq on PATH is a mise shim,
+# which starts mise before jq ever sees the input, about 60ms a call. Read both
+# fields in one run. A newline inside a value would shift one field onto the
+# other, so any count but two means give up.
+fields=()
+while IFS= read -r line; do fields+=("$line"); done < <(
+  jq -r '.tool_name // "", .tool_input.file_path // ""' <<<"$payload" 2>/dev/null
+)
+[[ ${#fields[@]} -eq 2 ]] || exit 0
+tool=${fields[0]}
+file=${fields[1]}
 
-file=$(jq -r '.tool_input.file_path // empty' <<<"$payload" 2>/dev/null) || exit 0
+case $tool in Write | Edit | MultiEdit) ;; *) exit 0 ;; esac
 [[ $file == */ai-swap/drafts/* ]] || exit 0
 [[ -f $file ]] || exit 0
 

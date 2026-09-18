@@ -11,10 +11,17 @@ set -uo pipefail
 
 payload=$(cat)
 
-# stop_hook_active means we already blocked once this turn. Never loop.
-[[ $(jq -r '.stop_hook_active // false' <<<"$payload") == "true" ]] && exit 0
+# Starting jq costs far more than the parse: the jq on PATH is a mise shim,
+# which starts mise before jq ever sees the input, about 60ms a call. One run
+# returns both fields. The message runs to many lines, so it goes last and
+# takes everything after the first newline.
+out=$(jq -r '.stop_hook_active // false, .last_assistant_message // ""' \
+  <<<"$payload" 2>/dev/null)
+stop_hook_active=${out%%$'\n'*}
+msg=${out#*$'\n'}
 
-msg=$(jq -r '.last_assistant_message // empty' <<<"$payload")
+# stop_hook_active means we already blocked once this turn. Never loop.
+[[ $stop_hook_active == "true" ]] && exit 0
 [[ -z $msg ]] && exit 0
 
 last_line=$(printf '%s' "$msg" | sed 's/[[:space:]]*$//' | grep -v '^[[:space:]]*$' | tail -n 1)
