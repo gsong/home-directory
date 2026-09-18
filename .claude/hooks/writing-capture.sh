@@ -9,10 +9,26 @@ set -uo pipefail
 
 payload=$(cat)
 
-tool=$(jq -r '.tool_name // empty' <<<"$payload" 2>/dev/null) || exit 0
+# Starting jq costs far more than the parse it does here: the jq on PATH is a
+# mise shim, which starts mise before jq ever sees the input, about 55ms a
+# call. Read every field the hook needs in one run.
+#
+# A newline inside a value would shift the fields onto each other. Five values
+# go in, so any other count means give up rather than log the wrong thing.
+fields=()
+while IFS= read -r line; do fields+=("$line"); done < <(
+  jq -r '.tool_name // "", .tool_input.file_path // "", .prompt_id // "",
+         .session_id // "", .transcript_path // ""' <<<"$payload" 2>/dev/null
+)
+[[ ${#fields[@]} -eq 5 ]] || exit 0
+tool=${fields[0]}
+file=${fields[1]}
+prompt_id=${fields[2]}
+session_id=${fields[3]}
+transcript=${fields[4]}
+
 case $tool in Write | Edit | MultiEdit) ;; *) exit 0 ;; esac
 
-file=$(jq -r '.tool_input.file_path // empty' <<<"$payload" 2>/dev/null) || exit 0
 [[ $file == */ai-swap/drafts/* ]] || exit 0
 [[ -f $file ]] || exit 0
 
@@ -35,9 +51,6 @@ snapshot_turn=$snapshots/$key.turn
 # deleted. Written on every call, so a snapshot taken before this existed
 # gains its path the next time the draft is touched.
 printf '%s' "$file" >"$snapshots/$key.path" 2>/dev/null
-
-prompt_id=$(jq -r '.prompt_id // empty' <<<"$payload" 2>/dev/null)
-session_id=$(jq -r '.session_id // empty' <<<"$payload" 2>/dev/null)
 
 # The first write of a draft has nothing to compare against. Logging it would
 # record the whole draft as a correction.
@@ -69,8 +82,6 @@ rewrite=$(sed -n 's/^> //p' <<<"$diff_out")
 # steady from one user prompt to the next, so every edit in a turn pairs with
 # the same words. Records of type "user" also carry tool results and injected
 # context, which are not the user speaking.
-transcript=$(jq -r '.transcript_path // empty' <<<"$payload" 2>/dev/null)
-
 reason=""
 if [[ -n $transcript && -f $transcript && -n $prompt_id ]]; then
   reason=$(jq -rn --arg pid "$prompt_id" '
