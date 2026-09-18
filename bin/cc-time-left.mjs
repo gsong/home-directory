@@ -26,11 +26,12 @@
  *   covers the rendered string for a given response, not how often it is refetched.
  *
  * Testing:
- *   node --test bin/cc-time-left.test/*.test.mjs
+ *   bin/run-tests                                  # everything, including .claude
+ *   node --test 'bin/cc-time-left.test/*.test.mjs' # just this script
  *
- *   Name the files, not the directory: `node --test bin/cc-time-left.test/` fails,
- *   because Node reads a path ending in .test as a module to load rather than a
- *   directory to walk.
+ *   Pass files or a quoted glob. `node --test <dir>` fails for any directory on
+ *   Node 22 and later: a positional argument is a file or a glob pattern, never a
+ *   directory to walk. The .test suffix in the name is not the cause.
  *
  *   Importing this module runs nothing: all I/O lives in main(), which runs only
  *   when this file is the entry point. Tests import render() and analyze() and pass
