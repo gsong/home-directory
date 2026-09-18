@@ -4,16 +4,10 @@
       "complex_modifications": {
         "rules": [
           {
-            "description": "Press the right command key twice to open Siri",
+            "description": "Press the right command key twice to open Spotlight",
             "manipulators": [
               {
-                "conditions": [
-                  {
-                    "name": "right_command_tapped",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
+                "type": "basic",
                 "from": {
                   "key_code": "right_command",
                   "modifiers": {
@@ -27,12 +21,26 @@
                 ],
                 "to_if_alone": [
                   {
-                    "shell_command": "/usr/bin/open -a /System/Applications/Siri.app"
+                    "key_code": "spacebar",
+                    "modifiers": ["left_control", "left_option", "left_command"]
+                  },
+                  {
+                    "set_variable": {
+                      "name": "right_command_tapped",
+                      "value": 0
+                    }
                   }
                 ],
-                "type": "basic"
+                "conditions": [
+                  {
+                    "type": "variable_if",
+                    "name": "right_command_tapped",
+                    "value": 1
+                  }
+                ]
               },
               {
+                "type": "basic",
                 "from": {
                   "key_code": "right_command",
                   "modifiers": {
@@ -44,24 +52,6 @@
                     "key_code": "right_command"
                   }
                 ],
-                "to_delayed_action": {
-                  "to_if_canceled": [
-                    {
-                      "set_variable": {
-                        "name": "right_command_tapped",
-                        "value": 0
-                      }
-                    }
-                  ],
-                  "to_if_invoked": [
-                    {
-                      "set_variable": {
-                        "name": "right_command_tapped",
-                        "value": 0
-                      }
-                    }
-                  ]
-                },
                 "to_if_alone": [
                   {
                     "set_variable": {
@@ -70,7 +60,24 @@
                     }
                   }
                 ],
-                "type": "basic"
+                "to_delayed_action": {
+                  "to_if_invoked": [
+                    {
+                      "set_variable": {
+                        "name": "right_command_tapped",
+                        "value": 0
+                      }
+                    }
+                  ],
+                  "to_if_canceled": [
+                    {
+                      "set_variable": {
+                        "name": "right_command_tapped",
+                        "value": 0
+                      }
+                    }
+                  ]
+                }
               }
             ]
           },

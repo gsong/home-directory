@@ -1,8 +1,8 @@
 {
-  "title": "Siri",
+  "title": "Spotlight",
   "rules": [
     {
-      "description": "Press the right command key twice to open Siri",
+      "description": "Press the right command key twice to open Spotlight",
       "manipulators": [
         {
           "type": "basic",
@@ -13,7 +13,11 @@
           "to": [{ "key_code": "right_command" }],
           "to_if_alone": [
             {
-              "shell_command": "/usr/bin/open -a /System/Applications/Siri.app"
+              "key_code": "spacebar",
+              "modifiers": ["left_control", "left_option", "left_command"]
+            },
+            {
+              "set_variable": { "name": "right_command_tapped", "value": 0 }
             }
           ],
           "conditions": [

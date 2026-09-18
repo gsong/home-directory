@@ -86,7 +86,7 @@ cask "1password-cli", greedy: true
 cask "alfred", greedy: true    # Application launcher and productivity
 cask "bartender"               # Menu bar icon organiser
 cask "betterdisplay", greedy: true # Display management
-cask "karabiner-elements"      # Keyboard remapping (double-tap right cmd for Siri)
+cask "karabiner-elements"      # Keyboard remapping (double-tap right cmd for Spotlight)
 cask "keyboardcleantool"       # Disable keyboard for cleaning
 cask "libreoffice"             # Open-source office suite
 cask "menuwhere"               # Access menu bar with hotkey
