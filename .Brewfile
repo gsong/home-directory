@@ -32,7 +32,6 @@ brew "git"                     # Distributed version control
 brew "git-delta"               # Syntax-highlighting pager for git/diff
 brew "git-filter-repo"         # Fast, flexible tool for rewriting git history
 brew "git-lfs"                 # Git Large File Storage
-brew "glow"                    # Terminal markdown renderer
 brew "graphviz"                # Graph visualization software
 brew "libmagic"                # File type identification
 brew "libvips"                 # Image processing library (for Astro)
@@ -85,16 +84,11 @@ cask "quicklook-video"         # Preview video thumbnails
 cask "1password", greedy: true
 cask "1password-cli", greedy: true
 cask "alfred", greedy: true    # Application launcher and productivity
+cask "bartender"               # Menu bar icon organiser
 cask "betterdisplay", greedy: true # Display management
-# eyebreak: built from source, see
-#   ~/src/gsong/eyebreak/scripts/dev-install.sh
-# cask "cheat2001/tap/eyebreak" # 20-20-20 eye break reminders
-cask "focusatwill"             # Focus music
 cask "karabiner-elements"      # Keyboard remapping (double-tap right cmd for Siri)
-cask "keepingyouawake"         # Prevent sleep
 cask "keyboardcleantool"       # Disable keyboard for cleaning
 cask "libreoffice"             # Open-source office suite
-cask "mactracker"              # Apple hardware database
 cask "menuwhere"               # Access menu bar with hotkey
 cask "moom"                    # Window management
 cask "soundsource", greedy: true # Audio routing
@@ -122,7 +116,6 @@ cask "claude"                  # Anthropic Claude desktop
 cask "dbeaver-community", greedy: true # Database management
 cask "docker-desktop", greedy: true
 cask "ghostty", greedy: true   # GPU-accelerated terminal
-cask "hatchet-dev/hatchet/hatchet" # Hatchet workflow engine
 cask "helpwire-operator"       # Helpwire operator
 cask "linear"                  # Linear.app
 cask "lm-studio"               # Run LLMs locally
