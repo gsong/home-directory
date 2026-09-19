@@ -174,5 +174,6 @@
   "remoteControlAtStartup": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754086408110
-  }
+  },
+  "model": "claude-fable-5-1[1m]"
 }
