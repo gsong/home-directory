@@ -1,0 +1,169 @@
+#!/bin/bash
+# Age-based folder sweeps, rebuilt from the Hazel 4 rules after Hazel stopped
+# running on macOS 27. Hazel 4 was an Intel-only preference pane and there is no
+# Rosetta 2 any more. The decoded originals, and the keep/drop decisions, are in
+# ~/Library/CloudStorage/Dropbox/Personal/Notes/Hazel rules.md
+#
+# Driven by local.file-sweep.plist, once a day. Only the age-based rules live
+# here. The three event-driven rules -- mount new disk images, expand new
+# archives, rename .txt to .md -- are Shortcuts folder automations instead,
+# because no timer can react to a file arriving.
+#
+# Run with --dry-run to print every action and change nothing.
+
+set -uo pipefail
+
+DRY_RUN=0
+[ "${1:-}" = "--dry-run" ] && DRY_RUN=1
+
+WEEK=604800
+FOUR_WEEKS=2419200
+THIRTY_DAYS=2592000
+
+DOWNLOADS="$HOME/Downloads"
+ARCHIVE="$DOWNLOADS/Archive"
+SCANNER="$HOME/Library/Mobile Documents/iCloud~com~readdle~Scanner~PDF/Documents"
+PUBLIC="$HOME/Library/CloudStorage/Dropbox/Public"
+NOTES_TRASH="$HOME/Library/CloudStorage/Dropbox/Personal/Notes/Trash"
+
+# Written by the archive step onto every item it moves, and read back by the
+# Archive sweep. It exists because kMDItemDateAdded survives a move inside a
+# volume: an item archived on day 7 still reports day 0, so a date-added sweep
+# on Archive would trash it on the next run and give it one week of life instead
+# of the intended two. Verified on 2026-09-19.
+STAMP="local.file-sweep.archived-at"
+
+NOW=$(/bin/date +%s)
+
+log() {
+  /usr/bin/logger -t file-sweep "file-sweep: $*"
+  [ "$DRY_RUN" -eq 1 ] && echo "$*"
+  return 0
+}
+
+# Seconds since an item was added to the folder it is in now, or nothing when
+# that cannot be determined. Prefers the stamp the archive step writes, then
+# Spotlight's kMDItemDateAdded.
+#
+# It deliberately does NOT fall back to the modification time. A file downloaded
+# today can carry an mtime from years ago, so an mtime fallback would trash it
+# on the first run. A missing date is treated as "leave it alone".
+age_added() {
+  local item="$1" raw ts
+  raw=$(/usr/bin/xattr -p "$STAMP" "$item" 2>/dev/null)
+  case "$raw" in
+    ''|*[!0-9]*) ;;
+    *) echo $(( NOW - raw )); return 0 ;;
+  esac
+  raw=$(/usr/bin/mdls -raw -name kMDItemDateAdded "$item" 2>/dev/null)
+  [ -z "$raw" ] || [ "$raw" = "(null)" ] && return 1
+  ts=$(/bin/date -j -f '%Y-%m-%d %H:%M:%S %z' "$raw" '+%s' 2>/dev/null) || return 1
+  echo $(( NOW - ts ))
+}
+
+# Seconds since last modification. Only the Scanner Pro rule uses this. It is
+# the one original rule that keyed on modification date rather than date added.
+age_modified() {
+  local ts
+  ts=$(/usr/bin/stat -f %m "$1" 2>/dev/null) || return 1
+  echo $(( NOW - ts ))
+}
+
+# Apple ships /usr/bin/trash in current macOS. The Homebrew trash formula is
+# installed too, but its binary is not linked into the Homebrew prefix, so the
+# absolute Apple path is the reliable one. Either way this is the Finder trash,
+# not rm, so everything stays recoverable.
+trash_item() {
+  if [ "$DRY_RUN" -eq 1 ]; then
+    log "would trash $1"
+    return 0
+  fi
+  if /usr/bin/trash "$1" >/dev/null 2>&1; then
+    log "trashed $1"
+  else
+    log "FAILED to trash $1"
+  fi
+}
+
+# Trash every top-level item in $1 older than $2 seconds, skipping any item
+# whose name matches one of the remaining arguments. Hazel matched only the top
+# level of a watched folder, so this does not recurse. Dotfiles are skipped
+# everywhere: .DS_Store and .rduserapp live in two of these folders.
+sweep() {
+  local dir="$1" max="$2"
+  shift 2
+  if [ ! -d "$dir" ]; then
+    log "skipped missing folder $dir"
+    return 0
+  fi
+  local item name skip age
+  while IFS= read -r -d '' item; do
+    name=$(/usr/bin/basename "$item")
+    skip=0
+    for keep in "$@"; do
+      [ "$name" = "$keep" ] && skip=1
+    done
+    [ "$skip" -eq 1 ] && continue
+    age=$(age_added "$item") || { log "no date added for $item, left alone"; continue; }
+    [ "$age" -gt "$max" ] && trash_item "$item"
+  done < <(/usr/bin/find "$dir" -mindepth 1 -maxdepth 1 -not -name '.*' -print0)
+}
+
+# Move Downloads items older than a week into Archive, then stamp each one with
+# the move time. Hazel's wording was "move, discarding duplicates", which meant
+# never create "name-1": if the destination already holds that name, the
+# incoming copy goes to the trash instead.
+archive_downloads() {
+  [ -d "$DOWNLOADS" ] || return 0
+  if [ ! -d "$ARCHIVE" ]; then
+    [ "$DRY_RUN" -eq 1 ] && { log "would create $ARCHIVE"; return 0; }
+    /bin/mkdir -p "$ARCHIVE" || { log "FAILED to create $ARCHIVE"; return 1; }
+  fi
+  local item name age
+  while IFS= read -r -d '' item; do
+    name=$(/usr/bin/basename "$item")
+    # Skipping Archive is what Hazel's first rule did. Without it the archive
+    # step walks into its own destination.
+    [ "$name" = "Archive" ] && continue
+    age=$(age_added "$item") || { log "no date added for $item, left alone"; continue; }
+    [ "$age" -gt "$WEEK" ] || continue
+    if [ -e "$ARCHIVE/$name" ]; then
+      log "duplicate of $name already archived"
+      trash_item "$item"
+      continue
+    fi
+    if [ "$DRY_RUN" -eq 1 ]; then
+      log "would archive $name"
+      continue
+    fi
+    if /bin/mv "$item" "$ARCHIVE/$name" 2>/dev/null; then
+      /usr/bin/xattr -w "$STAMP" "$NOW" "$ARCHIVE/$name" 2>/dev/null
+      log "archived $name"
+    else
+      log "FAILED to archive $name"
+    fi
+  done < <(/usr/bin/find "$DOWNLOADS" -mindepth 1 -maxdepth 1 -not -name '.*' -print0)
+}
+
+# Trash Scanner Pro documents untouched for a month. This folder is the one that
+# keys on modification date. It currently holds no documents at all, only
+# dotfiles, which the sweep skips.
+sweep_scanner() {
+  if [ ! -d "$SCANNER" ]; then
+    log "skipped missing folder $SCANNER"
+    return 0
+  fi
+  local item age
+  while IFS= read -r -d '' item; do
+    age=$(age_modified "$item") || continue
+    [ "$age" -gt "$THIRTY_DAYS" ] && trash_item "$item"
+  done < <(/usr/bin/find "$SCANNER" -mindepth 1 -maxdepth 1 -not -name '.*' -print0)
+}
+
+[ "$DRY_RUN" -eq 1 ] && log "dry run, nothing will change"
+
+archive_downloads
+sweep "$ARCHIVE" "$WEEK"
+sweep_scanner
+sweep "$PUBLIC" "$FOUR_WEEKS" "Keep Forever"
+sweep "$NOTES_TRASH" "$FOUR_WEEKS"

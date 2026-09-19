@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>local.file-sweep</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/george/bin/file-sweep</string>
+	</array>
+
+	<!-- Once a day at 09:00. If the Mac is asleep or off at that hour, launchd
+	     runs the missed job at the next wake, so no RunAtLoad is needed. These
+	     are age-based sweeps with a one-week floor: a run that lands hours late
+	     changes nothing. -->
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Hour</key>
+		<integer>9</integer>
+		<key>Minute</key>
+		<integer>0</integer>
+	</dict>
+
+	<!-- Deliberately NOT WatchPaths on ~/Downloads. The sweep moves files into
+	     ~/Downloads/Archive, which is a write inside the watched directory, so
+	     the job would retrigger itself on every run. Nothing here reacts to a
+	     file arriving anyway: "older than a week" has no arrival to hang on. -->
+
+	<key>ProcessType</key>
+	<string>Background</string>
+</dict>
+</plist>
