@@ -56,7 +56,8 @@ age_added() {
     *) echo $(( NOW - raw )); return 0 ;;
   esac
   raw=$(/usr/bin/mdls -raw -name kMDItemDateAdded "$item" 2>/dev/null)
-  [ -z "$raw" ] || [ "$raw" = "(null)" ] && return 1
+  [ -z "$raw" ] && return 1
+  [ "$raw" = "(null)" ] && return 1
   ts=$(/bin/date -j -f '%Y-%m-%d %H:%M:%S %z' "$raw" '+%s' 2>/dev/null) || return 1
   echo $(( NOW - ts ))
 }
@@ -78,16 +79,19 @@ trash_item() {
     log "would trash $1"
     return 0
   fi
-  if /usr/bin/trash "$1" >/dev/null 2>&1; then
+  local err
+  if err=$(/usr/bin/trash "$1" 2>&1 >/dev/null); then
     log "trashed $1"
   else
-    log "FAILED to trash $1"
+    log "FAILED to trash $1: $err"
   fi
 }
 
 # Trash every top-level item in $1 older than $2 seconds, skipping any item
-# whose name matches one of the remaining arguments. Hazel matched only the top
-# level of a watched folder, so this does not recurse. Dotfiles are skipped
+# whose name, with or without its extension, matches one of the remaining
+# arguments. Hazel's ignore rule compared the name without extension, so
+# "Keep Forever" protects both the folder and a file called "Keep Forever.txt".
+# Hazel matched only the top level of a watched folder, so this does not recurse. Dotfiles are skipped
 # everywhere: .DS_Store and .rduserapp live in two of these folders.
 sweep() {
   local dir="$1" max="$2"
@@ -102,6 +106,7 @@ sweep() {
     skip=0
     for keep in "$@"; do
       [ "$name" = "$keep" ] && skip=1
+      [ "${name%.*}" = "$keep" ] && skip=1
     done
     [ "$skip" -eq 1 ] && continue
     age=$(age_added "$item") || { log "no date added for $item, left alone"; continue; }
@@ -115,9 +120,10 @@ sweep() {
 # incoming copy goes to the trash instead.
 archive_downloads() {
   [ -d "$DOWNLOADS" ] || return 0
+  local err
   if [ ! -d "$ARCHIVE" ]; then
     [ "$DRY_RUN" -eq 1 ] && { log "would create $ARCHIVE"; return 0; }
-    /bin/mkdir -p "$ARCHIVE" || { log "FAILED to create $ARCHIVE"; return 1; }
+    err=$(/bin/mkdir -p "$ARCHIVE" 2>&1) || { log "FAILED to create $ARCHIVE: $err"; return 1; }
   fi
   local item name age
   while IFS= read -r -d '' item; do
@@ -136,11 +142,12 @@ archive_downloads() {
       log "would archive $name"
       continue
     fi
-    if /bin/mv "$item" "$ARCHIVE/$name" 2>/dev/null; then
-      /usr/bin/xattr -w "$STAMP" "$NOW" "$ARCHIVE/$name" 2>/dev/null
+    if err=$(/bin/mv "$item" "$ARCHIVE/$name" 2>&1); then
       log "archived $name"
+      err=$(/usr/bin/xattr -w "$STAMP" "$NOW" "$ARCHIVE/$name" 2>&1) \
+        || log "FAILED to stamp $name: $err"
     else
-      log "FAILED to archive $name"
+      log "FAILED to archive $name: $err"
     fi
   done < <(/usr/bin/find "$DOWNLOADS" -mindepth 1 -maxdepth 1 -not -name '.*' -print0)
 }
@@ -155,7 +162,7 @@ sweep_scanner() {
   fi
   local item age
   while IFS= read -r -d '' item; do
-    age=$(age_modified "$item") || continue
+    age=$(age_modified "$item") || { log "no modification time for $item, left alone"; continue; }
     [ "$age" -gt "$THIRTY_DAYS" ] && trash_item "$item"
   done < <(/usr/bin/find "$SCANNER" -mindepth 1 -maxdepth 1 -not -name '.*' -print0)
 }
