@@ -35,6 +35,15 @@ STAMP="local.file-sweep.archived-at"
 
 NOW=$(/bin/date +%s)
 
+# Counted through the run and reported in one line at the end. Without that line
+# a run that did nothing and a run macOS blocked both log nothing at all, which
+# is how the 2026-09-20 09:03 failure stayed invisible. Most days there is
+# genuinely nothing to do, so silence has to mean "broken", never "quiet".
+FOLDERS=0
+SCANNED=0
+ARCHIVED=0
+TRASHED=0
+
 log() {
   /usr/bin/logger -t file-sweep "file-sweep: $*"
   [ "$DRY_RUN" -eq 1 ] && echo "$*"
@@ -77,11 +86,13 @@ age_modified() {
 trash_item() {
   if [ "$DRY_RUN" -eq 1 ]; then
     log "would trash $1"
+    TRASHED=$((TRASHED + 1))
     return 0
   fi
   local err
   if err=$(/usr/bin/trash "$1" 2>&1 >/dev/null); then
     log "trashed $1"
+    TRASHED=$((TRASHED + 1))
   else
     log "FAILED to trash $1: $err"
   fi
@@ -100,6 +111,7 @@ sweep() {
     log "skipped missing folder $dir"
     return 0
   fi
+  FOLDERS=$((FOLDERS + 1))
   local item name skip age
   while IFS= read -r -d '' item; do
     name=$(/usr/bin/basename "$item")
@@ -109,6 +121,7 @@ sweep() {
       [ "${name%.*}" = "$keep" ] && skip=1
     done
     [ "$skip" -eq 1 ] && continue
+    SCANNED=$((SCANNED + 1))
     age=$(age_added "$item") || { log "no date added for $item, left alone"; continue; }
     [ "$age" -gt "$max" ] && trash_item "$item"
   done < <(/usr/bin/find "$dir" -mindepth 1 -maxdepth 1 -not -name '.*' -print0)
@@ -120,6 +133,7 @@ sweep() {
 # incoming copy goes to the trash instead.
 archive_downloads() {
   [ -d "$DOWNLOADS" ] || return 0
+  FOLDERS=$((FOLDERS + 1))
   local err
   if [ ! -d "$ARCHIVE" ]; then
     [ "$DRY_RUN" -eq 1 ] && { log "would create $ARCHIVE"; return 0; }
@@ -131,6 +145,7 @@ archive_downloads() {
     # Skipping Archive is what Hazel's first rule did. Without it the archive
     # step walks into its own destination.
     [ "$name" = "Archive" ] && continue
+    SCANNED=$((SCANNED + 1))
     age=$(age_added "$item") || { log "no date added for $item, left alone"; continue; }
     [ "$age" -gt "$WEEK" ] || continue
     if [ -e "$ARCHIVE/$name" ]; then
@@ -140,10 +155,12 @@ archive_downloads() {
     fi
     if [ "$DRY_RUN" -eq 1 ]; then
       log "would archive $name"
+      ARCHIVED=$((ARCHIVED + 1))
       continue
     fi
     if err=$(/bin/mv "$item" "$ARCHIVE/$name" 2>&1); then
       log "archived $name"
+      ARCHIVED=$((ARCHIVED + 1))
       err=$(/usr/bin/xattr -w "$STAMP" "$NOW" "$ARCHIVE/$name" 2>&1) \
         || log "FAILED to stamp $name: $err"
     else
@@ -160,8 +177,10 @@ sweep_scanner() {
     log "skipped missing folder $SCANNER"
     return 0
   fi
+  FOLDERS=$((FOLDERS + 1))
   local item age
   while IFS= read -r -d '' item; do
+    SCANNED=$((SCANNED + 1))
     age=$(age_modified "$item") || { log "no modification time for $item, left alone"; continue; }
     [ "$age" -gt "$THIRTY_DAYS" ] && trash_item "$item"
   done < <(/usr/bin/find "$SCANNER" -mindepth 1 -maxdepth 1 -not -name '.*' -print0)
@@ -174,3 +193,8 @@ sweep "$ARCHIVE" "$WEEK"
 sweep_scanner
 sweep "$PUBLIC" "$FOUR_WEEKS" "Keep Forever"
 sweep "$NOTES_TRASH" "$FOUR_WEEKS"
+
+# Always the last line of a run. Five folders and a non-zero scan count mean the
+# job reached the disk. Anything less means it was blocked, most likely Full Disk
+# Access on /bin/bash, which launchd does not inherit from any terminal.
+log "done: $FOLDERS folders, $SCANNED scanned, $ARCHIVED archived, $TRASHED trashed"
