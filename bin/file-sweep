@@ -27,10 +27,10 @@ PUBLIC="$HOME/Library/CloudStorage/Dropbox/Public"
 NOTES_TRASH="$HOME/Library/CloudStorage/Dropbox/Personal/Notes/Trash"
 
 # Written by the archive step onto every item it moves, and read back by the
-# Archive sweep. It exists because kMDItemDateAdded survives a move inside a
-# volume: an item archived on day 7 still reports day 0, so a date-added sweep
-# on Archive would trash it on the next run and give it one week of life instead
-# of the intended two. Verified on 2026-09-19.
+# Archive sweep. A move does reset kMDItemDateAdded to the move time (checked
+# 2026-09-19 with mv inside ~/Downloads), so Spotlight alone would give an
+# archived item its full second week. The stamp is kept anyway as a record of
+# the move that does not depend on Spotlight having indexed the item.
 STAMP="local.file-sweep.archived-at"
 
 NOW=$(/bin/date +%s)
