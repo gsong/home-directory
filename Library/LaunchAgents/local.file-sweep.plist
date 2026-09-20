@@ -27,6 +27,13 @@
 	     the job would retrigger itself on every run. Nothing here reacts to a
 	     file arriving anyway: "older than a week" has no arrival to hang on. -->
 
+	<!-- The script needs Full Disk Access, granted to /bin/bash in System
+	     Settings, Privacy & Security. launchd runs it outside any terminal, so
+	     it has none of the terminal's permissions. Without the grant, tccd
+	     refuses find's requests for ~/Downloads and the cloud folders without
+	     a prompt, because bash is an Apple binary. Every listing then comes back
+	     empty, the loops run zero times, and the job exits 0 having logged
+	     nothing. That is what happened on the first run, 2026-09-20. -->
 	<key>ProcessType</key>
 	<string>Background</string>
 </dict>
