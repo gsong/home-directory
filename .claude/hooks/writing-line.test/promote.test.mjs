@@ -4,7 +4,7 @@
 
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+import { existsSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { test } from "node:test";
@@ -34,7 +34,7 @@ function state(corrections) {
   const dir = mkdtempSync(join(tmpdir(), "wl-prom-"));
   writeFileSync(
     join(dir, "corrections.jsonl"),
-    corrections.map((c) => JSON.stringify(c)).join("\n") + "\n",
+    `${corrections.map((c) => JSON.stringify(c)).join("\n")}\n`,
   );
   return dir;
 }

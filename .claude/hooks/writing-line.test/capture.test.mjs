@@ -68,7 +68,7 @@ function transcript(ws, promptId, text) {
   ];
   writeFileSync(
     ws.transcript,
-    records.map((r) => JSON.stringify(r)).join("\n") + "\n",
+    `${records.map((r) => JSON.stringify(r)).join("\n")}\n`,
   );
   return ws.transcript;
 }
@@ -330,7 +330,7 @@ test("truncation cuts on characters, not bytes", () => {
   transcript(ws, "turn-1", "first");
   capture(ws, { body: "small\n" });
   transcript(ws, "turn-2", "expand it");
-  capture(ws, { body: "—".repeat(2500) + "\n", promptId: "turn-2" });
+  capture(ws, { body: `${"—".repeat(2500)}\n`, promptId: "turn-2" });
   const [e] = log(ws);
   assert.equal(e.rewrite.length, 2000);
   assert.match(e.rewrite, /^—+$/, "the truncated field is not clean text");
@@ -341,7 +341,7 @@ test("a very large change is truncated", () => {
   transcript(ws, "turn-1", "first");
   capture(ws, { body: "small\n" });
   transcript(ws, "turn-2", "expand it");
-  capture(ws, { body: "x".repeat(50000) + "\n", promptId: "turn-2" });
+  capture(ws, { body: `${"x".repeat(50000)}\n`, promptId: "turn-2" });
   const [e] = log(ws);
   assert.ok(e.rewrite.length < 3000, `rewrite was ${e.rewrite.length} chars`);
 });
