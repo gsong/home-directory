@@ -106,6 +106,30 @@ The judgment in "where it makes sense": a narrow table cell is already a
 scannable unit, so a bullet list inside one adds noise without helping. Convert
 enumerations in body prose, not in table cells.
 
+## What he cuts from a draft
+
+Four cuts observed on 21 September 2026, across two client mails. Each removes
+a sentence that **performs a posture instead of doing the thing**. That is the
+through-line, and it is worth more than the four instances.
+
+| He wrote | He cut | The posture |
+|---|---|---|
+| "something you need to determine internally" | "It is theirs, not ours, and we would rather not pretend to a view on it" | modesty |
+| "Let me know if you would like help making that decision." | "If it helps, we are glad to sit in on the conversation with Google and translate" | helpfulness |
+| "Hannah, thank you." | "The export is what we asked for, and it arrived a day after the list." | gratitude |
+| "Is `ab_id` the `interact_id`?" | the evidence for asking, and what goes wrong if we guess | rigor |
+
+He keeps the act every time. He draws the line, offers the help, says thank
+you, asks the question. He removes the sentence that shows him doing it.
+
+**The fourth is the one to watch**, because it does not look like a flourish.
+Justifying an ask reads as thorough. To a reader who can answer in one line it
+is three sentences of homework they did not set. The same instinct writes the
+sentence that explains your own system to the person who owns the data.
+
+He also joined two short sentences the length gate had split into one of 24
+words. The staccato was the draft's failure, not the length.
+
 ## Idiom tolerance
 
 At most one small aside per piece. Across 3,050 words: "Composition FTW",
@@ -131,6 +155,19 @@ prescribing to the reader. Zero instances of "you should", "you must", or "you
 need to" across all three articles.
 
 > This is conversation, not instruction.
+
+**One observed exception, in client mail.** Editing a draft on 21 September
+2026 he wrote "something you need to determine internally" to a client, and
+closed with "Let me know if you would like help making that decision." Two
+things follow, each from one data point, so treat them as directional:
+
+- The zero count on "you need to" is from articles, where the reader is
+  nobody in particular. In mail to a named person who owns a decision, he does
+  say the decision is theirs, plainly and with "you". The rule is against
+  prescribing to a general reader, not against telling one person what is
+  theirs to decide.
+- The body of a mail stays "we". The closing offer switches to "I": "Let me
+  know". One person offers help, even when a team did the work.
 
 ## Absent throughout
 
