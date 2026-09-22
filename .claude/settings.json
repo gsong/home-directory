@@ -83,7 +83,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); case \"$file\" in */ai-swap/drafts/*) exit 0 ;; esac; prettier --write --ignore-unknown \"$(realpath \"$file\")\""
+            "command": "$HOME/.claude/hooks/format.sh"
           },
           {
             "type": "command",
