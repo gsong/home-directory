@@ -4,7 +4,7 @@
   // $HOME. "root": false marks a config as nested inside a parent project;
   // with no root config above, Biome discards this file without a warning and
   // silently falls back to its defaults, including tab indentation.
-  "$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -22,9 +22,11 @@
       "!.tmux/plugins",
       // Machine-local, git-ignored
       "!**/settings.local.json",
-      // Written by Claude Code and LazyVim, which undo any reformatting
+      // Written by Claude Code, LazyVim and ccstatusline, which undo any
+      // reformatting
       "!.claude/plugins/*.json",
       "!.config/nvim/lazyvim.json",
+      "!.config/ccstatusline/settings.json",
       // Local scratch space for specs and plans
       "!ai-swap"
     ]
