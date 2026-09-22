@@ -13,7 +13,10 @@
  *
  *   The two pace segments use circles 🟢 🟡 🔴 and mean "usage versus time elapsed".
  *   The Fable segment uses squares 🟩 🟨 🟥 plus ⛔ and means "distance to the Fable cap".
- *   Different shapes because they answer different questions.
+ *   Different shapes because they answer different questions. The square climbs
+ *   one band early when Fable is on pace to hit its cap before the weekly reset,
+ *   but only once at least 25% is spent: Fable use is bursty, and below that any
+ *   session early in the week reads as "over pace" with the budget nearly intact.
  *
  * Caching:
  * - Results are cached for 5 minutes in ~/.cache/cc-time-left/usage-data.json
@@ -140,11 +143,21 @@ const FABLE_INDICATORS = {
   CAPPED: "⛔",
 };
 
-// Fable indicator bands, as floored percent used of the Fable allowance
+// Fable indicator bands, as floored percent used of the Fable allowance.
+// PACE_FLOOR gates the pace escalation: below it a burst early in the week
+// would trip the escalation with most of the budget still unspent.
 const FABLE_THRESHOLD = {
   WARNING: 60,
   DANGER: 85,
   CAP: 100,
+  PACE_FLOOR: 25,
+};
+
+// One band up when Fable is on pace to run out before the weekly reset.
+// Danger never escalates to capped: ⛔ means requests are rejected right now.
+const FABLE_ESCALATION = {
+  [FABLE_INDICATORS.SAFE]: FABLE_INDICATORS.WARNING,
+  [FABLE_INDICATORS.WARNING]: FABLE_INDICATORS.DANGER,
 };
 
 // Matched case-insensitively as a substring: prefixed names like
@@ -180,7 +193,7 @@ export function render(usageData, now) {
 
   // Empty when Fable has no live window. Join non-empty segments rather than
   // interpolating a possibly empty slot, which would leave a trailing space.
-  const fableDisplay = buildFableDisplay(usageData);
+  const fableDisplay = buildFableDisplay(usageData, now);
 
   return [fiveHourDisplay, sevenDayDisplay, fableDisplay]
     .filter(Boolean)
@@ -227,8 +240,9 @@ export function analyze(usageData, now) {
   }
 
   // Fable weekly usage. Shares the 7-day window to the millisecond, so the
-  // elapsed fraction uses the same divisor. Pace lives here and not on the
-  // statusline: the segment deliberately shows distance to the cap instead.
+  // elapsed fraction uses the same divisor. The statusline segment shows
+  // distance to the cap and only borrows pace to climb one band; the full
+  // ratio lives here.
   const fableLimit = findScopedLimit(usageData, FABLE_MODEL_NAME);
 
   if (fableLimit && hasLiveWindow(fableLimit)) {
@@ -293,7 +307,9 @@ Output format:
     🟩 0-59   plenty left
     🟨 60-84  slow down or switch model
     🟥 85-99  stop soon
-    ⛔ 100    at the cap, Fable requests are rejected`);
+    ⛔ 100    at the cap, Fable requests are rejected
+  Once 25% is spent, the square climbs one band early (🟩→🟨, 🟨→🟥) when the
+  current pace would hit the cap before the weekly reset.`);
   process.exit(0);
 }
 
@@ -649,9 +665,10 @@ function buildSegmentDisplay(periodData, periodDurationMs, formatTimeFn, now) {
  * Fable shares the weekly reset time that the 7-day segment already prints,
  * so repeating it here would only spend width.
  * @param {Object} usageData - Usage data from the API
+ * @param {number} now - Current time in epoch milliseconds
  * @returns {string} The segment, or "" when nothing has been spent on Fable
  */
-function buildFableDisplay(usageData) {
+function buildFableDisplay(usageData, now) {
   const limit = findScopedLimit(usageData, FABLE_MODEL_NAME);
 
   if (!limit) return "";
@@ -663,7 +680,7 @@ function buildFableDisplay(usageData) {
   // genuinely still at zero, which read the same on a statusline.
   if (percentUsed === 0) return "";
 
-  return `${getIndicatorForBudget(percentUsed)}${percentUsed}`;
+  return `${getFableIndicator(percentUsed, limit.resets_at, now)}${percentUsed}`;
 }
 
 /**
@@ -718,8 +735,24 @@ function flooredPercentUsed(percent) {
 }
 
 /**
- * Gets the Fable indicator from distance to the cap. No time component: Fable
- * is a budget you choose to spend, not a clock you race.
+ * Gets the Fable indicator: the budget band, climbed one step when the
+ * current pace would hit the cap before the weekly reset.
+ * @param {number} percentUsed - Floored percent used, 0-100
+ * @param {string} resetsAt - ISO 8601 timestamp when the weekly window resets
+ * @param {number} now - Current time in epoch milliseconds
+ * @returns {string} Emoji indicator
+ */
+function getFableIndicator(percentUsed, resetsAt, now) {
+  const band = getIndicatorForBudget(percentUsed);
+
+  if (!isOnPaceToExhaust(percentUsed, resetsAt, now)) return band;
+
+  return FABLE_ESCALATION[band] ?? band;
+}
+
+/**
+ * Gets the Fable budget band from distance to the cap alone. Fable is a
+ * budget you choose to spend, not a clock you race, so time plays no part here.
  * @param {number} percentUsed - Floored percent used, 0-100
  * @returns {string} Emoji indicator
  */
@@ -728,6 +761,33 @@ function getIndicatorForBudget(percentUsed) {
   if (percentUsed >= FABLE_THRESHOLD.DANGER) return FABLE_INDICATORS.DANGER;
   if (percentUsed >= FABLE_THRESHOLD.WARNING) return FABLE_INDICATORS.WARNING;
   return FABLE_INDICATORS.SAFE;
+}
+
+/**
+ * Tells whether the current Fable pace hits the cap before the weekly reset.
+ * False below PACE_FLOOR: Fable use is bursty, and a single early session would
+ * otherwise read as "over pace" with the budget nearly intact. Also false when
+ * the reset time is missing or already behind us, which a stale cache can do.
+ * @param {number} percentUsed - Floored percent used, 0-100
+ * @param {string} resetsAt - ISO 8601 timestamp when the weekly window resets
+ * @param {number} now - Current time in epoch milliseconds
+ * @returns {boolean} True when exhaustion is projected before the reset
+ */
+function isOnPaceToExhaust(percentUsed, resetsAt, now) {
+  if (percentUsed < FABLE_THRESHOLD.PACE_FLOOR) return false;
+  if (typeof resetsAt !== "string") return false;
+
+  const msUntilReset = new Date(resetsAt).getTime() - now;
+  if (!(msUntilReset > 0)) return false;
+
+  const msUntilExhausted = calculateTimeUntilExhausted(
+    percentUsed,
+    resetsAt,
+    PERIOD_DURATION.SEVEN_DAY,
+    now,
+  );
+
+  return msUntilExhausted !== null && msUntilExhausted < msUntilReset;
 }
 
 /**

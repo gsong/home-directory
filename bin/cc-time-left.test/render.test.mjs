@@ -154,3 +154,61 @@ test("a malformed limits value does not throw", () => {
     assert.equal(render(data, PINNED_NOW), "🟢8pm 🟢5h");
   }
 });
+
+// Pace escalation. The golden is captured at 97% of the week, where nothing
+// escalates, so these pick their own instant inside the same window.
+const SEVEN_DAY_MS = 7 * 24 * 60 * 60 * 1000;
+
+function fableResetTime() {
+  const fable = loadFixture("01-golden").limits.find(
+    (limit) => limit.kind === "weekly_scoped",
+  );
+
+  return new Date(fable.resets_at).getTime();
+}
+
+// The instant at which the given fraction of the weekly window has elapsed
+const atElapsed = (fraction) =>
+  fableResetTime() - SEVEN_DAY_MS * (1 - fraction);
+
+const PACE = [
+  [24, 0.1, "🟩24", "below the floor: a 2.4x burn still reads green"],
+  [
+    25,
+    0.1,
+    "🟨25",
+    "at the floor and on pace to exhaust: green climbs to yellow",
+  ],
+  [30, 0.5, "🟩30", "above the floor but slower than the clock: no climb"],
+  [30, 0.29, "🟨30", "barely faster than the clock is enough to climb"],
+  [60, 0.5, "🟥60", "yellow climbs to red"],
+  [85, 0.5, "🟥85", "red never climbs to capped: ⛔ means rejected now"],
+  [100, 0.5, "⛔100", "capped is capped regardless of pace"],
+  [50, 0.97, "🟩50", "late in the week the same percent is under pace"],
+];
+
+for (const [percent, fraction, segment, why] of PACE) {
+  test(`pace ${percent} at ${fraction * 100}% elapsed: ${why}`, () => {
+    const line = render(withFablePercent(percent), atElapsed(fraction));
+
+    assert.ok(line.endsWith(` ${segment}`), `got ${JSON.stringify(line)}`);
+  });
+}
+
+test("pace: a stale cache read after the reset does not escalate", () => {
+  const line = render(withFablePercent(50), fableResetTime() + 60 * 60 * 1000);
+
+  assert.ok(line.endsWith(" 🟩50"), `got ${JSON.stringify(line)}`);
+});
+
+test("pace: a live percent with no reset time stays on the budget band", () => {
+  const data = withFablePercent(50);
+
+  for (const limit of data.limits) {
+    if (limit.kind === "weekly_scoped") limit.resets_at = null;
+  }
+
+  const line = render(data, atElapsed(0.1));
+
+  assert.ok(line.endsWith(" 🟩50"), `got ${JSON.stringify(line)}`);
+});
