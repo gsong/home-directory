@@ -83,19 +83,52 @@ age_modified() {
 # installed too, but its binary is not linked into the Homebrew prefix, so the
 # absolute Apple path is the reliable one. Either way this is the Finder trash,
 # not rm, so everything stays recoverable.
+#
+# Under launchd, /usr/bin/trash refuses items in the Dropbox folder with
+# "you don't have permission to access it", although bash holds Full Disk
+# Access and the same call works from a terminal (probed 2026-09-22). A plain mv
+# into ~/.Trash does work there for files, so it is the fallback. The item still
+# lands in the Finder trash, but Finder cannot Put Back an item moved this way.
+# Folders in Dropbox still fail under launchd: mv gets "Resource deadlock
+# avoided". That run logs FAILED and leaves the folder in place.
 trash_item() {
   if [ "$DRY_RUN" -eq 1 ]; then
     log "would trash $1"
     TRASHED=$((TRASHED + 1))
     return 0
   fi
-  local err
+  local err mv_err dest
   if err=$(/usr/bin/trash "$1" 2>&1 >/dev/null); then
     log "trashed $1"
     TRASHED=$((TRASHED + 1))
-  else
-    log "FAILED to trash $1: $err"
+    return 0
   fi
+  dest=$(trash_destination "$1")
+  if mv_err=$(/bin/mv "$1" "$dest" 2>&1); then
+    log "trashed $1 by mv, /usr/bin/trash refused it"
+    TRASHED=$((TRASHED + 1))
+  else
+    log "FAILED to trash $1: $err; mv fallback: $mv_err"
+  fi
+}
+
+# A free path in ~/.Trash for $1. On a name clash, append the run time and then
+# a counter, the way Finder appends a time when it trashes a duplicate name.
+trash_destination() {
+  local name base ext dest n=1
+  name=$(/usr/bin/basename "$1")
+  dest="$HOME/.Trash/$name"
+  [ -e "$dest" ] || { echo "$dest"; return 0; }
+  base="$name" ext=""
+  if [[ "$name" == ?*.* ]]; then
+    base="${name%.*}" ext=".${name##*.}"
+  fi
+  dest="$HOME/.Trash/$base $NOW$ext"
+  while [ -e "$dest" ]; do
+    dest="$HOME/.Trash/$base $NOW-$n$ext"
+    n=$((n + 1))
+  done
+  echo "$dest"
 }
 
 # Trash every top-level item in $1 older than $2 seconds, skipping any item
