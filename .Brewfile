@@ -70,12 +70,9 @@ brew "httpie"                  # User-friendly HTTP client
 brew "ollama"                  # Run LLMs locally
 brew "pwgen"                   # Password generator
 brew "qpdf"                    # PDF manipulation tools
-brew "ssh-copy-id"             # Install SSH keys on remote servers
-brew "trash"                   # Move files to trash
 brew "wdiff"                   # Word-diff between text files
 
 # Quick Look Plugins
-cask "qlmarkdown"              # Preview Markdown files
 cask "quicklook-video"         # Preview video thumbnails
 
 # GUI Applications
@@ -125,7 +122,6 @@ cask "rapidapi"                # API testing client
 cask "sourcetree", greedy: true # Git GUI
 
 # File & System Management
-cask "appcleaner"              # App uninstaller
 cask "carbon-copy-cloner", greedy: true # Backup solution
 cask "coconutbattery"          # Battery health
 cask "cyberduck"               # FTP/SFTP browser
@@ -136,7 +132,6 @@ cask "istat-menus", greedy: true # System statistics
 cask "micro-snitch"            # Monitor camera/microphone usage
 cask "pearcleaner"             # Advanced app cleaner
 cask "homebrew/cask/sloth"     # Display open files/sockets (bare "sloth" now resolves to the sloth-cli formula)
-cask "the-unarchiver"          # Archive extraction
 
 # Media & Notes
 cask "fsnotes", greedy: true   # Markdown notes manager
