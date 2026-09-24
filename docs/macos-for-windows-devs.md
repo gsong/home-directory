@@ -344,7 +344,7 @@ export PATH="$HOME/bin:$PATH"
 ```
 
 Order is everything. Directories earlier in `PATH` win. That is how Homebrew's
-bash beats `/bin/bash`, and how GNU `sed` beats BSD `sed` in the next section.
+bash beats `/bin/bash`.
 
 See [`.bashrc.d/02-path.bash`](../.bashrc.d/02-path.bash) for the pattern.
 
@@ -436,24 +436,22 @@ sed -i '' 's/a/b/' file   # BSD: what you actually have to write
 
 `date`, `grep`, `readlink`, `find`, and `stat` all differ too.
 
-Two ways out. First, install the GNU versions:
+When you want GNU behavior, install the GNU versions:
 
 ```bash
 brew install gnu-sed coreutils findutils
 ```
 
-Homebrew prefixes them with `g` by default: `gsed`, `gdate`, `gfind`. Safe, but
-your scripts stop working on Linux.
+Homebrew prefixes them with `g` by default: `gsed`, `gdate`, `gfind`. Call them
+by that name when you need them. This repo installs `gnu-sed` and stops there.
 
-Second, put the GNU versions at the front of `PATH` under their normal names.
-This repo does that for sed in
-[`.bashrc.d/10-sed.bash`](../.bashrc.d/10-sed.bash):
-
-```bash
-export PATH="${HOMEBREW_PREFIX}/opt/gnu-sed/libexec/gnubin:${PATH}"
-```
-
-Now `sed` is GNU sed, and scripts behave the way the internet says they should.
+You can also put the GNU versions at the front of `PATH` under their normal
+names. This repo used to do that for sed, and dropped it. Scripts written for
+macOS, and AI agents working on a Mac, write the BSD form `sed -i '' …`. GNU
+sed reads that `''` as an empty script and the real script as a file name, so
+the command fails and the file stays unchanged. The reverse also bites: BSD sed
+quietly ignores GNU-only regex escapes such as `\+`, `\s`, and `\b`. Keep plain
+`sed` as the system one, and reach for `gsed` on purpose.
 
 ### The filesystem ignores case, but remembers it
 
