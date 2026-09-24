@@ -39,7 +39,6 @@
 ## Tools
 
 - Use `eval "$(mise env)"` to refresh PATH after installing new tools
-- Use `/bin/ls` for file listing (`ls` is aliased to `eza`)
 - Use the `ast-grep` skill for structural code search - invoke via Skill tool when exploring codebases, finding patterns, or locating functions/classes. Prefer over Grep/Glob for semantic code queries.
 - Use mermaid v10.2.3 syntax - nvim's markdown previewer does not render later versions
 

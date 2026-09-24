@@ -1,14 +1,9 @@
-# File listing
-alias ls='eza $LS_OPTIONS --no-quotes'
+# File listing. `ls` stays Apple's ls: eza reads `-t` as `--time FIELD` and
+# gives `-S`/`-h`/`-G`/`-u` other meanings, so `ls -lt` fails under an alias.
 alias l='eza $LS_OPTIONS --no-quotes -l'
 alias ll='eza $LS_OPTIONS --no-quotes -la'
 
-# Search & diff
-alias diff=delta
-
 # Process management
-alias pgrep='pgrep -f -l'
-alias pkill='pkill -f -l'
 alias top='top -s 5 -o cpu -stats pid,user,command,cpu,rsize,vsize,threads,state'
 
 # Editors
@@ -29,5 +24,4 @@ alias restart-docker='stop-docker && start-docker'
 # CLI tools
 alias ccd='ccmcp --allow-dangerously-skip-permissions'
 alias ios-simulator="open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/"
-alias npx='pnpm dlx'
 alias pdfcombine='"/System/Library/Automator/Combine PDF Pages.action/Contents/Resources/join.py"'
