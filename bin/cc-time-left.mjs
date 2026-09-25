@@ -42,7 +42,7 @@
  *
  * API Details:
  * - Endpoint: https://api.anthropic.com/api/oauth/usage
- * - Authentication: OAuth Bearer token from macOS Keychain
+ * - Authentication: OAuth Bearer token from Claude Code's stored credentials
  * - Required Headers:
  *   - Authorization: Bearer <oauth_token>
  *   - Content-Type: application/json
@@ -94,11 +94,11 @@
  * Also present and deliberately unused: extra_usage, spend (credit overflow),
  * member_dashboard_available, and a set of opaque code-named keys.
  *
- * Keychain Storage:
- * - Service: "Claude Code-credentials"
- * - Account: Current macOS username
- * - Location: ~/Library/Keychains/login.keychain-db
- * - Data: JSON with claudeAiOauth.accessToken
+ * Credential Storage (read-only; never refresh the token here, or Claude Code's
+ * saved refresh token stops working and it logs out):
+ * - macOS: Keychain, service "Claude Code-credentials", account = macOS username
+ * - Linux: $CLAUDE_CONFIG_DIR/.credentials.json, default ~/.claude/.credentials.json
+ * - Data, both places: JSON with claudeAiOauth.accessToken
  */
 
 import { execSync } from "node:child_process";
@@ -113,6 +113,7 @@ const CONFIG = {
   USER_AGENT: "claude-code/2.0.25",
   ANTHROPIC_BETA: "oauth-2025-04-20",
   KEYCHAIN_SERVICE: "Claude Code-credentials",
+  CREDENTIALS_FILE: ".credentials.json",
   CACHE_TTL_MS: 5 * 60 * 1000, // 5 minutes
 };
 
@@ -370,29 +371,54 @@ function writeCache(data) {
 }
 
 /**
- * Retrieves OAuth token from macOS Keychain
- * Note: Uses execSync for simplicity since keychain access is fast and synchronous by nature
+ * Retrieves the OAuth token from wherever Claude Code stores it on this platform:
+ * the Keychain on macOS, a credentials file everywhere else
  * @returns {string|null} OAuth access token or null if not found
  */
-function getOAuthTokenFromKeychain() {
+function getOAuthToken() {
+  const raw =
+    process.platform === "darwin"
+      ? readCredentialsFromKeychain()
+      : readCredentialsFromFile();
+
+  if (!raw) {
+    return null;
+  }
+
   try {
-    // Query macOS keychain for Claude Code credentials
-    const keychainData = execSync(
+    return JSON.parse(raw)?.claudeAiOauth?.accessToken || null;
+  } catch (error) {
+    debug("Failed to parse stored credentials:", error.message);
+    return null;
+  }
+}
+
+/**
+ * Note: Uses execSync for simplicity since keychain access is fast and synchronous by nature
+ * @returns {string|null} Raw credentials JSON or null
+ */
+function readCredentialsFromKeychain() {
+  try {
+    return execSync(
       `security find-generic-password -a "$USER" -s "${CONFIG.KEYCHAIN_SERVICE}" -w`,
       { encoding: "utf-8" },
     ).trim();
-
-    if (!keychainData) {
-      return null;
-    }
-
-    // Parse the JSON stored in keychain
-    const credentials = JSON.parse(keychainData);
-
-    // Extract the OAuth access token
-    return credentials?.claudeAiOauth?.accessToken || null;
   } catch (error) {
     debug("Failed to retrieve token from keychain:", error.message);
+    return null;
+  }
+}
+
+/**
+ * @returns {string|null} Raw credentials JSON or null
+ */
+function readCredentialsFromFile() {
+  const configDir = process.env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude");
+  const file = join(configDir, CONFIG.CREDENTIALS_FILE);
+  try {
+    return readFileSync(file, "utf-8").trim();
+  } catch (error) {
+    debug(`Failed to read ${file}:`, error.message);
     return null;
   }
 }
@@ -818,10 +844,12 @@ async function main() {
 
   // Step 2: If no valid cache, fetch from API
   if (!cache.valid) {
-    const accessToken = getOAuthTokenFromKeychain();
+    const accessToken = getOAuthToken();
 
     if (!accessToken) {
-      console.error("Error: No OAuth token found in keychain.");
+      console.error(
+        "Error: No OAuth token found in Claude Code's stored credentials.",
+      );
       console.error("Please ensure you're logged into Claude Code.");
       process.exit(1);
     }
