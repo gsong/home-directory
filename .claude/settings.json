@@ -5,7 +5,11 @@
     "EDITOR": "nvim",
     "ENABLE_TOOL_SEARCH": "auto:0"
   },
-  "includeCoAuthoredBy": false,
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
   "permissions": {
     "allow": [
       "Bash(git:*)",
@@ -166,11 +170,23 @@
         "path": "/Users/george/src/gsong/claude-marketplace"
       },
       "autoUpdate": true
+    },
+    "gs-hiring-tools": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/george/src/sahaj/gs-hiring-tools"
+      },
+      "autoUpdate": true
     }
   },
   "outputStyle": "Plain Technical",
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "medium"
+    }
+  },
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
