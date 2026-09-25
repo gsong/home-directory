@@ -47,6 +47,15 @@
             "command": "$HOME/.claude/hooks/bash-guard.sh"
           }
         ]
+      },
+      {
+        "matcher": "Artifact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/smart-quotes.py"
+          }
+        ]
       }
     ],
     "Stop": [

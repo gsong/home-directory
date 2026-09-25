@@ -14,6 +14,10 @@
 - Register, response shape, and confidence marking live in the `Plain Technical` output style (`~/.claude/output-styles/plain-technical.md`), not here
 - **CRITICAL**: ALWAYS use the `AskUserQuestion` tool when asking questions, soliciting feedback, or needing user input. NEVER put questions as inline text. This applies to ALL workflows including brainstorming.
 
+## Artifacts
+
+- Use smart quotes in every generated artifact (decks, pages, docs): ’ “ ” not ' ". Straight quotes stay only in code, markup attributes, and JSON syntax.
+
 ## Brainstorming & Planning
 
 - Write specs, plans, and other AI scratch to `ai-swap/<task>/` when nothing else has chosen a path. A skill or config naming its own destination wins.
