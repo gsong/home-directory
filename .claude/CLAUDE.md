@@ -53,7 +53,7 @@
 
 ## Skills
 
-- Use `/gs:utilities:date` skill for date/datetime calculations
+- Use `utilities:date` skill for date/datetime calculations
 
 ## Python Scripts
 
