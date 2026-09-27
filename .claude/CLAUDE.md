@@ -44,7 +44,7 @@
 
 - Use `eval "$(mise env)"` to refresh PATH after installing new tools
 - Use the `ast-grep` skill for structural code search - invoke via Skill tool when exploring codebases, finding patterns, or locating functions/classes. Prefer over Grep/Glob for semantic code queries.
-- Use mermaid v10.2.3 syntax - nvim's markdown previewer does not render later versions
+- Use mermaid v11.17.2 syntax - nvim's markdown previewer renders that version (pinned in `~/.config/nvim/lua/plugins/markdown-preview.lua`)
 
 ## Subagents
 
