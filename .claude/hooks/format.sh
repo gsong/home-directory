@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # PostToolUse formatter. Formats a file Claude just wrote with the formatter
-# the file's project uses: Biome when the nearest formatter config is a Biome
-# config, Prettier otherwise. It never blocks, since the write has already
-# landed.
+# its project chose for that file type: Biome when the nearest formatter
+# config is a Biome config and Biome formats the type, Prettier when a
+# Prettier config governs the file. A file no config governs is left as
+# written, so a repo that never chose a formatter keeps its own style. It
+# never blocks, since the write has already landed.
 #
-# The search walks up from the file and stops at the git root, so a repo with
-# no formatter config of its own keeps Prettier's defaults. It does not reach
-# $HOME/biome.jsonc, which would otherwise claim every such repo under $HOME.
-# A file outside any repo walks all the way up, which is how loose scripts
-# under $HOME reach that config.
+# The search walks up from the file and stops at the git root, so a config
+# outside the repo never claims it. It does not reach $HOME/biome.jsonc, which
+# would otherwise claim every repo under $HOME. A file outside any repo walks
+# all the way up, which is how loose scripts under $HOME reach that config.
 set -uo pipefail
 
 file=$(jq -r '.tool_input.file_path // ""' 2>/dev/null)
@@ -17,13 +18,20 @@ file=$(jq -r '.tool_input.file_path // ""' 2>/dev/null)
 file=$(realpath "$file")
 
 main() {
-  local config_dir
-  config_dir=$(find_biome_config_dir "$(dirname "$file")")
+  local start config_dir
+  start=$(dirname "$file")
 
-  if [[ -n $config_dir ]] && biome_formats "$file"; then
-    run_biome "$config_dir"
-  else
-    prettier --write --ignore-unknown "$file"
+  if biome_formats "$file"; then
+    config_dir=$(find_biome_config_dir "$start")
+    if [[ -n $config_dir ]]; then
+      run_biome "$config_dir"
+      return
+    fi
+  fi
+
+  config_dir=$(find_prettier_config_dir "$start")
+  if [[ -n $config_dir ]]; then
+    run_prettier "$config_dir"
   fi
 }
 
@@ -44,6 +52,24 @@ find_biome_config_dir() {
   done
 }
 
+# Prints the directory holding the nearest Prettier config, or nothing when
+# none is found. A Biome config on the way does not stop the search: Biome
+# does not format every type, and a repo can pair it with Prettier for the
+# rest.
+find_prettier_config_dir() {
+  local dir=$1 root
+  root=$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null)
+
+  while :; do
+    if has_prettier_config "$dir"; then
+      echo "$dir"
+      return
+    fi
+    [[ $dir == "$root" || $dir == / ]] && return
+    dir=$(dirname "$dir")
+  done
+}
+
 has_prettier_config() {
   local dir=$1 name
   for name in "$dir"/.prettierrc "$dir"/.prettierrc.* "$dir"/prettier.config.*; do
@@ -52,7 +78,8 @@ has_prettier_config() {
   [[ -f $dir/package.json ]] && jq -e 'has("prettier")' "$dir/package.json" >/dev/null 2>&1
 }
 
-# Biome does not format Markdown or YAML, so those still go to Prettier.
+# Biome does not format Markdown or YAML, so those go to Prettier when the
+# project has a Prettier config, and are left alone when it does not.
 biome_formats() {
   case ${1##*.} in
   js | jsx | mjs | cjs | ts | tsx | mts | cts | json | jsonc | css | graphql | gql) return 0 ;;
@@ -69,6 +96,20 @@ run_biome() {
   [[ -x $dir/node_modules/.bin/biome ]] && biome=$dir/node_modules/.bin/biome
   (cd "$dir" && "$biome" check --write --no-errors-on-unmatched "$file") >/dev/null 2>&1
   return 0
+}
+
+# Runs from the config directory because Prettier reads .prettierignore and
+# .gitignore from the directory it runs in, not from the file's. Run from
+# anywhere else, an ignored file would be formatted anyway. The git root's
+# ignore files are named too, since a nested config would otherwise skip them.
+# Prettier resolves each file's patterns from that file's directory.
+run_prettier() {
+  local dir=$1 root d ignores=()
+  root=$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null)
+  for d in "$dir" ${root:+"$root"}; do
+    ignores+=(--ignore-path "$d/.prettierignore" --ignore-path "$d/.gitignore")
+  done
+  (cd "$dir" && prettier --write --ignore-unknown "${ignores[@]}" "$file")
 }
 
 main
