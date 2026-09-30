@@ -41,6 +41,7 @@
     "ask": [],
     "defaultMode": "auto"
   },
+  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -127,6 +128,7 @@
     "skill-creator@claude-plugins-official": true,
     "mattpocock-skills@claude-plugins-official": true,
     "swift-lsp@claude-plugins-official": true,
+    "pitch-prototype@costmine-marketplace": true,
     "writing@gsong-marketplace": true
   },
   "extraKnownMarketplaces": {
@@ -139,8 +141,8 @@
     },
     "costmine-marketplace": {
       "source": {
-        "source": "github",
-        "repo": "GlacierRIG/ai-plugins"
+        "source": "directory",
+        "path": "/Users/george/src/costmine/ai-plugins"
       },
       "autoUpdate": true
     },
@@ -165,6 +167,9 @@
   "modelSettings": {
     "claude-opus-5-5": {
       "effortLevel": "high"
+    },
+    "claude-fable-5-1": {
+      "effortLevel": "medium"
     }
   },
   "autoUpdatesChannel": "latest",
