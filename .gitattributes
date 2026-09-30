@@ -1,0 +1,4 @@
+# autoMode describes work environments, and this repo is public. The clean
+# filter drops the key when settings.json is staged, so the working file keeps
+# it and no commit carries it. Set up the filter per clone, as the README says.
+.claude/settings.json filter=strip-automode

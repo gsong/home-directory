@@ -20,7 +20,18 @@ Shell (bash), git, tmux, and editor configs.
 ## Setup
 
 1. `brew install stow`
-2. `git clone <this repo> ~/.home-directory && cd ~/.home-directory`
+2. `git clone <this repo> ~/.home-directory && cd ~/.home-directory`, then set
+   up the filter that keeps `autoMode` out of commits:
+
+   ```bash
+   git config filter.strip-automode.clean "jq --indent 2 'del(.autoMode)'"
+   git config filter.strip-automode.required true
+   ```
+
+   `autoMode` in `.claude/settings.json` describes the environments you work
+   in, and this repo is public. The filter drops it when the file is staged.
+   Your copy keeps it. A checkout, stash, or reset writes the committed file back
+   without it, so save the block first.
 3. `git submodule update --init --recursive`
 4. `stow -R --no-folding --adopt -t ~ .`
    Note: `--adopt` moves any pre-existing files in `~` into the repo, overwriting
