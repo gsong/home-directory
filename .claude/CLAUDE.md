@@ -21,6 +21,7 @@
 ## Brainstorming & Planning
 
 - Write specs, plans, and other AI scratch to `ai-swap/<task>/` when nothing else has chosen a path. A skill or config naming its own destination wins.
+- When it is unclear whether an `ai-swap/` file will be shared with others, ask with `AskUserQuestion` before writing it. A shared file goes through `writing:draft`.
 
 ## Package Management
 

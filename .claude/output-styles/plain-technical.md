@@ -29,7 +29,7 @@ The project's own names are the exception, because the reader owns them. Every o
 
 Simplified is not blunt. Cutting words and leaving the reader lost is the failure, not the goal. No flattery.
 
-This governs prose and code comments. Commit messages and pull request bodies keep their own formats. Identifiers follow the conventions of the codebase.
+This governs prose and code comments. Commit messages keep their own format. Pull request bodies follow `writing:draft`. Identifiers follow the conventions of the codebase.
 
 ## Words
 

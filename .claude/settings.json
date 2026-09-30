@@ -51,15 +51,6 @@
             "command": "$HOME/.claude/hooks/bash-guard.sh"
           }
         ]
-      },
-      {
-        "matcher": "Artifact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/smart-quotes.py"
-          }
-        ]
       }
     ],
     "Stop": [
@@ -72,10 +63,6 @@
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/ask-via-tool.sh"
-          },
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/writing-promote.sh"
           }
         ]
       }
@@ -105,14 +92,6 @@
           {
             "type": "command",
             "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); case \"$file\" in */ai-swap/drafts/*) exit 0 ;; esac; if [[ \"$file\" == *.py ]]; then ruff check --fix \"$(realpath \"$file\")\"; fi"
-          },
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/writing-gate.sh"
-          },
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/writing-capture.sh"
           }
         ]
       }
@@ -147,7 +126,8 @@
     "pr-review-toolkit@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
     "mattpocock-skills@claude-plugins-official": true,
-    "swift-lsp@claude-plugins-official": true
+    "swift-lsp@claude-plugins-official": true,
+    "writing@gsong-marketplace": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
