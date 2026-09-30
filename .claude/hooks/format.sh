@@ -102,14 +102,18 @@ run_biome() {
 # .gitignore from the directory it runs in, not from the file's. Run from
 # anywhere else, an ignored file would be formatted anyway. The git root's
 # ignore files are named too, since a nested config would otherwise skip them.
-# Prettier resolves each file's patterns from that file's directory.
+# Prettier resolves each file's patterns from that file's directory. Prefers
+# the project's pinned Prettier over the global one, as run_biome does, so a
+# repo whose CI checks the format gets the bytes CI expects, and a repo with
+# its own format hook gets the same bytes from both.
 run_prettier() {
-  local dir=$1 root d ignores=()
+  local dir=$1 root d ignores=() prettier=prettier
+  [[ -x $dir/node_modules/.bin/prettier ]] && prettier=$dir/node_modules/.bin/prettier
   root=$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null)
   for d in "$dir" ${root:+"$root"}; do
     ignores+=(--ignore-path "$d/.prettierignore" --ignore-path "$d/.gitignore")
   done
-  (cd "$dir" && prettier --write --ignore-unknown "${ignores[@]}" "$file")
+  (cd "$dir" && "$prettier" --write --ignore-unknown "${ignores[@]}" "$file")
 }
 
 main
