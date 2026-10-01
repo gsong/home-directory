@@ -21,6 +21,7 @@
 ## Brainstorming & Planning
 
 - Write specs, plans, and other AI scratch to `ai-swap/<task>/` when nothing else has chosen a path. A skill or config naming its own destination wins.
+- Exception: a handoff (such as `mattpocock-skills:handoff`) always goes to `ai-swap/<task>/handoff.md` at the git root, or in the current directory outside a repo. This overrides a skill that says to use the OS temp directory or to avoid the workspace.
 - When it is unclear whether an `ai-swap/` file will be shared with others, ask with `AskUserQuestion` before writing it. A shared file goes through `writing:draft`.
 
 ## Package Management
