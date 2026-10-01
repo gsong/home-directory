@@ -52,6 +52,17 @@
 - **Prefer subagents** for searches spanning many files, and for work that can run concurrently
 - Launch independent subagents in a single message so they run in parallel
 
+### Subagent model choice
+
+Pick each subagent's model for its task. The ladder is Sonnet, then Opus, then Fable; choose only from these three.
+
+- **Sonnet** — searches, doc and config lookups, file or log summaries, test runs, and edits you have fully specified. Use it from any session.
+- **Session model** — implementation, code review, debugging. A Fable session sends these to Opus.
+- **One step up** (Sonnet to Opus, Opus to Fable) — the hardest work in the session, such as design or a stubborn root cause, or a retry after a failed attempt. Stay at most one step above the session model.
+- **Fable** — in a Fable session, reserve it for design, architecture, and calls where a wrong answer is costly.
+
+Apply this to Agent tool spawns and to each workflow `agent()` stage; it overrides the workflow default of omitting `model`. A fork always runs on the session model, so spawn a fresh agent to change model, and fork only when the task needs the conversation so far. When the model differs from the session model, name it in the spawn description.
+
 ## Skills
 
 - Use `utilities:date` skill for date/datetime calculations
