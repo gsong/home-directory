@@ -27,6 +27,11 @@ while IFS= read -r seg; do
   while [[ $seg =~ ^[[:space:]]*([A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*|sudo|command|nohup|time|env)[[:space:]]+ ]]; do
     seg=${seg#"${BASH_REMATCH[0]}"}
   done
+  # macOS pkill stops reading options at the first pattern, so a late -P or -u
+  # becomes another pattern; with -f that has quit every app on the machine.
+  if [[ $seg =~ ^[[:space:]]*([^[:space:]]*/)?(pkill|killall)([[:space:]]|$) ]]; then
+    ask "${BASH_REMATCH[2]} can match far more processes than intended. Approve only after checking what it will kill (try 'pgrep -fl' with the same pattern)."
+  fi
   [[ $seg =~ ^[[:space:]]*git[[:space:]]+(.*)$ ]] || continue
   rest=${BASH_REMATCH[1]}
   # Peel git's own global options so they do not hide the subcommand, so that
