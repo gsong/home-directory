@@ -6,8 +6,8 @@
         "id": "cc-auth-status",
         "type": "custom-command",
         "color": "",
-        "preserveColors": true,
-        "commandPath": "cc-auth-status.mjs"
+        "commandPath": "cc-auth-status.mjs",
+        "preserveColors": true
       },
       {
         "id": "sep-after-auth",
@@ -66,12 +66,6 @@
         }
       },
       {
-        "id": "cc-pr-number",
-        "type": "custom-command",
-        "color": "brightGreen",
-        "commandPath": "cc-pr-number.mjs"
-      },
-      {
         "id": "2ad7e866-745b-4fb5-8310-7433dfa6a775",
         "type": "separator"
       },
@@ -86,8 +80,13 @@
   "flexMode": "full-until-compact",
   "compactThreshold": 60,
   "colorLevel": 3,
+  "defaultPaddingSide": "both",
   "inheritSeparatorColors": false,
   "globalBold": false,
+  "gitCacheTtlSeconds": 5,
+  "terminalWidthCacheTtlSeconds": 5,
+  "customCommandCacheTtlSeconds": 0,
+  "minimalistMode": false,
   "powerline": {
     "enabled": false,
     "separators": [
@@ -98,6 +97,7 @@
     ],
     "startCaps": [],
     "endCaps": [],
-    "autoAlign": false
+    "autoAlign": false,
+    "continueThemeAcrossLines": false
   }
 }
