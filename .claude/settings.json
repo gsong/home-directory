@@ -130,7 +130,8 @@
     "mattpocock-skills@claude-plugins-official": true,
     "swift-lsp@claude-plugins-official": true,
     "writing@gsong-marketplace": true,
-    "clef@gsong-marketplace": true
+    "clef@gsong-marketplace": true,
+    "agent-browser@agent-browser": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -158,6 +159,13 @@
       "source": {
         "source": "directory",
         "path": "/Users/george/src/sahaj/gs-hiring-tools"
+      },
+      "autoUpdate": true
+    },
+    "agent-browser": {
+      "source": {
+        "source": "github",
+        "repo": "vercel-labs/agent-browser"
       },
       "autoUpdate": true
     }
