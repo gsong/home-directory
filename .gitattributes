@@ -1,4 +1,6 @@
-# autoMode describes work environments, and this repo is public. The clean
-# filter drops the key when settings.json is staged, so the working file keeps
-# it and no commit carries it. Set up the filter per clone, as the README says.
-.claude/settings.json filter=strip-automode
+# The clean filter drops these keys when settings.json is staged, so the
+# working file keeps them and no commit carries them. Set up the filter per
+# clone, as the README says.
+# - autoMode describes work environments, and this repo is public.
+# - modelSettings churns whenever Claude Code changes a model's effort level.
+.claude/settings.json filter=strip-local-settings

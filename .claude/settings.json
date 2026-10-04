@@ -165,14 +165,6 @@
   "outputStyle": "Plain Technical",
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
-  "modelSettings": {
-    "claude-opus-5-5": {
-      "effortLevel": "high"
-    },
-    "claude-fable-5-1": {
-      "effortLevel": "high"
-    }
-  },
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,

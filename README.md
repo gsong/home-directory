@@ -21,17 +21,18 @@ Shell (bash), git, tmux, and editor configs.
 
 1. `brew install stow`
 2. `git clone <this repo> ~/.home-directory && cd ~/.home-directory`, then set
-   up the filter that keeps `autoMode` out of commits:
+   up the filter that keeps `autoMode` and `modelSettings` out of commits:
 
    ```bash
-   git config filter.strip-automode.clean "jq --indent 2 'del(.autoMode)'"
-   git config filter.strip-automode.required true
+   git config filter.strip-local-settings.clean "jq --indent 2 'del(.autoMode, .modelSettings)'"
+   git config filter.strip-local-settings.required true
    ```
 
    `autoMode` in `.claude/settings.json` describes the environments you work
-   in, and this repo is public. The filter drops it when the file is staged.
-   Your copy keeps it. A checkout, stash, or reset writes the committed file back
-   without it, so save the block first.
+   in, and this repo is public. Claude Code rewrites `modelSettings` whenever
+   you change a model's effort level. The filter drops both when the file is
+   staged. Your copy keeps them. A checkout, stash, or reset writes the
+   committed file back without them, so save those blocks first.
 3. `git submodule update --init --recursive`
 4. `stow -R --no-folding --adopt -t ~ .`
    Note: `--adopt` moves any pre-existing files in `~` into the repo, overwriting
