@@ -64,6 +64,14 @@ Apply this to Agent tool spawns and to each workflow `agent()` stage; it overrid
 
 - Use `utilities:date` skill for date/datetime calculations
 
+## Clef Experiment
+
+Temporary, for gsong/home-directory#2. Deleting this section ends it.
+
+- Send every decision that `clef:ask` covers through it, single decisions included.
+- Before each call, decide yourself and pass that answer as `--guess`.
+- Act on Clef's answer. When it differs from your guess, say so.
+
 ## Python Scripts
 
 - Inline dependencies with `uv` (PEP 723); no separate requirements.txt
