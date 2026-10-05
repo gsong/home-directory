@@ -3,7 +3,8 @@
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "EDITOR": "nvim",
-    "ENABLE_TOOL_SEARCH": "auto:0"
+    "ENABLE_TOOL_SEARCH": "auto:0",
+    "CLEF_SPAWN_LOG": "~/.local/state/clef/spawns.jsonl"
   },
   "attribution": {
     "commit": "",
@@ -53,6 +54,16 @@
             "command": "$HOME/.claude/hooks/bash-guard.sh"
           }
         ]
+      },
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/clef-spawn.py",
+            "async": true
+          }
+        ]
       }
     ],
     "Stop": [
@@ -94,6 +105,16 @@
           {
             "type": "command",
             "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); case \"$file\" in */ai-swap/drafts/*) exit 0 ;; esac; if [[ \"$file\" == *.py ]]; then ruff check --fix \"$(realpath \"$file\")\"; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/clef-spawn.py",
+            "async": true
           }
         ]
       }
