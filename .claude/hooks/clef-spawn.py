@@ -9,7 +9,7 @@ Runs as an async hook, so Claude Code never waits for it and ignores its
 output. It never changes the spawn.
 
 PreToolUse: strip model names from the description and the prompt, ask Clef
-one choice question, and append one JSON line to $CLEF_SPAWN_LOG.
+one score question, and append one JSON line to $CLEF_SPAWN_LOG.
 PostToolUse: append the model the spawn actually ran on to the sibling
 <stem>-resolved.jsonl. The review joins the two files on tool_use_id.
 
@@ -20,6 +20,7 @@ that cannot be written is dropped.
 
 import fcntl
 import json
+import math
 import os
 import re
 import sys
@@ -32,15 +33,18 @@ from pathlib import Path
 CLEF_MODEL = "clef"
 TIMEOUT_S = 120
 
+# The models form a ladder, so Clef rates the task on it as a score question.
+# Level i of the score is MODELS[i].
+MODELS = ("haiku", "sonnet", "opus", "fable")
 QUESTION = {
-    "type": "choice",
-    "instructions": "Which model should run this subagent task?",
-    "criteria": {
-        "haiku": "a mechanical task such as one lookup, a file or log summary, a test run, or a fixed-format conversion",
-        "sonnet": "a search across many files, doc or web research, or an edit the prompt fully specifies",
-        "opus": "implementation, code review, or debugging",
-        "fable": "design, architecture, a stubborn root cause, or a call where a wrong answer is costly",
-    },
+    "type": "score",
+    "instructions": "How capable a model does this subagent task need?",
+    "criteria": [
+        "a mechanical task such as one lookup, a file or log summary, a test run, or a fixed-format conversion",
+        "a search across many files, doc or web research, or an edit the prompt fully specifies",
+        "implementation, code review, or debugging",
+        "design, architecture, a stubborn root cause, or a call where a wrong answer is costly",
+    ],
 }
 
 # Descriptions such as "Search Slack (Sonnet)" leak the answer. Full IDs go
@@ -84,7 +88,9 @@ def spawn_record(payload):
         "prompt": prompt,
         "claude_model": tool_input.get("model"),
         "clef_model": CLEF_MODEL,
-        "pick": answer.get("choice"),
+        "question_type": QUESTION["type"],
+        "pick": answer.get("pick"),
+        "score": answer.get("score"),
         "probabilities": answer.get("probabilities"),
         "confidence": answer.get("confidence"),
         "latency_s": latency,
@@ -107,7 +113,13 @@ def strip_model_names(text):
 
 
 def ask_clef(state):
-    """Return (answer, error, latency_s). The answer is {} when there is an error."""
+    """Return (answer, error, latency_s). The answer is {} when there is an error.
+
+    The answer holds Clef's score and confidence, its probabilities keyed by
+    model name, and the pick: the model at the score rounded to a level. The
+    most likely level is a worse pick. Clef often splits a task between the
+    levels on both sides of the score, and the larger side wins by a little.
+    """
     url = os.environ.get("CLEF_URL", "http://127.0.0.1:11434").rstrip("/") + "/v1/systemone"
     body = json.dumps({"model": CLEF_MODEL, "state": state, "questions": {"model": QUESTION}})
     request = urllib.request.Request(url, body.encode(), {"Content-Type": "application/json"})
@@ -117,8 +129,14 @@ def ask_clef(state):
         with OPENER.open(request, timeout=TIMEOUT_S) as response:
             reply = json.load(response)
         answer = reply["answers"]["model"]
-        if answer.get("choice") not in QUESTION["criteria"]:
+        score = answer["score"]
+        if isinstance(score, bool) or not 0 <= score <= len(MODELS) - 1:
             raise ValueError
+        levels = answer["probabilities"]
+        probabilities = {model: levels[str(level)] for level, model in enumerate(MODELS)}
+        pick = MODELS[math.floor(score + 0.5)]
+        confidence = answer.get("confidence")
+        answer = {"pick": pick, "score": score, "probabilities": probabilities, "confidence": confidence}
         return answer, None, elapsed(started)
     except TimeoutError:
         return {}, "timeout", elapsed(started)
