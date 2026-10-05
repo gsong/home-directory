@@ -35,7 +35,8 @@
       "WebFetch(domain:anthropic.com)",
       "WebFetch(domain:mise.jdx.dev)",
       "mcp__context7__resolve-library-id",
-      "mcp__context7__get-library-docs"
+      "mcp__context7__get-library-docs",
+      "Bash(gh pr merge:*)"
     ],
     "deny": [],
     "ask": [],
