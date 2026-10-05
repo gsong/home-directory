@@ -44,19 +44,15 @@
 - Use the `ast-grep` skill for structural code search - invoke via Skill tool when exploring codebases, finding patterns, or locating functions/classes. Prefer over Grep/Glob for semantic code queries.
 - Use mermaid v11.17.2 syntax - nvim's markdown previewer renders that version (pinned in `~/.config/nvim/lua/plugins/markdown-preview.lua`)
 
-## Subagents
+## Subagent model choice
 
-- **Prefer subagents** for searches spanning many files, and for work that can run concurrently
-- Launch independent subagents in a single message so they run in parallel
+Set `model` on every subagent, picked for its task. An unset `model` falls back to the session model, whatever the task. The ladder is Sonnet, then Opus, then Fable; choose only from these three.
 
-### Subagent model choice
+- **Sonnet** — searches, doc and config lookups, file or log summaries, test runs, edits you have fully specified, and verifying a review finding.
+- **Opus** — implementation, code review, debugging.
+- **Fable** — design, architecture, a stubborn root cause, and calls where a wrong answer is costly.
 
-Pick each subagent's model for its task. The ladder is Sonnet, then Opus, then Fable; choose only from these three.
-
-- **Sonnet** — searches, doc and config lookups, file or log summaries, test runs, and edits you have fully specified. Use it from any session.
-- **Session model** — implementation, code review, debugging. A Fable session sends these to Opus.
-- **One step up** (Sonnet to Opus, Opus to Fable) — the hardest work in the session, such as design or a stubborn root cause, or a retry after a failed attempt. Stay at most one step above the session model.
-- **Fable** — in a Fable session, reserve it for design, architecture, and calls where a wrong answer is costly.
+The main thread picks any rung, whatever its own model. A subagent that spawns agents stays at or below its own model. After a failed attempt, retry one rung up.
 
 Apply this to Agent tool spawns and to each workflow `agent()` stage; it overrides the workflow default of omitting `model`. A fork always runs on the session model, so spawn a fresh agent to change model, and fork only when the task needs the conversation so far. When the model differs from the session model, name it in the spawn description.
 
