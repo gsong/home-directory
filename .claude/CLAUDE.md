@@ -46,13 +46,14 @@
 
 ## Subagent model choice
 
-Set `model` on every subagent, picked for its task. An unset `model` falls back to the session model, whatever the task. The ladder is Sonnet, then Opus, then Fable; choose only from these three.
+Set `model` on every subagent, picked for its task. An unset `model` falls back to the session model, whatever the task. The ladder is Haiku, then Sonnet, then Opus, then Fable; choose only from these four.
 
-- **Sonnet** — searches, doc and config lookups, file or log summaries, test runs, edits you have fully specified, and verifying a review finding.
+- **Haiku** — mechanical work: one lookup, a file or log summary, a test run, a fixed-format conversion.
+- **Sonnet** — searches across many files, doc or web research, edits you have fully specified, and verifying a review finding.
 - **Opus** — implementation, code review, debugging.
 - **Fable** — design, architecture, a stubborn root cause, and calls where a wrong answer is costly.
 
-The main thread picks any rung, whatever its own model. A subagent that spawns agents stays at or below its own model. After a failed attempt, retry one rung up.
+The main thread picks any rung. A subagent that spawns agents stays at or below its own model. After a failed attempt, retry one rung up.
 
 Apply this to Agent tool spawns and to each workflow `agent()` stage; it overrides the workflow default of omitting `model`. A fork always runs on the session model, so spawn a fresh agent to change model, and fork only when the task needs the conversation so far. When the model differs from the session model, name it in the spawn description.
 
