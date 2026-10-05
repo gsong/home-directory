@@ -6,7 +6,7 @@ macOS dotfiles, managed with GNU stow. See `README.md` for setup.
 
 ### Issue tracker
 
-Issues and specs live as markdown files under `ai-swap/<feature-slug>/` in this repo. See `docs/agents/issue-tracker.md`.
+Issues and specs live as GitHub issues in `gsong/home-directory`, managed with the `gh` CLI. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
