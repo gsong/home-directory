@@ -64,16 +64,6 @@ Apply this to Agent tool spawns and to each workflow `agent()` stage; it overrid
 
 - Use `utilities:date` skill for date/datetime calculations
 
-## Clef Experiment
-
-Temporary, for gsong/home-directory#2. Deleting this section ends it. Reviews of the log are tracked in gsong/claude-marketplace#113.
-
-- Send every decision that `clef:ask` covers through it, single decisions included.
-- Before each call, decide yourself and pass that answer as `--guess`.
-- Act on your own guess. Clef's answer goes only to the log.
-- Mention a disagreement only when Clef's top probability is 0.8 or more. For a `noul`, that is 0.2 or less, or 0.8 or more.
-- Keep re-asking a close answer on `clef`, as the skill says. The log needs those pairs.
-
 ## Python Scripts
 
 - Inline dependencies with `uv` (PEP 723); no separate requirements.txt
