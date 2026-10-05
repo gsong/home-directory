@@ -23,9 +23,9 @@ const ANSWER = {
   model: "clef",
   answers: {
     model: {
-      type: "choice",
-      choice: "sonnet",
-      probabilities: { haiku: 0.1, sonnet: 0.8, opus: 0.07, fable: 0.03 },
+      type: "score",
+      score: 1.03,
+      probabilities: { 0: 0.1, 1: 0.8, 2: 0.07, 3: 0.03 },
       confidence: 0.6,
     },
   },
@@ -48,11 +48,38 @@ test("a spawn logs Clef's pick next to the model Claude chose", async () => {
   assert.equal(result.stdout, "");
   const [line] = readLines(log);
   assert.equal(line.claude_model, "opus");
+  assert.equal(line.question_type, "score");
   assert.equal(line.pick, "sonnet");
-  assert.deepEqual(line.probabilities, ANSWER.answers.model.probabilities);
+  assert.equal(line.score, 1.03);
+  assert.deepEqual(line.probabilities, {
+    haiku: 0.1,
+    sonnet: 0.8,
+    opus: 0.07,
+    fable: 0.03,
+  });
   assert.equal(line.session_id, "session-1");
   assert.equal(line.tool_use_id, "toolu-1");
   assert.equal(line.error, null);
+});
+
+test("the pick follows the score, not the most likely level", async () => {
+  // Clef splits the task between sonnet and fable. The score lands on opus.
+  const split = {
+    answers: {
+      model: {
+        type: "score",
+        score: 2.0,
+        probabilities: { 0: 0.05, 1: 0.3, 2: 0.25, 3: 0.4 },
+        confidence: 0.1,
+      },
+    },
+  };
+  const clef = await stubClef(JSON.stringify(split));
+  const { log } = await runHook(preToolUse({}), { CLEF_URL: clef.url });
+
+  const [line] = readLines(log);
+  assert.equal(line.pick, "opus");
+  assert.equal(line.probabilities.fable, 0.4);
 });
 
 test("Clef sees the task with model names stripped", async () => {
@@ -69,12 +96,8 @@ test("Clef sees the task with model names stripped", async () => {
   const sent = JSON.parse(clef.requests[0]);
   assert.equal(sent.model, "clef");
   assert.doesNotMatch(sent.state, /sonnet|opus|haiku|fable|claude-|\(\)/i);
-  assert.deepEqual(Object.keys(sent.questions.model.criteria), [
-    "haiku",
-    "sonnet",
-    "opus",
-    "fable",
-  ]);
+  assert.equal(sent.questions.model.type, "score");
+  assert.equal(sent.questions.model.criteria.length, 4);
 
   const [line] = readLines(log);
   assert.equal(line.description, "Search Slack for Asset Management");
@@ -107,11 +130,16 @@ test("with Clef down, the spawn is still logged, with the error", async () => {
   assert.equal(line.error, "unreachable");
 });
 
-test("a reply that is not a choice among the four models is logged as bad", async () => {
+test("a reply that is not a score on the four-model ladder is logged as bad", async () => {
+  const probabilities = { 0: 0.25, 1: 0.25, 2: 0.25, 3: 0.25 };
   for (const reply of [
     "not json",
     JSON.stringify({ answers: {} }),
-    JSON.stringify({ answers: { model: { choice: "gpt" } } }),
+    JSON.stringify({ answers: { model: { choice: "opus", probabilities } } }),
+    JSON.stringify({ answers: { model: { score: 3.5, probabilities } } }),
+    JSON.stringify({
+      answers: { model: { score: 1, probabilities: { 0: 1 } } },
+    }),
   ]) {
     const clef = await stubClef(reply);
     const { log } = await runHook(preToolUse({}), { CLEF_URL: clef.url });
