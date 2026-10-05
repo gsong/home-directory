@@ -81,6 +81,20 @@ test("Clef sees the task with model names stripped", async () => {
   assert.equal(line.claude_model, null);
 });
 
+test("the line's time marks the spawn, not Clef's answer", async () => {
+  const clef = await stubClef(JSON.stringify(ANSWER), { delayMs: 3000 });
+  const started = Date.now();
+  const { log } = await runHook(preToolUse({}), { CLEF_URL: clef.url });
+
+  const [line] = readLines(log);
+  assert.ok(line.latency_s >= 3, `latency_s ${line.latency_s}`);
+  // The time has whole seconds, so it can only fall at or before the real one.
+  assert.ok(
+    Date.parse(line.time) < started + 2000,
+    `time ${line.time} is not near the spawn at ${new Date(started).toISOString()}`,
+  );
+});
+
 test("with Clef down, the spawn is still logged, with the error", async () => {
   const { log, result } = await runHook(preToolUse({}), {
     CLEF_URL: "http://127.0.0.1:9",
@@ -178,7 +192,7 @@ async function runHook(payload, env = {}) {
   return { dir, log, result: { status, stdout } };
 }
 
-async function stubClef(reply) {
+async function stubClef(reply, { delayMs = 0 } = {}) {
   const requests = [];
   const server = createServer((req, res) => {
     let body = "";
@@ -187,8 +201,10 @@ async function stubClef(reply) {
     });
     req.on("end", () => {
       requests.push(body);
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(reply);
+      setTimeout(() => {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(reply);
+      }, delayMs);
     });
   });
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));

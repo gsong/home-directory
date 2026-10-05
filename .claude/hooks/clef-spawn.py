@@ -67,13 +67,15 @@ def main():
 
 
 def spawn_record(payload):
+    # Stamped before the Clef call, so the time marks the spawn, not the answer.
+    spawned = now()
     tool_input = payload.get("tool_input") or {}
     description = strip_model_names(tool_input.get("description") or "")
     prompt = strip_model_names(tool_input.get("prompt") or "")
     answer, error, latency = ask_clef(f"Description: {description}\n\nPrompt:\n{prompt}")
 
     return {
-        "time": now(),
+        "time": spawned,
         "session_id": payload.get("session_id"),
         "tool_use_id": payload.get("tool_use_id"),
         "agent_id": payload.get("agent_id"),
