@@ -21,6 +21,16 @@ cmd=$(jq -r '.tool_input.command // empty' 2>/dev/null) || exit 0
 # The same words inside a quoted string, a heredoc, or a comment are just text.
 folded=${cmd//$'\\\n'/ }
 
+# The attribution setting only stops Claude Code asking for a Claude trailer;
+# the model still adds one from habit. This check reads the whole command,
+# because the trailer sits inside a quoted, multi-line message.
+shopt -s nocasematch
+if [[ $folded =~ (git[[:space:]].*commit|gh[[:space:]]+pr[[:space:]]) ]] &&
+  [[ $folded =~ co-authored-by:[^$'\n']*(claude|anthropic) ]]; then
+  deny "Remove the Co-Authored-By trailer that names Claude. Commits and PRs carry no AI attribution."
+fi
+shopt -u nocasematch
+
 while IFS= read -r seg; do
   seg=${seg%%[[:space:]]#*}
   # Peel env assignments and wrappers so they do not hide the git call.
