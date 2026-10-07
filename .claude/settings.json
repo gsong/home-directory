@@ -151,7 +151,8 @@
     "mattpocock-skills@claude-plugins-official": true,
     "swift-lsp@claude-plugins-official": true,
     "writing@gsong-marketplace": true,
-    "agent-browser@agent-browser": true
+    "agent-browser@agent-browser": true,
+    "clef@gsong-marketplace": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
