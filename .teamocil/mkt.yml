@@ -1,0 +1,11 @@
+name: "main"
+windows:
+  - name: 🍳
+    root: ~/src/gsong/claude-marketplace
+    layout: even-vertical
+    panes:
+      - ""
+      - commands:
+          - vimr README.md
+          - claude
+        focus: true
