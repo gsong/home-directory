@@ -1,6 +1,6 @@
 name: "main"
 windows:
-  - name: caffeinate
+  - name: ☕
     root: ~/
     panes:
       - commands:
