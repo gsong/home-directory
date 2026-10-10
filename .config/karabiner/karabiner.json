@@ -343,6 +343,34 @@
                 ]
               }
             ]
+          },
+          {
+            "description": "Google Chat app: Cmd-K to Cmd-Shift-K (start or continue a chat)",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "k",
+                  "modifiers": {
+                    "mandatory": ["command"]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "k",
+                    "modifiers": ["left_command", "left_shift"]
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_if",
+                    "bundle_identifiers": [
+                      "^com\\.google\\.Chrome\\.app\\.pommaclcbfghclhalboakcipcmmndhcj$"
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
