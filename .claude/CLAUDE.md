@@ -13,6 +13,8 @@
 
 - Register, response shape, and confidence marking live in the `Plain Technical` output style (`~/.claude/output-styles/plain-technical.md`), not here
 - **CRITICAL**: ALWAYS use the `AskUserQuestion` tool when asking questions, soliciting feedback, or needing user input. NEVER put questions as inline text. This applies to ALL workflows including brainstorming.
+- When the user must run a command themselves, end the message with it as the last line: `! <command>`, with no code fence and nothing after it, so it becomes the likely Tab-complete suggestion.
+- If that command is over ~100 characters, write an executable wrapper script under `ai-swap/<task>/` that takes the changing parts as arguments. Check it with `bash -n`, then offer the short `!` call to it.
 
 ## Brainstorming & Planning
 
@@ -48,7 +50,7 @@
 
 Set `model` on every subagent; an unset `model` falls back to the session model. The ladder is Haiku, then Sonnet, then Opus, then Fable; choose only from these four.
 
-Pick the cheapest model you trust to get the task right on the first try. Lean cheaper than instinct: Sonnet handles multi-file search and verifying a review finding. Save Fable for calls where a wrong answer is costly. After a failed attempt, retry one rung up. A subagent that spawns agents stays at or below its own model.
+Pick the cheapest model you trust to get the task right on the first try. When you can check the output, lean cheaper than instinct: Sonnet handles multi-file search and confirming a review finding. When the answer is the only evidence, such as an absence claim or dismissing a review finding, pick the model you would trust unchecked; a cheap miss there reads as a correct answer and never triggers a retry. Save Fable for calls where a wrong answer is costly. After a failed attempt, retry one rung up. A subagent that spawns agents stays at or below its own model.
 
 Apply this to Agent tool spawns and to each workflow `agent()` stage; it overrides the workflow default of omitting `model`. A fork always runs on the session model, so spawn a fresh agent to change model, and fork only when the task needs the conversation so far. When the model differs from the session model, name it in the spawn description.
 
