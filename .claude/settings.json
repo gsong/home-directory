@@ -176,13 +176,6 @@
       },
       "autoUpdate": true
     },
-    "gs-hiring-tools": {
-      "source": {
-        "source": "directory",
-        "path": "/Users/george/src/sahaj/gs-hiring-tools"
-      },
-      "autoUpdate": true
-    },
     "agent-browser": {
       "source": {
         "source": "github",
