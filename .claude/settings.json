@@ -182,13 +182,6 @@
         "repo": "ast-grep/claude-skill"
       },
       "autoUpdate": true
-    },
-    "gs-hiring-tools": {
-      "source": {
-        "source": "directory",
-        "path": "/Users/george/src/sahaj/gs-hiring-tools"
-      },
-      "autoUpdate": true
     }
   },
   "outputStyle": "Plain Technical",
