@@ -152,7 +152,8 @@
     "swift-lsp@claude-plugins-official": true,
     "writing@gsong-marketplace": true,
     "agent-browser@agent-browser": true,
-    "clef@gsong-marketplace": true
+    "clef@gsong-marketplace": true,
+    "browser@gsong-marketplace": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
