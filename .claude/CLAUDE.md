@@ -45,6 +45,8 @@
 - Use `eval "$(mise env)"` to refresh PATH after installing new tools
 - Use the `ast-grep` skill for structural code search - invoke via Skill tool when exploring codebases, finding patterns, or locating functions/classes. Prefer over Grep/Glob for semantic code queries.
 - Use mermaid v11.17.2 syntax - nvim's markdown previewer renders that version (pinned in `~/.config/nvim/lua/plugins/markdown-preview.lua`)
+- For any browser task, such as opening a page, load `/browser:chrome` first. It starts or reaches a real Google Chrome and drives it with agent-browser. For a repo that needs its own persistent Chrome profile, run `/browser:setup`.
+- Browser logins pull credentials from 1Password straight into the field, so secrets stay out of the transcript: `agent-browser fill <sel> "$(op read 'op://<vault>/<item>/password')"`, and `op item get <item> --otp` for authenticator codes. Find the item with `op item list` (metadata only). When a site offers a passkey first, pick "Try another way" and use the password.
 
 ## Subagent model choice
 
