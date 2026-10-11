@@ -162,13 +162,6 @@
       },
       "autoUpdate": true
     },
-    "costmine-marketplace": {
-      "source": {
-        "source": "directory",
-        "path": "/Users/george/src/costmine/ai-plugins"
-      },
-      "autoUpdate": true
-    },
     "gsong-marketplace": {
       "source": {
         "source": "directory",
@@ -180,6 +173,20 @@
       "source": {
         "source": "github",
         "repo": "vercel-labs/agent-browser"
+      },
+      "autoUpdate": true
+    },
+    "ast-grep-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "ast-grep/claude-skill"
+      },
+      "autoUpdate": true
+    },
+    "gs-hiring-tools": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/george/src/sahaj/gs-hiring-tools"
       },
       "autoUpdate": true
     }
