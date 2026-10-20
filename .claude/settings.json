@@ -113,7 +113,6 @@
     "feature-dev@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": false,
     "code-simplifier@claude-plugins-official": true,
     "claude-code-setup@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
@@ -131,7 +130,6 @@
     "swift-lsp@claude-plugins-official": true,
     "writing@gsong-marketplace": true,
     "agent-browser@agent-browser": true,
-    "clef@gsong-marketplace": true,
     "browser@gsong-marketplace": true
   },
   "extraKnownMarketplaces": {
