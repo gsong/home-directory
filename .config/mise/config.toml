@@ -1,6 +1,8 @@
 [settings]
 idiomatic_version_file_enable_tools = []
 minimum_release_age = "7d"
+# My own projects: take new releases immediately.
+minimum_release_age_excludes = ["github:gsong/sprout"]
 
 [settings.python]
 uv_venv_auto = "create|source"
@@ -80,3 +82,4 @@ pnpm = "latest"
 "aqua:openai/codex" = "latest"
 yq = "latest"
 biome = "latest"
+"github:gsong/sprout" = "latest"
