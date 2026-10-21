@@ -33,9 +33,10 @@ lazydocker = "latest"
 lua = "5.1"
 node = "lts"
 prettier = "latest"
-# Single global default. Per-project versions live in each project's
-# mise.toml / mise.local.toml, not here.
-python = "3.14"
+# Global default is 3.15; 3.14 stays on PATH for the pipx tools pinned to it
+# below. Per-project versions live in each project's mise.toml /
+# mise.local.toml, not here.
+python = ["3.15", "3.14"]
 ruby = "4"
 ruff = "latest"
 shellcheck = "latest"
@@ -65,9 +66,11 @@ zizmor = "latest"
 "npm:chrome-devtools-mcp" = "latest"
 "npm:repomix" = "latest"
 "npm:tldr" = "latest"
-"pipx:crawl4ai" = "latest"
+# Pinned to Python 3.14: a dependency fails to build on 3.15 (2026-10-20).
+"pipx:crawl4ai" = { version = "latest", uvx_args = "--python 3.14" }
 "pipx:files-to-prompt" = "latest"
-"pipx:markitdown" = { version = "latest", extras = "all", uvx_args = "--prerelease=allow" }
+# Pinned to Python 3.14: magika has no release for 3.15 yet (2026-10-20).
+"pipx:markitdown" = { version = "latest", extras = "all", uvx_args = "--prerelease=allow --python 3.14" }
 "pipx:sqlfluff" = "latest"
 "pipx:titlecase" = "latest"
 "npm:@playwright/cli" = "latest"
