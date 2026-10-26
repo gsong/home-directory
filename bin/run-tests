@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Runs every test in the repo. Extra arguments go to node, so `run-tests
-# --watch` works.
+# --test-name-pattern=foo` works. The Bun script bin/clean-url.ts has its own
+# test script, run with `bun` because `bun test` cannot auto-install packages.
 #
 # The globs are spelled out because node --test skips dot directories when it
 # discovers tests on its own, which hides everything under .claude. They are
@@ -12,4 +13,5 @@ set -euo pipefail
 repo=$(cd -P "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)
 cd "$repo"
 
-exec node --test "$@" '.claude/**/*.test.mjs' 'bin/**/*.test.mjs'
+node --test "$@" '.claude/**/*.test.mjs' 'bin/**/*.test.mjs'
+exec bun bin/clean-url.test/clean-url.test.ts

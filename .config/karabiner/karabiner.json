@@ -371,6 +371,35 @@
                 ]
               }
             ]
+          },
+          {
+            "description": "Crest: Cmd-Shift-C copies the page link, then strips its tracking parameters",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "c",
+                  "modifiers": {
+                    "mandatory": ["command", "shift"]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "c",
+                    "modifiers": ["left_command", "left_shift"]
+                  },
+                  {
+                    "shell_command": "sleep 0.2; /Users/george/.local/share/mise/shims/bun /Users/george/bin/clean-url.ts"
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_if",
+                    "bundle_identifiers": ["^com\\.pauldavis\\.crest$"]
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
