@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "crest": {
+      "command": "/Applications/Crest.app/Contents/Helpers/crest-browser",
+      "args": ["mcp"]
+    }
+  }
+}

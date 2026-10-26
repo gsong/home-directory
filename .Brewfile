@@ -92,6 +92,7 @@ cask "soundsource", greedy: true # Audio routing
 
 # Web Browsers
 cask "arc", greedy: true        # Innovative web browser
+cask "crest-browser", greedy: true # Arc-like browser with Spaces
 cask "firefox"                 # Mozilla Firefox browser
 cask "google-chrome"           # Google Chrome browser
 cask "ungoogled-chromium"      # Open-source Chrome (for prisma-erd-generator); Homebrew 6 no longer quarantines casks, so no args needed
