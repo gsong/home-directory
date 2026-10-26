@@ -32,6 +32,8 @@ lazydocker = "latest"
 # built here load in neovim. 5.4 would break that.
 lua = "5.1"
 node = "lts"
+# Shadows the npm bundled with node, so npm updates outside node releases.
+npm = "latest"
 prettier = "latest"
 # Global default is 3.15; 3.14 stays on PATH for the pipx tools pinned to it
 # below. Per-project versions live in each project's mise.toml /
