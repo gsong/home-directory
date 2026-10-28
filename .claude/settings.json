@@ -35,9 +35,9 @@
       "WebFetch(domain:githubusercontent.com)",
       "WebFetch(domain:mise.jdx.dev)",
       "WebSearch",
+      "mcp__claude_ai_Linear",
       "mcp__context7__get-library-docs",
-      "mcp__context7__resolve-library-id",
-      "mcp__linear"
+      "mcp__context7__resolve-library-id"
     ],
     "deny": [],
     "ask": [],
@@ -117,7 +117,6 @@
     "code-simplifier@claude-plugins-official": true,
     "claude-code-setup@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
-    "slack@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "codex@openai-codex": true,
     "codex-tools@gsong-marketplace": true,
