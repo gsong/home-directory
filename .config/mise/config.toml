@@ -19,14 +19,7 @@ ast-grep = "latest"
 aws-cli = { version = "latest", symlink_bins = "true" }
 bun = "latest"
 direnv = "latest"
-# Pinned: npm's @google/gemini-cli carries junk versions (0.0.88…0.0.899…)
-# that defeat mise's "latest" sort. github backend is unsigned (SIGKILL on
-# macOS) and brew is deprecated, so pin the official npm backend and bump manually.
-# Last bumped 2026-09-09 to 0.58.0. npm's latest is 0.59.0, held back here
-# by minimum_release_age = "7d".
-gemini-cli = "0.58.0"
 hadolint = "latest"
-lazydocker = "latest"
 # Pinned: neovim embeds LuaJIT, which implements the 5.1 language level.
 # mise's lua 5.1 install carries a luarocks configured for 5.1, so rocks
 # built here load in neovim. 5.4 would break that.
@@ -34,8 +27,9 @@ lua = "5.1"
 node = "lts"
 # Shadows the npm bundled with node, so npm updates outside node releases.
 npm = "latest"
+oxipng = "latest"
 prettier = "latest"
-# Global default is 3.15; 3.14 stays on PATH for the pipx tools pinned to it
+# Global default is 3.15; 3.14 stays on PATH for the pipx tool pinned to it
 # below. Per-project versions live in each project's mise.toml /
 # mise.local.toml, not here.
 python = ["3.15", "3.14"]
@@ -57,25 +51,17 @@ zizmor = "latest"
 # (de7eb9e6001d) exists, published 2024-07-03, and it was already installed
 # under beta.12 — so this is not new exposure. Scoped to the exact version.
 "npm:@auth0/auth0-mcp-server" = { version = "0.1.0-beta.19", trust_policy_excludes = ["jose@4.15.9"] }
-"npm:@browsermcp/mcp" = "latest"
 "npm:@gsong/ccmcp" = "latest"
-"npm:@mariozechner/claude-trace" = "latest"
 "npm:@mermaid-js/mermaid-cli" = "latest"
 "npm:@netlify/mcp" = "latest"
 "npm:@perplexity-ai/mcp-server" = "latest"
 "npm:ccstatusline" = "latest"
 "npm:ccusage" = "latest"
-"npm:chrome-devtools-mcp" = "latest"
-"npm:repomix" = "latest"
 "npm:tldr" = "latest"
-# Pinned to Python 3.14: a dependency fails to build on 3.15 (2026-10-20).
-"pipx:crawl4ai" = { version = "latest", uvx_args = "--python 3.14" }
-"pipx:files-to-prompt" = "latest"
 # Pinned to Python 3.14: magika has no release for 3.15 yet (2026-10-20).
 "pipx:markitdown" = { version = "latest", extras = "all", uvx_args = "--prerelease=allow --python 3.14" }
 "pipx:sqlfluff" = "latest"
 "pipx:titlecase" = "latest"
-"npm:@playwright/cli" = "latest"
 pandoc = "latest"
 uv = "latest"
 "npm:@azure-devops/mcp" = "latest"
@@ -86,5 +72,6 @@ uv = "latest"
 pnpm = "latest"
 "aqua:openai/codex" = "latest"
 yq = "latest"
+zoxide = "latest"
 biome = "latest"
 "github:gsong/sprout" = "latest"

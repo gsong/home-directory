@@ -1,11 +1,5 @@
 # Taps
 tap "buo/cask-upgrade", trusted: true
-tap "cheat2001/tap", trusted: true
-
-# JIRA
-tap "atlassian/homebrew-acli", trusted: true
-tap "hatchet-dev/hatchet", trusted: true
-brew "atlassian/homebrew-acli/acli"
 
 # Auth0
 tap "auth0/auth0-cli", trusted: true
@@ -24,23 +18,15 @@ brew "tree"                    # Display directory structure
 brew "wget"                    # Non-interactive network downloader
 
 # Development Tools
-brew "automake"                # Makefile generator
-brew "bfg"                     # Remove large files from Git history
-brew "fx"                      # JSON viewer and processor
 brew "gh"                      # GitHub CLI
 brew "git"                     # Distributed version control
 brew "git-delta"               # Syntax-highlighting pager for git/diff
 brew "git-filter-repo"         # Fast, flexible tool for rewriting git history
 brew "git-lfs"                 # Git Large File Storage
-brew "graphviz"                # Graph visualization software
-brew "libmagic"                # File type identification
 brew "libvips"                 # Image processing library (for Astro)
 brew "libyaml"                 # YAML parser (for Ruby)
-brew "multimarkdown"           # Markdown processor
-brew "swig"                    # Interface compiler
 
 # Shell & Terminal Enhancements
-brew "autojump"                # Smart directory navigation
 brew "bash-completion@2"       # Bash completion scripts
 brew "eza"                     # Modern ls replacement
 brew "fd"                      # Modern find replacement
@@ -62,15 +48,10 @@ cask "vimr"                    # Neovim GUI for macOS
 
 # Miscellaneous CLI Tools
 brew "b2-tools"                # Backblaze B2 cloud storage CLI
-brew "asciinema"               # Record terminal sessions
 brew "cloc"                    # Count lines of code
 brew "czkawka"                 # Find duplicates, empty folders, similar images
-brew "gollama"                 # Ollama GUI/TUI
-brew "httpie"                  # User-friendly HTTP client
+brew "jpegoptim"               # Lossless JPEG optimizer
 brew "ollama"                  # Run LLMs locally
-brew "pwgen"                   # Password generator
-brew "qpdf"                    # PDF manipulation tools
-brew "wdiff"                   # Word-diff between text files
 
 # Quick Look Plugins
 cask "quicklook-video"         # Preview video thumbnails
@@ -93,14 +74,11 @@ cask "soundsource", greedy: true # Audio routing
 # Web Browsers
 cask "arc", greedy: true        # Innovative web browser
 cask "crest-browser", greedy: true # Arc-like browser with Spaces
-cask "firefox"                 # Mozilla Firefox browser
 cask "google-chrome"           # Google Chrome browser
-cask "ungoogled-chromium"      # Open-source Chrome (for prisma-erd-generator); Homebrew 6 no longer quarantines casks, so no args needed
 
 # Communication
 cask "discord"
 cask "microsoft-teams"
-cask "signal"                  # Encrypted messaging
 cask "slack", greedy: true
 cask "whatsapp"
 cask "zoom", greedy: true
@@ -109,17 +87,11 @@ cask "zoom", greedy: true
 cask "microsoft-auto-update"   # Microsoft AutoUpdate
 
 # Development Tools
-cask "chatgpt"                 # OpenAI ChatGPT desktop
 cask "claude"                  # Anthropic Claude desktop
-cask "dbeaver-community", greedy: true # Database management
 cask "docker-desktop", greedy: true
 cask "ghostty", greedy: true   # GPU-accelerated terminal
-cask "helpwire-operator"       # Helpwire operator
 cask "linear"                  # Linear.app
-cask "lm-studio"               # Run LLMs locally
 cask "ngrok"                   # Secure tunnels to localhost
-cask "p4v", greedy: true       # Perforce visual client
-cask "rapidapi"                # API testing client
 cask "sourcetree", greedy: true # Git GUI
 
 # File & System Management
@@ -130,20 +102,16 @@ cask "daisydisk"               # Disk space analyzer
 cask "dropbox", greedy: true
 cask "google-drive"
 cask "istat-menus", greedy: true # System statistics
-cask "micro-snitch"            # Monitor camera/microphone usage
 cask "pearcleaner"             # Advanced app cleaner
 cask "homebrew/cask/sloth"     # Display open files/sockets (bare "sloth" now resolves to the sloth-cli formula)
 
 # Media & Notes
 cask "fsnotes", greedy: true   # Markdown notes manager
-cask "imageoptim"              # Image optimization
 cask "macwhisper", greedy: true # Local audio transcription
 cask "marked-app", greedy: true # Markdown preview
-cask "notion"                  # All-in-one workspace
 cask "screenflow"              # Screen recording
 cask "shottr"                  # Screenshot tool
 cask "taskpaper"               # Plain text task management
-cask "vlc"                     # Media player
 
 # Fonts
 cask "font-sauce-code-pro-nerd-font"

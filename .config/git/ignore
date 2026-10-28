@@ -3,7 +3,6 @@
 ai-swap/
 **/.claude/scheduled_tasks.lock
 **/.claude/settings.local.json
-.claude-trace/
 CLAUDE.local.md
 
 # Editor/IDE
