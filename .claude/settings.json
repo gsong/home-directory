@@ -20,7 +20,6 @@
       "Bash(cp *)",
       "Bash(echo *)",
       "Bash(gh *)",
-      "Bash(gh pr merge:*)",
       "Bash(git *)",
       "Bash(grep *)",
       "Bash(jq *)",
@@ -36,8 +35,7 @@
       "WebFetch(domain:mise.jdx.dev)",
       "WebSearch",
       "mcp__claude_ai_Linear",
-      "mcp__context7__get-library-docs",
-      "mcp__context7__resolve-library-id"
+      "mcp__context7"
     ],
     "deny": [],
     "ask": [],
@@ -109,14 +107,9 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "frontend-design@claude-plugins-official": true,
     "ast-grep@ast-grep-marketplace": true,
     "feature-dev@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true,
-    "claude-code-setup@claude-plugins-official": true,
-    "claude-md-management@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "codex@openai-codex": true,
     "codex-tools@gsong-marketplace": true,
@@ -124,10 +117,7 @@
     "gh-tools@gsong-marketplace": true,
     "utilities@gsong-marketplace": true,
     "security-guidance@claude-plugins-official": true,
-    "pr-review-toolkit@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true,
     "mattpocock-skills@claude-plugins-official": true,
-    "swift-lsp@claude-plugins-official": true,
     "writing@gsong-marketplace": true,
     "agent-browser@agent-browser": true,
     "browser@gsong-marketplace": true
