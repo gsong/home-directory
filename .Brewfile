@@ -26,6 +26,7 @@ brew "git-filter-repo"         # Fast, flexible tool for rewriting git history
 brew "git-lfs"                 # Git Large File Storage
 brew "libvips"                 # Image processing library (for Astro)
 brew "libyaml"                 # YAML parser (for Ruby)
+cask "session-manager-plugin"  # AWS SSM sessions (aws ssm start-session)
 
 # Shell & Terminal Enhancements
 brew "bash-completion@2"       # Bash completion scripts
@@ -33,8 +34,8 @@ brew "eza"                     # Modern ls replacement
 brew "fd"                      # Modern find replacement
 brew "fzf"                     # Command-line fuzzy finder
 brew "m-cli"                   # macOS command-line tools
-brew "mole"                    # Deep clean and optimize your Mac
 brew "mise"                    # Polyglot runtime version manager
+brew "mole"                    # Deep clean and optimize your Mac
 brew "pam-reattach"            # Touch ID support for tmux
 brew "reattach-to-user-namespace" # macOS clipboard support for tmux
 brew "ripgrep"                 # Modern grep replacement
@@ -94,7 +95,6 @@ cask "docker-desktop", greedy: true
 cask "ghostty", greedy: true   # GPU-accelerated terminal
 cask "linear"                  # Linear.app
 cask "ngrok"                   # Secure tunnels to localhost
-cask "session-manager-plugin"  # AWS SSM sessions (aws ssm start-session)
 cask "sourcetree", greedy: true # Git GUI
 
 # File & System Management
