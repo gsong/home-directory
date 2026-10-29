@@ -94,6 +94,7 @@ cask "docker-desktop", greedy: true
 cask "ghostty", greedy: true   # GPU-accelerated terminal
 cask "linear"                  # Linear.app
 cask "ngrok"                   # Secure tunnels to localhost
+cask "session-manager-plugin"  # AWS SSM sessions (aws ssm start-session)
 cask "sourcetree", greedy: true # Git GUI
 
 # File & System Management
