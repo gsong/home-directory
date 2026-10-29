@@ -18,7 +18,7 @@ brew "tree"                    # Display directory structure
 brew "wget"                    # Non-interactive network downloader
 
 # Development Tools
-brew "azure-cli"               # Azure CLI (az devops; Python pins break it under mise)
+cask "azure-cli"               # Azure CLI (az devops; Python pins break it under mise)
 brew "gh"                      # GitHub CLI
 brew "git"                     # Distributed version control
 brew "git-delta"               # Syntax-highlighting pager for git/diff
