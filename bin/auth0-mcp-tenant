@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Starts the Auth0 MCP server for one tenant, signed in as a machine app
+# rather than through the keychain, so it runs the same on the Mac and in a
+# container. The MCP config sets AUTH0_DOMAIN, AUTH0_CLIENT_ID and
+# AUTH0_CLIENT_SECRET. Arguments go to `auth0-mcp run`.
+set -euo pipefail
+
+: "${AUTH0_DOMAIN:?AUTH0_DOMAIN is not set}"
+: "${AUTH0_CLIENT_ID:?AUTH0_CLIENT_ID is not set}"
+: "${AUTH0_CLIENT_SECRET:?AUTH0_CLIENT_SECRET is not set}"
+
+body=$(jq -n \
+  --arg id "$AUTH0_CLIENT_ID" \
+  --arg secret "$AUTH0_CLIENT_SECRET" \
+  --arg audience "https://$AUTH0_DOMAIN/api/v2/" \
+  '{grant_type: "client_credentials", client_id: $id, client_secret: $secret, audience: $audience}')
+
+AUTH0_TOKEN=$(curl -fsS "https://$AUTH0_DOMAIN/oauth/token" \
+  -H 'content-type: application/json' -d "$body" | jq -er .access_token)
+export AUTH0_TOKEN
+unset AUTH0_CLIENT_SECRET
+
+exec auth0-mcp run "$@"

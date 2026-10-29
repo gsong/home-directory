@@ -1,8 +1,12 @@
 {
   "mcpServers": {
     "auth0": {
-      "command": "auth0-mcp",
-      "args": ["run"]
+      "command": "${HOME}/.home-directory/bin/auth0-mcp-tenant",
+      "env": {
+        "AUTH0_DOMAIN": "glacierrig.us.auth0.com",
+        "AUTH0_CLIENT_ID": "${AUTH0_GLACIERRIG_CLIENT_ID}",
+        "AUTH0_CLIENT_SECRET": "${AUTH0_GLACIERRIG_CLIENT_SECRET}"
+      }
     }
   }
 }

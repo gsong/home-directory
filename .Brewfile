@@ -18,6 +18,7 @@ brew "tree"                    # Display directory structure
 brew "wget"                    # Non-interactive network downloader
 
 # Development Tools
+brew "azure-cli"               # Azure CLI (az devops; Python pins break it under mise)
 brew "gh"                      # GitHub CLI
 brew "git"                     # Distributed version control
 brew "git-delta"               # Syntax-highlighting pager for git/diff
@@ -51,6 +52,7 @@ brew "b2-tools"                # Backblaze B2 cloud storage CLI
 brew "cloc"                    # Count lines of code
 brew "czkawka"                 # Find duplicates, empty folders, similar images
 brew "jpegoptim"               # Lossless JPEG optimizer
+brew "lastpass-cli"            # LastPass CLI (lpass)
 brew "ollama"                  # Run LLMs locally
 
 # Quick Look Plugins

@@ -2,7 +2,10 @@
   "mcpServers": {
     "ado": {
       "command": "mcp-server-azuredevops",
-      "args": ["GlacierRIG"]
+      "args": ["GlacierRIG", "--authentication", "pat"],
+      "env": {
+        "PERSONAL_ACCESS_TOKEN": "${ADO_MCP_PAT_BASE64}"
+      }
     }
   }
 }
