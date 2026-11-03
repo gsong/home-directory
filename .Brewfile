@@ -112,6 +112,7 @@ cask "homebrew/cask/sloth"     # Display open files/sockets (bare "sloth" now re
 cask "fsnotes", greedy: true   # Markdown notes manager
 cask "macwhisper", greedy: true # Local audio transcription
 cask "marked-app", greedy: true # Markdown preview
+cask "obsidian", greedy: true  # Markdown knowledge base
 cask "screenflow"              # Screen recording
 cask "shottr"                  # Screenshot tool
 cask "taskpaper"               # Plain text task management
