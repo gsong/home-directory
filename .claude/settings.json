@@ -28,6 +28,7 @@
       "Bash(mkdir *)",
       "Bash(mv *)",
       "Bash(pnpm *)",
+      "Bash(rg *)",
       "Bash(test *)",
       "WebFetch(domain:anthropic.com)",
       "WebFetch(domain:github.com)",
