@@ -133,8 +133,8 @@
     },
     "gsong-marketplace": {
       "source": {
-        "source": "directory",
-        "path": "/Users/george/src/gsong/claude-marketplace"
+        "source": "github",
+        "repo": "gsong/claude-marketplace"
       },
       "autoUpdate": true
     },
