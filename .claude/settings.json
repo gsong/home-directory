@@ -165,5 +165,6 @@
   "fileCheckpointingEnabled": true,
   "todoFeatureEnabled": false,
   "teammateMode": "in-process",
-  "remoteControlAtStartup": true
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true
 }
