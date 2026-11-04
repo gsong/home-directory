@@ -19,7 +19,8 @@ re	\b(just wanted to|quick question|circle back|touch base|reach out)\b	filler o
 ## Judgment
 
 - Put the ask in the first sentence. Context comes after.
-- Name the deadline and the owner. Both, or neither is real.
+- Name a deadline only when a real date drives it. Never invent one to make
+  an ask feel urgent. Name the owner always.
 - One message, one ask. Split anything longer.
 - Ask the question. Do not argue for it. A reader who can answer needs the
   question, not the evidence behind it or what goes wrong if you guess.
