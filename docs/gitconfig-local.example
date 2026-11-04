@@ -24,6 +24,17 @@
 # [includeIf "gitdir:~/src/acme/"]
 # 	path = ~/.config/git/acme
 
+# Per-org identities, by remote URL (git 2.36+).
+#
+# A `gitdir:` match misses clones made outside ~/src, such as the ones Claude
+# Code makes in its scratchpad under /private/tmp. Matching the remote URL
+# catches those. Add one entry per URL form you clone with (SSH and HTTPS).
+#
+# [includeIf "hasconfig:remote.*.url:git@github.com:acme-org/**"]
+# 	path = ~/.config/git/acme
+# [includeIf "hasconfig:remote.*.url:https://github.com/acme-org/**"]
+# 	path = ~/.config/git/acme
+
 # Each of those files holds only what differs from the default:
 #
 #   # ~/.config/git/acme
