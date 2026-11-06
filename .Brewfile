@@ -49,7 +49,6 @@ brew "neovim"                  # Hyperextensible Vim-based text editor
 cask "vimr"                    # Neovim GUI for macOS
 
 # Miscellaneous CLI Tools
-brew "b2-tools"                # Backblaze B2 cloud storage CLI
 brew "cloc"                    # Count lines of code
 brew "czkawka"                 # Find duplicates, empty folders, similar images
 brew "jpegoptim"               # Lossless JPEG optimizer
@@ -75,7 +74,6 @@ cask "moom"                    # Window management
 cask "soundsource", greedy: true # Audio routing
 
 # Web Browsers
-cask "arc", greedy: true        # Innovative web browser
 cask "crest-browser", greedy: true # Arc-like browser with Spaces
 cask "google-chrome"           # Google Chrome browser
 
