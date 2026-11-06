@@ -151,6 +151,12 @@
         "repo": "ast-grep/claude-skill"
       },
       "autoUpdate": true
+    },
+    "gs-sahaj-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "sahajsoft/gs-sahaj-marketplace"
+      }
     }
   },
   "outputStyle": "Plain Technical",
