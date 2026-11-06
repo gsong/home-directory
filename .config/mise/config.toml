@@ -21,8 +21,9 @@ bun = "latest"
 direnv = "latest"
 hadolint = "latest"
 # Pinned: neovim embeds LuaJIT, which implements the 5.1 language level.
-# mise's lua 5.1 install carries a luarocks configured for 5.1, so rocks
-# built here load in neovim. 5.4 would break that.
+# lazy.nvim installs plugin rocks with the luarocks on PATH, and its
+# health check requires `lua -v` to report 5.1. mise's lua 5.1 install
+# carries a luarocks configured for 5.1. 5.4 would break that.
 lua = "5.1"
 node = "lts"
 # Shadows the npm bundled with node, so npm updates outside node releases.
