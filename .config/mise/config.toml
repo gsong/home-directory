@@ -57,7 +57,8 @@ zizmor = "latest"
 "npm:ccstatusline" = "latest"
 "npm:ccusage" = "latest"
 "npm:tldr" = "latest"
-# Pinned to Python 3.14: magika has no release for 3.15 yet (2026-10-20).
+# Pinned to Python 3.14: magika needs onnxruntime, which has no cp315 wheel
+# yet (1.31.1, checked 2026-11-05). Unpinned, uv falls back to markitdown 0.1.0a1.
 "pipx:markitdown" = { version = "latest", extras = "all", uvx_args = "--prerelease=allow --python 3.14" }
 "pipx:sqlfluff" = "latest"
 "pipx:titlecase" = "latest"
