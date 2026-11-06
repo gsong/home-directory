@@ -24,6 +24,7 @@ _darcs
 ^/COPYING
 ^/CLAUDE.md
 ^/docs
+^/\.github
 
 ^.aider.chat.history.md
 ^.aider.input.history
