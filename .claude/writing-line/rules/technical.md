@@ -45,7 +45,7 @@ The gate cannot check these. They load as context when the skill runs.
 - Use the project's own names for things. Read `CONTEXT.md` if the repo has one.
 - Say plainly what you verified and what you inferred.
 - An em dash joins a clause of restatement or consequence: "This isn't
-  sloppiness - it's intentionality." Never use a pair to bracket an aside.
+  sloppiness—it's intentionality." Never use a pair to bracket an aside.
   When cutting one, reach for a colon first.
 - Never tell the reader you are being candid. Be candid.
 - Enumerate with a list, not a long sentence. Three or more parallel items

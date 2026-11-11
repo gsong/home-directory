@@ -26,7 +26,7 @@ density	\b(genuinely|actually|really)\b	4	1.5	intensifier repeated; the sentence
 - Give one concrete example for each abstract claim.
 - Do not assume the reader knows the system. Name it before you use it.
 - An em dash joins a clause of restatement or consequence: "This isn't
-  sloppiness - it's intentionality." Never use a pair to bracket an aside.
+  sloppiness—it's intentionality." Never use a pair to bracket an aside.
   When cutting one, reach for a colon first. The colon is the workhorse
   mark in `references/george-song-voice.md`, used two to three times as
   often as the em dash.

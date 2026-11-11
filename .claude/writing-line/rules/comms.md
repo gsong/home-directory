@@ -31,7 +31,7 @@ re	\b(just wanted to|quick question|circle back|touch base|reach out)\b	filler o
   a column is not context for whoever owns the column. Cut the sentence that
   teaches the reader your reasoning when they only have to reply.
 - An em dash joins a clause of restatement or consequence: "This isn't
-  sloppiness - it's intentionality." Never use a pair to bracket an aside.
+  sloppiness—it's intentionality." Never use a pair to bracket an aside.
   When cutting one, reach for a colon first.
 - No semicolons. See `references/george-song-voice.md`.
 - Never tell the reader you are being candid. Be candid. The wider rule: cut
