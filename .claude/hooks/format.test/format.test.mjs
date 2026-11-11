@@ -29,6 +29,9 @@ const HOOK = join(dirname(fileURLToPath(import.meta.url)), "..", "format.sh");
 const MARKDOWN = "| a | b |\n|---|---|\n| 1 | 2 |\n";
 const TYPESCRIPT = "const a = 1;\n";
 const BIOME_MARK = "// biome ran\n";
+const PYTHON = "x = 1\n";
+const SQL = "select 1\n";
+const PYPROJECT = '[project]\nname = "x"\n';
 
 const made = [];
 
@@ -120,6 +123,80 @@ test("a file outside any repo with no config above it is left alone", () => {
   assert.equal(formatted(dir, "loose.md", MARKDOWN), MARKDOWN);
 });
 
+// Ruff and SQLFluff follow the same rule: they run only where the project
+// configured them. Like Biome, each is a stand-in at the repo's .venv/bin,
+// which the hook prefers over a global install; it appends one marker line
+// per call naming its subcommand.
+
+test("a repo with no Ruff config keeps its Python as written", () => {
+  const repo = withStub(makeRepo({}), "ruff", "#");
+  assert.equal(formatted(repo, "a.py", PYTHON), PYTHON);
+});
+
+test("a pyproject.toml without a Ruff table does not count", () => {
+  const repo = withStub(makeRepo({ "pyproject.toml": PYPROJECT }), "ruff", "#");
+  assert.equal(formatted(repo, "a.py", PYTHON), PYTHON);
+});
+
+for (const [config, content] of [
+  ["ruff.toml", ""],
+  [".ruff.toml", ""],
+  ["pyproject.toml", `${PYPROJECT}[tool.ruff.lint]\nselect = ["F"]\n`],
+]) {
+  test(`a ${config} gets Ruff's fixes, then its format`, () => {
+    const repo = withStub(makeRepo({ [config]: content }), "ruff", "#");
+    assert.equal(
+      formatted(repo, "pkg/a.py", PYTHON),
+      `${PYTHON}# ruff check\n# ruff format\n`,
+    );
+  });
+}
+
+test("a Ruff config outside the repo does not claim it", () => {
+  const parent = makeDir();
+  writeFileSync(join(parent, "ruff.toml"), "");
+  const repo = withStub(makeRepo({}, join(parent, "repo")), "ruff", "#");
+  assert.equal(formatted(repo, "a.py", PYTHON), PYTHON);
+});
+
+test("the global Ruff fixes and formats when the repo pins none", {
+  skip: !onPath("ruff") && "ruff is not on PATH",
+}, () => {
+  const repo = makeRepo({ "ruff.toml": "" });
+  assert.equal(formatted(repo, "a.py", "import os\nx=1\n"), "x = 1\n");
+});
+
+test("Python drafts under ai-swap/drafts are never fixed", () => {
+  const repo = withStub(makeRepo({ "ruff.toml": "" }), "ruff", "#");
+  assert.equal(formatted(repo, "ai-swap/drafts/a.py", PYTHON), PYTHON);
+});
+
+test("a repo with no SQLFluff config keeps its SQL as written", () => {
+  const repo = withStub(makeRepo({}), "sqlfluff", "--");
+  assert.equal(formatted(repo, "q.sql", SQL), SQL);
+});
+
+for (const [config, content] of [
+  [".sqlfluff", "[sqlfluff]\ndialect = ansi\n"],
+  ["setup.cfg", "[sqlfluff]\ndialect = ansi\n"],
+  ["tox.ini", "[sqlfluff]\ndialect = ansi\n"],
+  ["pyproject.toml", `${PYPROJECT}[tool.sqlfluff.core]\ndialect = "ansi"\n`],
+]) {
+  test(`a ${config} SQLFluff config gets SQLFluff's fixes`, () => {
+    const repo = withStub(makeRepo({ [config]: content }), "sqlfluff", "--");
+    assert.equal(formatted(repo, "db/q.sql", SQL), `${SQL}-- sqlfluff fix\n`);
+  });
+}
+
+test("a setup.cfg without a sqlfluff section does not count", () => {
+  const repo = withStub(
+    makeRepo({ "setup.cfg": "[metadata]\nname = x\n" }),
+    "sqlfluff",
+    "--",
+  );
+  assert.equal(formatted(repo, "q.sql", SQL), SQL);
+});
+
 // Writes content to path inside root, runs the hook from cwd (root by
 // default) and returns what the file holds afterwards.
 function formatted(root, path, content, cwd = root) {
@@ -152,6 +229,24 @@ function makeBiomeRepo(files) {
   );
   chmodSync(biome, 0o755);
   return repo;
+}
+
+// Puts a stand-in tool at the repo's .venv/bin. Each call appends a line to
+// the file it is given (the last argument): the comment prefix, the tool's
+// name, and its first argument, the subcommand.
+function withStub(repo, name, comment) {
+  const bin = join(repo, ".venv/bin", name);
+  mkdirSync(dirname(bin), { recursive: true });
+  writeFileSync(
+    bin,
+    `#!/bin/sh\nfor f; do :; done\nprintf '%s ${name} %s\\n' '${comment}' "$1" >> "$f"\n`,
+  );
+  chmodSync(bin, 0o755);
+  return repo;
+}
+
+function onPath(name) {
+  return spawnSync("sh", ["-c", `command -v ${name}`]).status === 0;
 }
 
 function makeRepo(files, at = join(makeDir(), "repo")) {
