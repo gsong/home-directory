@@ -44,6 +44,12 @@
     "defaultMode": "auto"
   },
   "model": "opus",
+  "skillOverrides": {
+    "gws-sheets": "off",
+    "gws-slides": "off",
+    "vercel-react-best-practices": "off",
+    "web-design-guidelines": "off"
+  },
   "hooks": {
     "PreToolUse": [
       {
@@ -164,11 +170,5 @@
   "todoFeatureEnabled": false,
   "teammateMode": "in-process",
   "remoteControlAtStartup": true,
-  "agentPushNotifEnabled": true,
-  "skillOverrides": {
-    "gws-sheets": "off",
-    "gws-slides": "off",
-    "vercel-react-best-practices": "off",
-    "web-design-guidelines": "off"
-  }
+  "agentPushNotifEnabled": true
 }
