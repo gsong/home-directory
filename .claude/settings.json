@@ -12,18 +12,12 @@
   },
   "permissions": {
     "allow": [
-      "Bash(/bin/ls *)",
       "Bash(ast-grep *)",
       "Bash(brew *)",
-      "Bash(cat *)",
-      "Bash(cd *)",
       "Bash(cp *)",
-      "Bash(echo *)",
       "Bash(gh *)",
       "Bash(git *)",
-      "Bash(grep *)",
       "Bash(jq *)",
-      "Bash(ls *)",
       "Bash(mise *)",
       "Bash(mkdir *)",
       "Bash(mv *)",
@@ -38,7 +32,14 @@
       "mcp__claude_ai_Linear",
       "mcp__context7"
     ],
-    "deny": [],
+    "deny": [
+      "Read(~/.aws/credentials)",
+      "Read(~/.config/gcloud/access_tokens.db)",
+      "Read(~/.config/gcloud/application_default_credentials.json)",
+      "Read(~/.config/gcloud/credentials.db)",
+      "Read(~/.ssh/id_*)",
+      "Read(~/.terraform.d/credentials.tfrc.json)"
+    ],
     "ask": [],
     "defaultMode": "auto"
   },
@@ -86,14 +87,6 @@
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/format.sh"
-          },
-          {
-            "type": "command",
-            "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); case \"$file\" in */ai-swap/drafts/*) exit 0 ;; esac; if [[ \"$file\" == *.sql ]]; then sqlfluff fix \"$(realpath \"$file\")\"; fi"
-          },
-          {
-            "type": "command",
-            "command": "file=$(jq -r '.tool_input.file_path' /dev/stdin); case \"$file\" in */ai-swap/drafts/*) exit 0 ;; esac; if [[ \"$file\" == *.py ]]; then ruff check --fix \"$(realpath \"$file\")\"; fi"
           }
         ]
       }
@@ -109,7 +102,6 @@
   },
   "enabledPlugins": {
     "ast-grep@ast-grep-marketplace": true,
-    "feature-dev@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "codex@openai-codex": true,
@@ -120,7 +112,6 @@
     "security-guidance@claude-plugins-official": true,
     "mattpocock-skills@claude-plugins-official": true,
     "writing@gsong-marketplace": true,
-    "agent-browser@agent-browser": true,
     "browser@gsong-marketplace": true
   },
   "extraKnownMarketplaces": {
@@ -164,6 +155,7 @@
   "effortLevel": "high",
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
+  "prefersReducedMotion": true,
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
   "theme": "auto",
@@ -172,5 +164,11 @@
   "todoFeatureEnabled": false,
   "teammateMode": "in-process",
   "remoteControlAtStartup": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "skillOverrides": {
+    "gws-sheets": "off",
+    "gws-slides": "off",
+    "vercel-react-best-practices": "off",
+    "web-design-guidelines": "off"
+  }
 }
