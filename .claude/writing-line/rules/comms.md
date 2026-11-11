@@ -55,6 +55,10 @@ re	\b(just wanted to|quick question|circle back|touch base|reach out)\b	filler o
   Body prose, not table cells.
 - Use an en dash (–) for a range: 10–20, 2020–2024, Mon–Fri. A hyphen joins
   words; it does not span a range.
+- Keep an email to what the reader needs to act. Leave out internal detail,
+  such as counts, sizes and our own checks.
+- Before a message asks someone to check something, check what you can
+  yourself. Ask only for what you could not reach, and say why.
 
 ## Notes on the rules
 
