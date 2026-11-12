@@ -15,7 +15,7 @@
 
 ## Shell and tools
 
-- Text search in Bash: `rg` (ripgrep). It recurses by default, and its `-r` means replace.
+- Text search in Bash: `rg` (ripgrep). It recurses by default, and its `-r` means replace. Always pass a path, such as `.`: with no path and no terminal, it reads stdin and hangs.
 - Structural code search (a function, class, or call shape): load the `ast-grep:ast-grep` skill and prefer it over Grep/Glob.
 - Package manager: the one the lockfile names; `pnpm` when there is no lockfile.
 - File removal: `rm -f`, so no confirmation prompt stalls the command.
