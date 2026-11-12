@@ -23,7 +23,7 @@ is parsed second, and the last `maxwords` wins.
 # Punctuation
 density	(?:—|&mdash;)	4	4	em dashes are frequent here; a colon usually does the job, and a pair bracketing an aside is never right
 re-unquoted	;	semicolon; use a period or a colon
-re	(?<![\d-])\d+\s*[-—]\s*\d+(?![\d-])	number range with a hyphen or em dash; use an en dash (–)
+re	(?<![\d-])(?!(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])(?![\d-]))\d+\s*[-—]\s*\d+(?![\d-])	number range with a hyphen or em dash; use an en dash (–)
 re	\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*[-—]\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)	date range with a hyphen or em dash; use an en dash (–)
 
 # Banned constructions — AI tells
@@ -34,7 +34,7 @@ re	\b(seamless|robust|comprehensive|cutting-edge|game-chang|synerg)	marketing ad
 re	\b([Bb]eing straight|[Tt]o be (honest|blunt|straight)|[Ff]rankly)\b	telling the reader you are being candid; just be candid
 
 # American English
-re	\b(colou?r|behaviour|favour|honour|labour|organis|recognis|analys|prioritis|customis|optimis|apologis|realis|summaris)	British spelling; use American
+re	\b(colour|behaviour|favour|honour|labour|organis|recognis|analys(?:e|ed|ing)\b|prioritis|customis|optimis|apologis|realis|summaris)	British spelling; use American
 re	\b(centre|licence|defence|whilst|amongst)\b	British spelling; use American
 ```
 
