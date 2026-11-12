@@ -154,6 +154,12 @@
         "source": "github",
         "repo": "sahajsoft/gs-sahaj-marketplace"
       }
+    },
+    "cloudflare": {
+      "source": {
+        "source": "github",
+        "repo": "cloudflare/skills"
+      }
     }
   },
   "outputStyle": "Plain Technical",
