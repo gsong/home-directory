@@ -15,7 +15,6 @@ CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR = "true"
 AUBE_TRUST_POLICY_IGNORE_AFTER = "10080"
 
 [tools]
-ast-grep = "latest"
 aws-cli = { version = "latest", symlink_bins = "true" }
 bun = "latest"
 direnv = "latest"

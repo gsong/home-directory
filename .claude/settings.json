@@ -12,7 +12,6 @@
   },
   "permissions": {
     "allow": [
-      "Bash(ast-grep *)",
       "Bash(brew *)",
       "Bash(cp *)",
       "Bash(gh *)",
@@ -107,7 +106,6 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "ast-grep@ast-grep-marketplace": true,
     "typescript-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "codex@openai-codex": true,
@@ -139,13 +137,6 @@
       "source": {
         "source": "github",
         "repo": "vercel-labs/agent-browser"
-      },
-      "autoUpdate": true
-    },
-    "ast-grep-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "ast-grep/claude-skill"
       },
       "autoUpdate": true
     },
