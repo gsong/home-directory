@@ -69,12 +69,13 @@ scan() { # scan <shell text>
 # keywords, wrappers and their flags), then dispatches on the command name.
 check_command() {
   local -a w=("$@")
-  local n=${#w[@]} i=0 word
+  local n=${#w[@]} i=0 word draft=0
   while ((i < n)); do
     word=${w[i]}
     case $word in
     [A-Za-z_]*=*)
       [[ ${word%%=*} =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || break
+      [[ $word == GH_DRAFT=1 ]] && draft=1
       ((i++))
       ;;
     if | then | do | else | elif | while | until | '!' | '{' | time | exec | command | builtin | nohup)
@@ -94,7 +95,24 @@ check_command() {
   pkill | killall) ask "Run 'pgrep -fl' with the same pattern first, and approve only if it lists just the processes you mean to stop." ;;
   rm) check_rm "${w[@]:i+1}" ;;
   git) check_git "${w[@]:i+1}" ;;
+  gh) ((draft)) || check_gh "${w[@]:i+1}" ;;
   esac
+}
+
+# George wants pull requests ready for review unless he asks for a draft.
+# 'gh stack submit --auto' opens drafts unless --open is passed, and
+# 'gh pr create' opens one with --draft or -d. A GH_DRAFT=1 prefix, used only
+# when George asks for a draft, skips this check.
+check_gh() {
+  local draft_msg="Open PRs ready for review: George wants drafts only when he asks. If he asked for a draft, prefix the command with GH_DRAFT=1."
+  if [[ ${1-} == stack && ${2-} == submit ]]; then
+    has_word --open "${@:3}" ||
+      deny "Add --open: 'gh stack submit' without it opens new PRs as drafts. $draft_msg"
+  elif [[ ${1-} == pr && ${2-} == create ]]; then
+    { has_word --draft "${@:3}" || has_word -d "${@:3}"; } &&
+      deny "Drop --draft. $draft_msg"
+  fi
+  return 0
 }
 
 # Prints the index of the first word after a wrapper and its flags. The flags

@@ -287,6 +287,23 @@ describe(
   HOME,
 );
 
+// George wants pull requests ready for review. 'gh stack submit' opens drafts
+// unless --open is passed, and 'gh pr create' opens one with --draft or -d.
+// A GH_DRAFT=1 prefix, used only when he asks for a draft, lets either through.
+describe("draft PRs", [
+  ["deny", "gh stack submit --auto", "a stack submit without --open"],
+  ["deny", "cd x && gh stack submit", "after an && chain"],
+  ["deny", "gh pr create --draft --title x", "pr create with --draft"],
+  ["deny", "gh pr create -d", "pr create with -d"],
+
+  ["allow", "gh stack submit --auto --open", "a stack submit with --open"],
+  ["allow", "GH_DRAFT=1 gh stack submit --auto", "a draft George asked for"],
+  ["allow", "GH_DRAFT=1 gh pr create --draft", "a draft PR George asked for"],
+  ["allow", "gh pr create --title x", "a ready pr create"],
+  ["allow", "gh pr view 83", "another gh command"],
+  ["allow", 'echo "gh stack submit"', "named in a quoted string"],
+]);
+
 // A deny anywhere in the command outranks an ask that came first.
 describe("precedence", [
   ["deny", "pkill node; git push -f", "a deny after an ask"],
