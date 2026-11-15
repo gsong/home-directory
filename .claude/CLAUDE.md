@@ -15,9 +15,10 @@
 
 ## Shell and tools
 
-- Text search in Bash: `rg` (ripgrep). It recurses by default, and its `-r` means replace. Always pass a path, such as `.`: with no path and no terminal, it reads stdin and hangs.
+- Text search in Bash: `rg` (ripgrep). It recurses by default, and its `-r` means replace. Searching files: pass a path, such as `.`, since with no path and no terminal it reads stdin and hangs. Filtering a pipe (`cmd | rg pat`): pass no path, since a path makes it ignore the pipe and search the disk.
 - Package manager: the one the lockfile names; `pnpm` when there is no lockfile.
 - File removal: `rm -f`, so no confirmation prompt stalls the command.
+- Dependent commands: chain with `&&`, so a cleanup step (deleting a branch, a file, a resource) runs only after the step it depends on succeeds.
 - After installing a tool: `eval "$(mise env)"` refreshes PATH.
 - Mermaid: v11.17.2 syntax, the version nvim's markdown previewer renders (pinned in `~/.config/nvim/lua/plugins/markdown-preview.lua`).
 - Browser task: use Crest's `mcp__crest__*` tools when they are loaded (call `identify`, then `list_spaces`); Crest is the user's real browser with their sign-ins. Otherwise load `browser:chrome`, and run `browser:setup` for a repo that needs its own persistent Chrome profile.
