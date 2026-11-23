@@ -1,0 +1,53 @@
+{
+  "id": "18c0000000000001",
+  "messages": [
+    {
+      "id": "18c0000000000001",
+      "threadId": "18c0000000000001",
+      "labelIds": ["SENT"],
+      "internalDate": "1795000000000",
+      "payload": {
+        "headers": [
+          { "name": "From", "value": "Sam Sender <sam@example.com>" },
+          { "name": "To", "value": "Ana Client <ana@client.example>" },
+          { "name": "Cc", "value": "Lee Lead <lee@example.com>" },
+          { "name": "Subject", "value": "Discovery Readout Options" },
+          { "name": "Message-Id", "value": "<first@example.com>" }
+        ]
+      }
+    },
+    {
+      "id": "18c0000000000002",
+      "threadId": "18c0000000000001",
+      "labelIds": ["INBOX", "IMPORTANT"],
+      "internalDate": "1795000100000",
+      "payload": {
+        "headers": [
+          { "name": "From", "value": "Ana Client <ana@client.example>" },
+          { "name": "To", "value": "Lohith Peer <lohith@example.com>" },
+          {
+            "name": "Cc",
+            "value": "Sam Sender <SAM@example.com>, Lee Lead <lee@example.com>, bob@client.example, Lee Lead <lee@example.com>"
+          },
+          { "name": "Subject", "value": "Re: Discovery Readout Options" },
+          { "name": "Message-ID", "value": "<second@client.example>" },
+          { "name": "References", "value": "<first@example.com>" }
+        ]
+      }
+    },
+    {
+      "id": "18c0000000000003",
+      "threadId": "18c0000000000001",
+      "labelIds": ["DRAFT"],
+      "internalDate": "1795000200000",
+      "payload": {
+        "headers": [
+          { "name": "From", "value": "Sam Sender <sam@example.com>" },
+          { "name": "To", "value": "Ana Client <ana@client.example>" },
+          { "name": "Subject", "value": "Re: Discovery Readout Options" },
+          { "name": "Message-ID", "value": "<draft@example.com>" }
+        ]
+      }
+    }
+  ]
+}

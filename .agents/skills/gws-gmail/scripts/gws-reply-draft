@@ -1,0 +1,184 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = []
+# ///
+"""Create or update a reply-all Gmail draft in a thread.
+
+Usage: gws-reply-draft <threadId> <body-file> [--draft-id <id>] [--gws <command>]
+
+Replies to the thread's last message that is not a draft. Prints the draft id
+and each recipient's name, To first, then Cc, so the caller can read them back.
+"""
+
+import argparse
+import base64
+import json
+import shlex
+import subprocess
+import sys
+from email.message import EmailMessage
+from email.utils import formataddr, getaddresses
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    gws = shlex.split(args.gws)
+    body = read_body(args.body_file)
+
+    thread = run_gws(gws, "gmail", "users", "threads", "get", "--params", json.dumps({
+        "userId": "me",
+        "id": args.thread_id,
+        "format": "metadata",
+        "metadataHeaders": ["From", "To", "Cc", "Reply-To", "Subject", "Message-ID", "References", "In-Reply-To"],
+    }))
+    my_address = run_gws(gws, "gmail", "users", "getProfile", "--params", '{"userId":"me"}')["emailAddress"]
+
+    reply = build_reply(thread, my_address)
+    raw = encode_message(reply, body)
+    message = {"raw": raw, "threadId": args.thread_id}
+
+    if args.draft_id:
+        draft = run_gws(gws, "gmail", "users", "drafts", "update",
+                        "--params", json.dumps({"userId": "me", "id": args.draft_id}),
+                        "--json", json.dumps({"id": args.draft_id, "message": message}))
+    else:
+        draft = run_gws(gws, "gmail", "users", "drafts", "create",
+                        "--params", '{"userId":"me"}',
+                        "--json", json.dumps({"message": message}))
+
+    print(f"Draft: {draft['id']}")
+    for line in recipient_lines(reply):
+        print(line)
+
+
+def build_reply(thread, my_address):
+    """Work out the reply-all headers for a thread, as Gmail's Reply all does.
+
+    Replies to the last message without the DRAFT label. To is that message's
+    Reply-To, or its From. Cc is its To and Cc. The sender's own address and
+    duplicates are dropped. When the last message is the sender's own, To is
+    its To instead, so the reply goes to the same people.
+    """
+    parent = last_sent_message(thread)
+    headers = header_map(parent)
+    me = my_address.lower()
+
+    sender = addresses(headers, "reply-to") or addresses(headers, "from")
+    if any(addr.lower() == me for _, addr in addresses(headers, "from")):
+        to_candidates = addresses(headers, "to")
+        cc_candidates = addresses(headers, "cc")
+    else:
+        to_candidates = sender
+        cc_candidates = addresses(headers, "to") + addresses(headers, "cc")
+
+    seen = {me}
+    to = take_new(to_candidates, seen)
+    cc = take_new(cc_candidates, seen)
+    if not to:
+        to, cc = cc[:1], cc[1:]
+
+    message_id = headers.get("message-id", "")
+    prior = headers.get("references") or headers.get("in-reply-to", "")
+    references = " ".join(part for part in (prior, message_id) if part)
+
+    return {
+        "to": to,
+        "cc": cc,
+        "subject": reply_subject(headers.get("subject", "")),
+        "in_reply_to": message_id,
+        "references": references,
+    }
+
+
+def recipient_lines(reply):
+    lines = [f"To: {display(r)}" for r in reply["to"]]
+    lines += [f"Cc: {display(r)}" for r in reply["cc"]]
+    return lines
+
+
+# Implementation details
+
+
+def parse_args(argv):
+    parser = argparse.ArgumentParser(description="Create or update a reply-all Gmail draft in a thread.")
+    parser.add_argument("thread_id")
+    parser.add_argument("body_file", help="Plain-text body; '-' reads stdin")
+    parser.add_argument("--draft-id", help="Update this draft in place instead of creating one")
+    parser.add_argument("--gws", default="gws", help="gws command to run, e.g. gws-personal (default: gws)")
+    return parser.parse_args(argv)
+
+
+def read_body(path):
+    if path == "-":
+        return sys.stdin.read()
+    with open(path, encoding="utf-8") as f:
+        return f.read()
+
+
+def run_gws(gws, *args):
+    result = subprocess.run([*gws, *args], capture_output=True, text=True)
+    if result.returncode != 0:
+        sys.exit(f"{' '.join(gws)} {' '.join(args[:4])} failed:\n{result.stderr}{result.stdout}")
+    return parse_gws_json(result.stdout)
+
+
+def parse_gws_json(stdout):
+    """gws may print a keyring line before its JSON; skip to the first line opening an object."""
+    lines = stdout.splitlines()
+    for i, line in enumerate(lines):
+        if line.startswith("{"):
+            return json.loads("\n".join(lines[i:]))
+    raise ValueError(f"No JSON object in gws output:\n{stdout}")
+
+
+def last_sent_message(thread):
+    messages = [m for m in thread.get("messages", []) if "DRAFT" not in m.get("labelIds", [])]
+    if not messages:
+        sys.exit("The thread has no message to reply to (only drafts).")
+    return max(messages, key=lambda m: int(m.get("internalDate", 0)))
+
+
+def header_map(message):
+    """Header names vary in case (Message-ID, Message-Id), so key them lower-case."""
+    return {h["name"].lower(): h["value"] for h in message.get("payload", {}).get("headers", [])}
+
+
+def addresses(headers, name):
+    return [(n, a) for n, a in getaddresses([headers.get(name, "")]) if a]
+
+
+def take_new(candidates, seen):
+    kept = []
+    for name, addr in candidates:
+        key = addr.lower()
+        if key not in seen:
+            seen.add(key)
+            kept.append((name, addr))
+    return kept
+
+
+def reply_subject(subject):
+    return subject if subject[:3].lower() == "re:" else f"Re: {subject}"
+
+
+def display(recipient):
+    name, addr = recipient
+    return name or addr
+
+
+def encode_message(reply, body):
+    msg = EmailMessage()
+    msg["To"] = ", ".join(formataddr(r) for r in reply["to"])
+    if reply["cc"]:
+        msg["Cc"] = ", ".join(formataddr(r) for r in reply["cc"])
+    msg["Subject"] = reply["subject"]
+    if reply["in_reply_to"]:
+        msg["In-Reply-To"] = reply["in_reply_to"]
+        msg["References"] = reply["references"]
+    msg.set_content(body)
+    return base64.urlsafe_b64encode(msg.as_bytes()).decode("ascii")
+
+
+if __name__ == "__main__":
+    main()

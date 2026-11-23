@@ -31,6 +31,16 @@ gws gmail <resource> <method> [flags]
 | [`+read`](../gws-gmail-read/SKILL.md) | Read a message and extract its body or headers |
 | [`+watch`](../gws-gmail-watch/SKILL.md) | Watch for new emails and stream them as NDJSON |
 
+## Reply-all draft
+
+To save a reply as a Gmail draft for the person to send, run `scripts/gws-reply-draft` instead of building the MIME by hand:
+
+```bash
+scripts/gws-reply-draft <threadId> <body-file> [--draft-id <id>] [--gws gws-personal]
+```
+
+It replies to the thread's last message that is not a draft. It sets the recipients the way Gmail's Reply all does, leaving out your own address. Pass `--draft-id` to rewrite an existing draft in place. It prints the draft id, then each recipient's name. Read those names back to the person before you tell them the draft is ready.
+
 ## API Resources
 
 ### users
