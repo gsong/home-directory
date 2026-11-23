@@ -59,6 +59,14 @@ re	\b(just wanted to|quick question|circle back|touch base|reach out)\b	filler o
   such as counts, sizes and our own checks.
 - Before a message asks someone to check something, check what you can
   yourself. Ask only for what you could not reach, and say why.
+- Tell the reader what to do or expect, and when. Do not hand them a
+  background fact and leave them to work out what it means for them. "Expect
+  the new prices on the March 2027 invoice" beats "The 2026 invoice arrived in
+  March." The same goes for limits: "we won't be able to work on AIP on those
+  days" beats a list of travel dates.
+- Don't link adjacent sentences with the same connective. "..., so one slip
+  can make her answer wrong. So most of our time goes to basics." reads
+  clumsy. Change one connective ("and", "That's why") or restructure.
 
 ## Notes on the rules
 
