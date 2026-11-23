@@ -166,8 +166,12 @@ things follow, each from one data point, so treat them as directional:
   say the decision is theirs, plainly and with "you". The rule is against
   prescribing to a general reader, not against telling one person what is
   theirs to decide.
-- The body of a mail stays "we". The closing offer switches to "I": "Let me
-  know". One person offers help, even when a team did the work.
+- Correspondence uses "I" throughout, body and closing alike: "I would like
+  to repoint the nameservers", "Let me know". George's rule from 2026-11-20,
+  "for all future correspondences 'I' instead of 'we'". It replaces the
+  earlier note that a mail body stays "we". Keep "we" or the company's name
+  only where the subject really is the organization. Articles keep their
+  measured "we".
 
 ## Absent throughout
 
