@@ -1,6 +1,7 @@
 #!/bin/bash
 # Mount the buffalo SMB shares whenever the NAS is on the current network.
-# Driven by local.mount-smb-shares.plist: at login, on wake, and on network changes.
+# Driven by local.mount-smb-shares.plist: at login, then every 5 minutes. That
+# polling also catches a wake or a network change, within 5 minutes.
 # Credentials come from the login keychain, so nothing secret lives here.
 
 set -uo pipefail
