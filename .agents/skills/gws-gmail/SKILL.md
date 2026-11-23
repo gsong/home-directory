@@ -39,7 +39,7 @@ To save a reply as a Gmail draft for the person to send, run `scripts/gws-reply-
 scripts/gws-reply-draft <threadId> <body-file> [--draft-id <id>] [--gws gws-personal]
 ```
 
-It replies to the thread's last message that is not a draft. It sets the recipients the way Gmail's Reply all does, leaving out your own address. Pass `--draft-id` to rewrite an existing draft in place. It prints the draft id, then each recipient's name. Read those names back to the person before you tell them the draft is ready.
+It replies to the thread's last message that is not a draft. It sets the recipients the way Gmail's Reply all does, leaving out your own address. Pass `--draft-id` to rewrite an existing draft in place. It prints the draft id, then each recipient's name and address. Read those back to the person before you tell them the draft is ready, and point out any address that does not match its name.
 
 ## API Resources
 

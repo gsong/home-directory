@@ -8,7 +8,7 @@
 Usage: gws-reply-draft <threadId> <body-file> [--draft-id <id>] [--gws <command>]
 
 Replies to the thread's last message that is not a draft. Prints the draft id
-and each recipient's name, To first, then Cc, so the caller can read them back.
+and each recipient's name and address, To first, then Cc, so the caller can read them back.
 """
 
 import argparse
@@ -163,8 +163,10 @@ def reply_subject(subject):
 
 
 def display(recipient):
+    """Show the name and the address, so a spoofed name can't hide where mail goes."""
     name, addr = recipient
-    return name or addr
+    name = " ".join(name.split())
+    return f"{name} <{addr}>" if name else addr
 
 
 def encode_message(reply, body):

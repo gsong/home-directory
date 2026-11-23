@@ -84,7 +84,12 @@ def test_replying_to_own_message_keeps_its_recipients(thread):
 
 def test_printed_names_fall_back_to_address(thread):
     lines = grd.recipient_lines(grd.build_reply(thread, ME))
-    assert lines == ["To: Ana Client", "Cc: Lohith Peer", "Cc: Lee Lead", "Cc: bob@client.example"]
+    assert lines == [
+        "To: Ana Client <ana@client.example>",
+        "Cc: Lohith Peer <lohith@example.com>",
+        "Cc: Lee Lead <lee@example.com>",
+        "Cc: bob@client.example",
+    ]
 
 
 def test_encoded_message_carries_headers(thread):
